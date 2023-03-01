@@ -7,14 +7,21 @@ import { BlogsRepository } from '../blogs/repository/blogs.repository';
 import { Blogs, BlogsSchema } from '../blogs/schemas/blogs.schema';
 import { BlogsService } from '../blogs/service/blogs.service';
 import { BlogsController } from '../blogs/controller/blogs.controller';
+import { UsersController } from '../users/controller/users.controller';
+import { UsersService } from '../users/service/users.service';
+import { UsersRepository } from '../users/repository/users.repository';
+import { Users, UsersSchema } from '../users/schemas/users.schema';
 
-const mongooseModels = [{ name: Blogs.name, schema: BlogsSchema }];
+const mongooseModels = [
+  { name: Blogs.name, schema: BlogsSchema },
+  { name: Users.name, schema: UsersSchema },
+];
 
-const controllers = [AppController, BlogsController];
+const controllers = [AppController, BlogsController, UsersController];
 
-const services = [AppService, BlogsService];
+const services = [AppService, BlogsService, UsersService];
 
-const repositories = [BlogsRepository];
+const repositories = [BlogsRepository, UsersRepository];
 
 @Module({
   imports: [

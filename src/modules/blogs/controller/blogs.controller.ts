@@ -5,13 +5,15 @@ import { BlogsDto } from '../dto/blogsDto';
 
 @Controller('api')
 export class BlogsController {
-  constructor(public blogsService: BlogsService) {}
+  constructor(
+    public blogsService: BlogsService, // public pagination: getPagination,
+  ) {}
 
   @Get('blogs')
   async findBlogs(@Query() paginationType: PaginationDto) {
-    // console.log('paginationType', paginationType);
     return this.blogsService.getBlogs(paginationType);
   }
+
   @Post('blogs')
   async createBlog(@Body() createBlogType: BlogsDto) {
     return this.blogsService.createBlog(createBlogType);
