@@ -19,4 +19,11 @@ export class UsersRepository {
     const { _id, ...newUserCopy } = user;
     return newUserCopy;
   }
+  async deleteUserById(id: string): Promise<boolean> {
+    const result = await this.usersModel.deleteOne({ id });
+    return result.deletedCount === 1;
+  }
+  async findUserById(id: string): Promise<UserType> {
+    return this.usersModel.findOne({ id });
+  }
 }
