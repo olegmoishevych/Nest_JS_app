@@ -11,17 +11,25 @@ import { UsersController } from '../users/controller/users.controller';
 import { UsersService } from '../users/service/users.service';
 import { UsersRepository } from '../users/repository/users.repository';
 import { Users, UsersSchema } from '../users/schemas/users.schema';
+import { TestingRepository } from '../testing/repository/testing.repository';
+import { TestingService } from '../testing/service/testing.service';
+import { TestingController } from '../testing/controller/testing.controller';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
   { name: Users.name, schema: UsersSchema },
 ];
 
-const controllers = [AppController, BlogsController, UsersController];
+const controllers = [
+  AppController,
+  BlogsController,
+  UsersController,
+  TestingController,
+];
 
-const services = [AppService, BlogsService, UsersService];
+const services = [AppService, BlogsService, UsersService, TestingService];
 
-const repositories = [BlogsRepository, UsersRepository];
+const repositories = [BlogsRepository, UsersRepository, TestingRepository];
 
 @Module({
   imports: [
