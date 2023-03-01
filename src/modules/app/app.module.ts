@@ -14,11 +14,13 @@ import { Users, UsersSchema } from '../users/schemas/users.schema';
 import { TestingRepository } from '../testing/repository/testing.repository';
 import { TestingService } from '../testing/service/testing.service';
 import { TestingController } from '../testing/controller/testing.controller';
+import { Posts, PostsSchema } from '../posts/schemas/posts.schema';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
+  // { name: Posts.name, schema: PostsSchema },
   { name: Users.name, schema: UsersSchema },
-];
+]; // models
 
 const controllers = [
   AppController,

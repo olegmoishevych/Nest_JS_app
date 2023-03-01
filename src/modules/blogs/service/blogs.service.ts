@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { BlogsRepository } from '../repository/blogs.repository';
-import { PaginationDto } from '../../helpers/dto/pagination.dto';
+import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { BlogsDto, DB_BlogsType } from '../dto/blogsDto';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class BlogsService {
@@ -14,7 +15,9 @@ export class BlogsService {
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
-  async getBlogs(paginationType: PaginationDto) {
+  async getBlogs(
+    paginationType: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.blogsRepository.getBlogs(paginationType);
   }
 
@@ -31,11 +34,10 @@ export class BlogsService {
     return this.blogsRepository.createBlog(newBlog);
   }
 
-  //
-  // async getBlogById(id: string): Promise<BlogsType | null> {
-  //   return this.blogsRepository.getBlogById(id);
-  // }
-  //
+  async deleteBlogById(id: string) {
+    // return this.blogsRepository.deleteBlog(id);
+  }
+
   // async updateBlogById(
   //   id: string,
   //   name: string,
@@ -48,9 +50,5 @@ export class BlogsService {
   //     description,
   //     websiteUrl,
   //   );
-  // }
-  //
-  // async deleteBlog(id: string): Promise<boolean> {
-  //   return this.blogsRepository.deleteBlog(id);
   // }
 }

@@ -1,10 +1,41 @@
-import { IsOptional } from 'class-validator';
+import { IsInt, IsOptional } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
+
+const toInt = (value: any, min: number, defaultValue: number): number => {
+  try {
+    const parsedInt = parseInt(value, 10);
+    if (isNaN(parsedInt)) return defaultValue;
+    if (parsedInt < min) return defaultValue;
+    return parsedInt;
+  } catch {
+    return defaultValue;
+  }
+};
 
 export class PaginationDto {
   @IsOptional()
-  searchNameTerm?: string = '';
-  pageNumber?: string = '1';
-  pageSize?: string = '10';
-  sortBy?: string = 'createdAt';
-  sortDirection?: string = 'desc';
+  @IsInt()
+  @Transform((v) => {
+    return toInt(v.value, 1, 1);
+  })
+  pageNumber: number | null = 1;
+  @IsOptional()
+  @IsInt()
+  @Transform((v) => {
+    return toInt(v.value, 1, 10);
+  })
+  pageSize: number | null = 10;
+  @IsOptional()
+  sortBy: string | null = 'createdAt';
+  @IsOptional()
+  sortDirection: string | null = 'desc';
+
+  public getSkipSize() {
+    return (this.pageNumber - 1) * this.pageSize;
+  }
+}
+
+export class BlogPaginationDto extends PaginationDto {
+  @IsOptional()
+  searchNameTerm: string | null = null;
 }

@@ -1,7 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { BlogsService } from '../service/blogs.service';
-import { PaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BlogPaginationDto,
+  PaginationDto,
+} from '../../helpers/dto/pagination.dto';
 import { BlogsDto } from '../dto/blogsDto';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { BlogsViewModel } from '../schemas/blogs.schema';
 
 @Controller('api')
 export class BlogsController {
@@ -10,12 +15,16 @@ export class BlogsController {
   ) {}
 
   @Get('blogs')
-  async findBlogs(@Query() paginationType: PaginationDto) {
-    return this.blogsService.getBlogs(paginationType);
+  async findBlogs(
+    @Query() paginationDto: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    return this.blogsService.getBlogs(paginationDto);
   }
 
   @Post('blogs')
   async createBlog(@Body() createBlogType: BlogsDto) {
     return this.blogsService.createBlog(createBlogType);
   }
+  @Delete('blogs/:id')
+  async deleteBlogById() {}
 }

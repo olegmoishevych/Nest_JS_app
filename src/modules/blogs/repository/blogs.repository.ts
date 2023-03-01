@@ -2,8 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
-import { paginator } from '../../helpers/pagination';
-import { PaginationDto } from '../../helpers/dto/pagination.dto';
+import { paginator } from '../../helpers/pagination/pagination';
+import {
+  BlogPaginationDto,
+  PaginationDto,
+} from '../../helpers/dto/pagination.dto';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class BlogsRepository {
@@ -11,30 +15,29 @@ export class BlogsRepository {
     @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
   ) {}
 
-  async getBlogs(paginationType: PaginationDto) {
+  async getBlogs(
+    paginationType: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    const filter = {
+      name: {
+        $regex: paginationType.searchNameTerm ?? '',
+        $options: 'i',
+      },
+    };
     const findAndSortedBlogs = await this.blogsModel
-      .find(
-        {
-          name: {
-            $regex: paginationType.searchNameTerm,
-            $options: 'i',
-          },
-        },
-        { _id: 0, __v: 0 },
-      )
+      .find(filter, { _id: 0, __v: 0 })
       .sort({
-        [paginationType.sortBy as any]: paginationType.sortDirection as any,
+        [paginationType.sortBy]:
+          paginationType.sortDirection === 'asc' ? 1 : -1,
       })
-      .skip((+paginationType.pageNumber - 1) * +paginationType.pageSize)
-      .limit(+paginationType.pageSize)
+      .skip(paginationType.getSkipSize())
+      .limit(paginationType.pageSize)
       .lean();
-    const getCountBlogs = await this.blogsModel.countDocuments({
-      name: { $regex: paginationType.searchNameTerm, $options: 'i' },
-    });
-    return paginator(
-      +paginationType.pageNumber,
-      +paginationType.pageSize,
+    const getCountBlogs = await this.blogsModel.countDocuments(filter);
+    return new PaginationViewModel<BlogsViewModel[]>(
       getCountBlogs,
+      paginationType.pageNumber,
+      paginationType.pageSize,
       findAndSortedBlogs,
     );
   }
