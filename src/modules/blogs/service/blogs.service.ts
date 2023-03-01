@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
-import { Model } from 'mongoose';
 import { BlogsRepository } from '../repository/blogs.repository';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
-import { BlogsDto } from '../dto/blogs.dto';
+import { BlogsDto, DB_BlogsType } from '../dto/blogsDto';
+import { Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class BlogsService {
@@ -18,9 +19,18 @@ export class BlogsService {
   }
 
   async createBlog(blog: BlogsDto): Promise<BlogsViewModel> {
-    return this.blogsRepository.createBlog(blog);
-    // return this.blogsRepository.createBlog(newBlog);
+    const newBlog: DB_BlogsType = {
+      id: new ObjectId().toString(),
+      // _id: new ObjectId(),
+      name: blog.name,
+      description: blog.description,
+      websiteUrl: blog.websiteUrl,
+      createdAt: new Date().toISOString(),
+      isMembership: false,
+    };
+    return this.blogsRepository.createBlog(newBlog);
   }
+
   //
   // async getBlogById(id: string): Promise<BlogsType | null> {
   //   return this.blogsRepository.getBlogById(id);

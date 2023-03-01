@@ -4,7 +4,7 @@ import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { paginator } from '../../helpers/pagination';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
-import { BlogsDto } from '../dto/blogs.dto';
+import { BlogsDto } from '../dto/blogsDto';
 
 @Injectable()
 export class BlogsRepository {
@@ -15,7 +15,12 @@ export class BlogsRepository {
   async getBlogs(paginationType: PaginationDto) {
     const findAndSortedBlogs = await this.blogModel
       .find(
-        { name: { $regex: paginationType.searchNameTerm, $options: 'i' } },
+        {
+          name: {
+            $regex: paginationType.searchNameTerm,
+            $options: 'i',
+          },
+        },
         { _id: 0, __v: 0 },
       )
       .sort({
@@ -34,10 +39,10 @@ export class BlogsRepository {
       findAndSortedBlogs,
     );
   }
-  async createBlog(blog: BlogsDto): Promise<BlogsViewModel | any> {
-    return this.blogModel.insertMany(blog);
-    // // const { _id, ...blogsCopy } = blog;
-    // return blog;
+  async createBlog(blog: any): Promise<BlogsViewModel> {
+    const result = await this.blogModel.insertMany(blog);
+    const { _id, __v, ...blogsCopy } = blog;
+    return blogsCopy;
   }
   //
   // async getBlogById(id: string): Promise<BlogsType | null> {
