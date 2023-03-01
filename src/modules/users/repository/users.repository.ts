@@ -13,6 +13,9 @@ export class UsersRepository {
   constructor(
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
   ) {}
+  async findAllUsers() {
+    return this.usersModel.find({}, { _id: 0, __v: 0 });
+  }
 
   async createUser(user: UserType_For_DB): Promise<UserType> {
     const result = await this.usersModel.insertMany(user);

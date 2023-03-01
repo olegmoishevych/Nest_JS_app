@@ -7,6 +7,9 @@ import { UserDto } from '../dto/userDto';
 @Injectable()
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
+  async findAllUsers() {
+    return this.usersRepository.findAllUsers();
+  }
   async createUser(user: UserDto): Promise<UserType> {
     const newUser: UserType_For_DB = {
       id: new ObjectId().toString(),

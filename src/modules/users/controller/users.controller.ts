@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   NotFoundException,
   Param,
   Post,
@@ -13,6 +14,10 @@ import { UserType } from '../schemas/users.schema';
 @Controller('api')
 export class UsersController {
   constructor(public usersService: UsersService) {}
+  @Get('users')
+  async findAllUsers() {
+    return this.usersService.findAllUsers();
+  }
 
   @Post('users')
   async createUser(@Body() createdUserType: UserDto): Promise<UserType> {
