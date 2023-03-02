@@ -15,23 +15,38 @@ import { TestingRepository } from '../testing/repository/testing.repository';
 import { TestingService } from '../testing/service/testing.service';
 import { TestingController } from '../testing/controller/testing.controller';
 import { Posts, PostsSchema } from '../posts/schemas/posts.schema';
+import { PostsService } from '../posts/service/posts.service';
+import { PostsRepository } from '../posts/repository/posts.repository';
+import { PostsController } from '../posts/controller/posts.controller';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
-  // { name: Posts.name, schema: PostsSchema },
+  { name: Posts.name, schema: PostsSchema },
   { name: Users.name, schema: UsersSchema },
-]; // models
+];
 
 const controllers = [
   AppController,
   BlogsController,
   UsersController,
   TestingController,
+  PostsController,
 ];
 
-const services = [AppService, BlogsService, UsersService, TestingService];
+const services = [
+  AppService,
+  BlogsService,
+  UsersService,
+  TestingService,
+  PostsService,
+];
 
-const repositories = [BlogsRepository, UsersRepository, TestingRepository];
+const repositories = [
+  BlogsRepository,
+  UsersRepository,
+  TestingRepository,
+  PostsRepository,
+];
 
 @Module({
   imports: [

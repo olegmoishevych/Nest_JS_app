@@ -3,36 +3,42 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type PostsDocument = HydratedDocument<Posts>;
 
+class LikesInfo {
+  @Prop()
+  likesCount: number;
+  @Prop()
+  dislikesCount: number;
+  @Prop()
+  myStatus: string;
+  @Prop()
+  newestLikes: [];
+}
+
 @Schema()
 export class Posts {
-  @Prop({ type: String })
+  @Prop()
   id: string;
-  @Prop({ type: String, required: true })
+  @Prop()
   title: string;
-  @Prop({ type: String, required: true })
+  @Prop()
   shortDescription: string;
-  @Prop({ type: String, required: true })
+  @Prop()
   content: string;
-  @Prop({ type: String, required: true })
+  @Prop()
   blogId: string;
-  @Prop({ type: String })
+  @Prop()
+  parentId: string;
+  @Prop()
   blogName: string;
-  @Prop({ type: String })
-  createdAt: string;
-  @Prop({ type: String })
+  @Prop()
+  createdAt: Date;
+  @Prop()
+  userId: string;
+  @Prop()
   extendedLikesInfo: LikesInfo;
 }
 
-export class LikesInfo {
-  @Prop({ type: Number })
-  likesCount: number;
-  @Prop({ type: Number })
-  dislikesCount: number;
-  @Prop({ type: String })
-  myStatus: string;
-  @Prop({ type: Array })
-  newestLikes: [];
-}
+export const PostsSchema = SchemaFactory.createForClass(Posts);
 
 export class PostsType_For_DB {
   constructor(
@@ -51,5 +57,3 @@ export class PostsType_For_DB {
     },
   ) {}
 }
-
-export const PostsSchema = SchemaFactory.createForClass(Posts);
