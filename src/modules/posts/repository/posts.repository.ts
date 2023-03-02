@@ -8,6 +8,7 @@ import {
 } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
+import { CreatePostDto } from '../dto/createPostDto';
 
 @Injectable()
 export class PostsRepository {
@@ -39,5 +40,26 @@ export class PostsRepository {
     const result = await this.postsModel.insertMany(newPost);
     const { _id, __v, ...postCopy } = newPost;
     return postCopy;
+  }
+  async deletePostById(id: string): Promise<boolean> {
+    const result = await this.postsModel.deleteOne({ id });
+    return result.deletedCount === 1;
+  }
+  async findPostById(id: string): Promise<PostsViewModal[]> {
+    return this.postsModel.findOne({ id }, { _id: 0, __v: 0 });
+  }
+  async updatePostById(id: string, post: CreatePostDto): Promise<boolean> {
+    const result = await this.postsModel.updateOne(
+      { id },
+      {
+        $set: {
+          title: post.title,
+          shortDescription: post.shortDescription,
+          content: post.content,
+          blogId: post.blogId,
+        },
+      },
+    );
+    return result.matchedCount === 1;
   }
 }

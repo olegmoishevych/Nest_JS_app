@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { PostsService } from '../service/posts.service';
 import { CreatePostDto } from '../dto/createPostDto';
 import { PostsViewModal } from '../schemas/posts.schema';
@@ -19,5 +29,18 @@ export class PostsController {
   @Post('posts')
   async createPost(@Body() createPost: CreatePostDto): Promise<PostsViewModal> {
     return this.postsService.createPost(createPost);
+  }
+  @Delete('posts/:id')
+  @HttpCode(204)
+  async deletePostById(@Param('id') id: string): Promise<boolean> {
+    return this.postsService.deletePostById(id);
+  }
+  @Put('posts/:id')
+  @HttpCode(204)
+  async updatePostById(
+    @Param('id') id: string,
+    @Body() updatePost: CreatePostDto,
+  ): Promise<boolean> {
+    return this.postsService.updatePostById(id, updatePost);
   }
 }

@@ -43,4 +43,19 @@ export class PostsService {
     };
     return this.postsRepository.createPost(newPost);
   }
+  async deletePostById(id: string): Promise<boolean> {
+    const findPostById = await this.postsRepository.findPostById(id);
+    if (!findPostById)
+      throw new NotFoundException(`Post with ID ${id} not found`);
+    return this.postsRepository.deletePostById(id);
+  }
+  async updatePostById(id: string, post: CreatePostDto): Promise<boolean> {
+    const findBlogById = await this.blogsRepository.findBlogById(post.blogId);
+    if (!findBlogById)
+      throw new NotFoundException(`Post with ID ${id} not found`);
+    const updatedPost = await this.postsRepository.updatePostById(id, post);
+    if (!updatedPost)
+      throw new NotFoundException(`Post with ID ${id} not found`);
+    return updatedPost;
+  }
 }
