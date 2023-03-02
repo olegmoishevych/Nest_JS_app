@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   Users,
   UsersDocument,
-  UserType,
+  UsersViewModel,
   UserType_For_DB,
 } from '../schemas/users.schema';
 import { Model } from 'mongoose';
@@ -15,7 +15,9 @@ export class UsersRepository {
   constructor(
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
   ) {}
-  async findAllUsers(paginationDto: UserPaginationDto) {
+  async findAllUsers(
+    paginationDto: UserPaginationDto,
+  ): Promise<PaginationViewModel<UsersViewModel[]>> {
     const filter = {
       $or: [
         {
@@ -46,7 +48,7 @@ export class UsersRepository {
     );
   }
 
-  async createUser(user: UserType_For_DB): Promise<UserType> {
+  async createUser(user: UserType_For_DB): Promise<UsersViewModel> {
     const result = await this.usersModel.insertMany(user);
     const { _id, ...newUserCopy } = user;
     return newUserCopy;
@@ -55,7 +57,7 @@ export class UsersRepository {
     const result = await this.usersModel.deleteOne({ id });
     return result.deletedCount === 1;
   }
-  async findUserById(id: string): Promise<UserType> {
+  async findUserById(id: string): Promise<UsersViewModel> {
     return this.usersModel.findOne({ id });
   }
 }

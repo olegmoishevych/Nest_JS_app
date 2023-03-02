@@ -1,19 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
-import { UserType, UserType_For_DB } from '../schemas/users.schema';
+import { UsersViewModel, UserType_For_DB } from '../schemas/users.schema';
 import { ObjectId } from 'mongodb';
 import { UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
 
-  async findAllUsers(paginationDto: UserPaginationDto) {
+  async findAllUsers(
+    paginationDto: UserPaginationDto,
+  ): Promise<PaginationViewModel<UsersViewModel[]>> {
     return this.usersRepository.findAllUsers(paginationDto);
   }
 
-  async createUser(user: UserDto): Promise<UserType> {
+  async createUser(user: UserDto): Promise<UsersViewModel> {
     const newUser: UserType_For_DB = {
       id: new ObjectId().toString(),
       _id: new ObjectId(),
@@ -31,7 +34,7 @@ export class UsersService {
     return this.usersRepository.deleteUserById(id);
   }
 
-  async findUserById(id: string): Promise<UserType> {
+  async findUserById(id: string): Promise<UsersViewModel> {
     return this.usersRepository.findUserById(id);
   }
 }

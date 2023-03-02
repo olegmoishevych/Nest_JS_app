@@ -28,7 +28,7 @@ export class UserType_For_DB {
   ) {}
 }
 
-export class UserType {
+export class UsersViewModel {
   constructor(
     public id: string,
     public login: string,

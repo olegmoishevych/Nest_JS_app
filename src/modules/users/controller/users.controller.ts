@@ -9,20 +9,23 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserDto } from '../dto/userDto';
-import { UserType } from '../schemas/users.schema';
+import { UsersViewModel } from '../schemas/users.schema';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Controller('api')
 export class UsersController {
   constructor(public usersService: UsersService) {}
 
   @Get('users')
-  async findAllUsers(@Query() paginationDto: UserPaginationDto) {
+  async findAllUsers(
+    @Query() paginationDto: UserPaginationDto,
+  ): Promise<PaginationViewModel<UsersViewModel[]>> {
     return this.usersService.findAllUsers(paginationDto);
   }
 
   @Post('users')
-  async createUser(@Body() createdUserType: UserDto): Promise<UserType> {
+  async createUser(@Body() createdUserType: UserDto): Promise<UsersViewModel> {
     return this.usersService.createUser(createdUserType);
   }
 
