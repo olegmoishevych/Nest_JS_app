@@ -52,4 +52,9 @@ export class PostsController {
   async findPostById(@Param('id') id: string): Promise<PostsViewModal[]> {
     return this.postsService.findPostById(id);
   }
+  @Get('posts/:postId/comments')
+  async findCommentsByPostId(
+    @Param('postId') postId: string,
+    @Query() paginationDto: PaginationDto,
+  ) {}
 }

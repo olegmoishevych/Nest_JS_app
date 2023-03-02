@@ -18,11 +18,13 @@ import { Posts, PostsSchema } from '../posts/schemas/posts.schema';
 import { PostsService } from '../posts/service/posts.service';
 import { PostsRepository } from '../posts/repository/posts.repository';
 import { PostsController } from '../posts/controller/posts.controller';
+import { Comments, CommentsSchema } from '../comments/schema/comments.schema';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
   { name: Posts.name, schema: PostsSchema },
   { name: Users.name, schema: UsersSchema },
+  { name: Comments.name, schema: CommentsSchema },
 ];
 
 const controllers = [
