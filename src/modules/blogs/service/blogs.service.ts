@@ -34,8 +34,12 @@ export class BlogsService {
     return this.blogsRepository.createBlog(newBlog);
   }
 
-  async deleteBlogById(id: string) {
-    // return this.blogsRepository.deleteBlog(id);
+  async deleteBlogById(id: string): Promise<boolean> {
+    return this.blogsRepository.deleteBlogById(id);
+  }
+
+  async findBlogById(id: string): Promise<BlogsViewModel> {
+    return this.blogsRepository.findBlogById(id);
   }
 
   // async updateBlogById(

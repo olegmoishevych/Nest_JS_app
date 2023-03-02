@@ -1,5 +1,5 @@
 import { IsInt, IsOptional } from 'class-validator';
-import { Transform, TransformFnParams } from 'class-transformer';
+import { Transform } from 'class-transformer';
 
 const toInt = (value: any, min: number, defaultValue: number): number => {
   try {
