@@ -16,6 +16,7 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { CommentsService } from '../../comments/service/comments.service';
 import { CommentsViewModal } from '../../comments/schema/comments.schema';
+import { CommentsDto } from '../../comments/dto/comments.dto';
 
 @Controller('api')
 export class PostsController {
@@ -63,5 +64,12 @@ export class PostsController {
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
     return this.commentsService.findCommentsByPostId(postId, paginationDto);
+  }
+  @Post('posts/:postId/comments')
+  async createCommentByPostId(
+    @Param('postId') postId: string,
+    @Body() commentsDto: CommentsDto,
+  ): Promise<CommentsViewModal[]> {
+    return this.postsService.createCommentByPostId(postId, commentsDto);
   }
 }

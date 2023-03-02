@@ -20,4 +20,10 @@ export class CommentsService {
       throw new NotFoundException(`Post with ID ${postId} not found`);
     return this.commentsRepository.findCommentsByPostId(postId, paginationDto);
   }
+  async findCommentById(id: string): Promise<CommentsViewModal[]> {
+    const findCommentById = await this.commentsRepository.findCommentById(id);
+    if (!findCommentById)
+      throw new NotFoundException(`Comment with ID ${id} not found`);
+    return findCommentById;
+  }
 }

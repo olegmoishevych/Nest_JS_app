@@ -8,7 +8,6 @@ import {
 import { Model } from 'mongoose';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
 
 @Injectable()
 export class CommentsRepository {
@@ -39,5 +38,9 @@ export class CommentsRepository {
       paginationDto.pageSize,
       findAndSortedComments,
     );
+  }
+
+  async findCommentById(id: string): Promise<CommentsViewModal[]> {
+    return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
   }
 }

@@ -5,11 +5,18 @@ import { Model } from 'mongoose';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { CreatePostDtoWithBlogId } from '../dto/createPostDto';
+import {
+  Comments,
+  CommentsDocument,
+  CommentsViewModal,
+} from '../../comments/schema/comments.schema';
 
 @Injectable()
 export class PostsRepository {
   constructor(
     @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>,
+    @InjectModel(Comments.name)
+    private readonly commentsModel: Model<CommentsDocument>,
   ) {}
 
   async findPosts(
@@ -69,6 +76,11 @@ export class PostsRepository {
       paginationType.pageSize,
       findAndSortedPosts,
     );
+  }
+  async createCommentByPostId(newComment: any): Promise<CommentsViewModal[]> {
+    const result = await this.commentsModel.insertMany(newComment);
+    const { _id, __v, postId, ...comment } = newComment;
+    return comment;
   }
   async updatePostById(
     id: string,

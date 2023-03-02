@@ -21,6 +21,7 @@ import { PostsController } from '../posts/controller/posts.controller';
 import { Comments, CommentsSchema } from '../comments/schema/comments.schema';
 import { CommentsService } from '../comments/service/comments.service';
 import { CommentsRepository } from '../comments/repository/comments.repository';
+import { CommentsController } from '../comments/controller/comments.controller';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -35,6 +36,7 @@ const controllers = [
   UsersController,
   TestingController,
   PostsController,
+  CommentsController,
 ];
 
 const services = [
