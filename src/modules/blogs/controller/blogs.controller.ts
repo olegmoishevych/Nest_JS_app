@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
   Post,
@@ -36,9 +37,20 @@ export class BlogsController {
     return this.blogsService.createBlog(createBlogType);
   }
   @Delete('blogs/:id')
+  @HttpCode(204)
   async deleteBlogById(@Param('id') id: string): Promise<boolean> {
     return this.blogsService.deleteBlogById(id);
   }
   @Put('blogs/:id')
-  async updateBlogById() {}
+  @HttpCode(204)
+  async updateBlogById(
+    @Param('id') id: string,
+    @Body() updateBlogType: BlogsDto,
+  ): Promise<boolean> {
+    return this.blogsService.updateBlogById(id, updateBlogType);
+  }
+  @Get('blogs/:id')
+  async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
+    return this.blogsService.findBlogById(id);
+  }
 }

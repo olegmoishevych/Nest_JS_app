@@ -42,20 +42,14 @@ export class BlogsService {
   }
 
   async findBlogById(id: string): Promise<BlogsViewModel> {
-    return this.blogsRepository.findBlogById(id);
+    const findBlogById = await this.blogsRepository.findBlogById(id);
+    if (!findBlogById)
+      throw new NotFoundException(`User with ID ${id} not found`);
+    return findBlogById;
   }
-
-  // async updateBlogById(
-  //   id: string,
-  //   name: string,
-  //   description: string,
-  //   websiteUrl: string,
-  // ): Promise<boolean> {
-  //   return this.blogsRepository.updateBlogById(
-  //     id,
-  //     name,
-  //     description,
-  //     websiteUrl,
-  //   );
-  // }
+  async updateBlogById(id: string, user: BlogsDto): Promise<boolean> {
+    const result = await this.blogsRepository.updateBlogById(id, user);
+    if (!result) throw new NotFoundException(`User with ID ${id} not found`);
+    return result;
+  }
 }

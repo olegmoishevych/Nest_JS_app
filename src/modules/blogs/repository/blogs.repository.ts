@@ -4,6 +4,7 @@ import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { BlogsDto } from '../dto/blogsDto';
 
 @Injectable()
 export class BlogsRepository {
@@ -51,24 +52,17 @@ export class BlogsRepository {
   async findBlogById(id: string): Promise<BlogsViewModel> {
     return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
-  //
-  // async updateBlogById(
-  //   id: string,
-  //   name: string,
-  //   description: string,
-  //   websiteUrl: string,
-  // ): Promise<boolean> {
-  //   const result = await BlogsModel.updateOne(
-  //     { id },
-  //     {
-  //       $set: {
-  //         name: name,
-  //         description: description,
-  //         websiteUrl: websiteUrl,
-  //       },
-  //     },
-  //   );
-  //   return result.matchedCount === 1;
-  // }
-  //
+  async updateBlogById(id: string, user: BlogsDto): Promise<boolean> {
+    const result = await this.blogsModel.updateOne(
+      { id },
+      {
+        $set: {
+          name: user.name,
+          description: user.description,
+          websiteUrl: user.websiteUrl,
+        },
+      },
+    );
+    return result.matchedCount === 1;
+  }
 }
