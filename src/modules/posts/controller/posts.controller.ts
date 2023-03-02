@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { PostsService } from '../service/posts.service';
-import { CreatePostDto } from '../dto/createPostDto';
+import { CreatePostDto, CreatePostDtoWithBlogId } from '../dto/createPostDto';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
@@ -27,7 +27,9 @@ export class PostsController {
   }
 
   @Post('posts')
-  async createPost(@Body() createPost: CreatePostDto): Promise<PostsViewModal> {
+  async createPost(
+    @Body() createPost: CreatePostDtoWithBlogId,
+  ): Promise<PostsViewModal> {
     return this.postsService.createPost(createPost);
   }
   @Delete('posts/:id')
@@ -39,8 +41,12 @@ export class PostsController {
   @HttpCode(204)
   async updatePostById(
     @Param('id') id: string,
-    @Body() updatePost: CreatePostDto,
+    @Body() updatePost: CreatePostDtoWithBlogId,
   ): Promise<boolean> {
     return this.postsService.updatePostById(id, updatePost);
+  }
+  @Get('posts/:id')
+  async findPostById(@Param('id') id: string): Promise<PostsViewModal[]> {
+    return this.postsService.findPostById(id);
   }
 }

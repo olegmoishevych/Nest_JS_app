@@ -11,6 +11,9 @@ export class CreatePostDto {
   @Length(1, 1000)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
+}
+
+export class CreatePostDtoWithBlogId extends CreatePostDto {
   @IsString()
   blogId: string;
 }

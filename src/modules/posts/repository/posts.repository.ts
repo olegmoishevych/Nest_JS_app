@@ -8,7 +8,7 @@ import {
 } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
-import { CreatePostDto } from '../dto/createPostDto';
+import { CreatePostDto, CreatePostDtoWithBlogId } from '../dto/createPostDto';
 
 @Injectable()
 export class PostsRepository {
@@ -48,7 +48,10 @@ export class PostsRepository {
   async findPostById(id: string): Promise<PostsViewModal[]> {
     return this.postsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
-  async updatePostById(id: string, post: CreatePostDto): Promise<boolean> {
+  async updatePostById(
+    id: string,
+    post: CreatePostDtoWithBlogId,
+  ): Promise<boolean> {
     return this.postsModel.findOneAndUpdate(
       { id },
       {

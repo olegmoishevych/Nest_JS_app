@@ -7,11 +7,15 @@ import { BlogsDto, DB_BlogsType } from '../dto/blogsDto';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { PostsViewModal } from '../../posts/schemas/posts.schema';
+import { CreatePostDto } from '../../posts/dto/createPostDto';
+import { PostsRepository } from '../../posts/repository/posts.repository';
 
 @Injectable()
 export class BlogsService {
   constructor(
     private blogsRepository: BlogsRepository,
+    private postsRepository: PostsRepository,
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
@@ -51,5 +55,29 @@ export class BlogsService {
     const result = await this.blogsRepository.updateBlogById(id, user);
     if (!result) throw new NotFoundException(`User with ID ${id} not found`);
     return result;
+  }
+  async createPostByBlogId(
+    blogId: string,
+    newPostByBlogId: CreatePostDto,
+  ): Promise<PostsViewModal> {
+    const findBlogById = await this.blogsRepository.findBlogById(blogId);
+    if (!findBlogById)
+      throw new NotFoundException(`User with ID ${blogId} not found`);
+    const newPost: PostsViewModal = {
+      id: new ObjectId().toString(),
+      title: newPostByBlogId.title,
+      shortDescription: newPostByBlogId.shortDescription,
+      content: newPostByBlogId.content,
+      blogId: blogId,
+      blogName: findBlogById.name,
+      createdAt: new Date().toISOString(),
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: 'None',
+        newestLikes: [],
+      },
+    };
+    return this.postsRepository.createPost(newPost);
   }
 }

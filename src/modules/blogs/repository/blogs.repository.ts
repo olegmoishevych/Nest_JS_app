@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsDto } from '../dto/blogsDto';
+import { PostsViewModal } from '../../posts/schemas/posts.schema';
 
 @Injectable()
 export class BlogsRepository {
@@ -49,9 +50,11 @@ export class BlogsRepository {
     const result = await this.blogsModel.deleteOne({ id });
     return result.deletedCount === 1;
   }
+
   async findBlogById(id: string): Promise<BlogsViewModel> {
     return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
+
   async updateBlogById(id: string, user: BlogsDto): Promise<boolean> {
     const result = await this.blogsModel.updateOne(
       { id },
