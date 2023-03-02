@@ -7,14 +7,43 @@ import {
   UserType_For_DB,
 } from '../schemas/users.schema';
 import { Model } from 'mongoose';
+import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
   ) {}
-  async findAllUsers() {
-    return this.usersModel.find({}, { _id: 0, __v: 0 });
+  async findAllUsers(paginationDto: UserPaginationDto) {
+    const filter = {
+      $or: [
+        {
+          login: { $regex: paginationDto.searchLoginTerm ?? '', $options: 'i' },
+        },
+        {
+          email: {
+            $regex: paginationDto.searchEmailTerm ?? '',
+            $options: 'i',
+          },
+        },
+      ],
+    };
+    const findAndSortedUsers = await this.usersModel
+      .find(filter, { _id: 0, passwordHash: 0, emailConfirmation: 0, __v: 0 })
+      .sort({
+        [paginationDto.sortBy]: paginationDto.sortDirection === 'asc' ? 1 : -1,
+      })
+      .skip(paginationDto.getSkipSize())
+      .limit(paginationDto.pageSize)
+      .lean();
+    const getCountUsers = await this.usersModel.countDocuments(filter);
+    return new PaginationViewModel(
+      getCountUsers,
+      paginationDto.pageNumber,
+      paginationDto.pageSize,
+      findAndSortedUsers,
+    );
   }
 
   async createUser(user: UserType_For_DB): Promise<UserType> {

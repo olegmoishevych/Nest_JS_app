@@ -39,3 +39,9 @@ export class BlogPaginationDto extends PaginationDto {
   @IsOptional()
   searchNameTerm: string | null = null;
 }
+
+export class UserPaginationDto extends PaginationDto {
+  @IsOptional()
+  searchLoginTerm: string | null = null;
+  searchEmailTerm: string | null = null;
+}

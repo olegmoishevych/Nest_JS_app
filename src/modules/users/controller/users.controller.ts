@@ -3,20 +3,22 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserDto } from '../dto/userDto';
 import { UserType } from '../schemas/users.schema';
+import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 
 @Controller('api')
 export class UsersController {
   constructor(public usersService: UsersService) {}
+
   @Get('users')
-  async findAllUsers() {
-    return this.usersService.findAllUsers();
+  async findAllUsers(@Query() paginationDto: UserPaginationDto) {
+    return this.usersService.findAllUsers(paginationDto);
   }
 
   @Post('users')

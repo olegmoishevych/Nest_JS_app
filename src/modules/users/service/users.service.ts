@@ -3,13 +3,16 @@ import { UsersRepository } from '../repository/users.repository';
 import { UserType, UserType_For_DB } from '../schemas/users.schema';
 import { ObjectId } from 'mongodb';
 import { UserDto } from '../dto/userDto';
+import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private usersRepository: UsersRepository) {}
-  async findAllUsers() {
-    return this.usersRepository.findAllUsers();
+
+  async findAllUsers(paginationDto: UserPaginationDto) {
+    return this.usersRepository.findAllUsers(paginationDto);
   }
+
   async createUser(user: UserDto): Promise<UserType> {
     const newUser: UserType_For_DB = {
       id: new ObjectId().toString(),
@@ -20,12 +23,14 @@ export class UsersService {
     };
     return this.usersRepository.createUser(newUser);
   }
+
   async deleteUserById(id: string): Promise<boolean> {
     const findUserById = await this.usersRepository.findUserById(id);
     if (!findUserById)
       throw new NotFoundException(`User with ID ${id} not found`);
     return this.usersRepository.deleteUserById(id);
   }
+
   async findUserById(id: string): Promise<UserType> {
     return this.usersRepository.findUserById(id);
   }
