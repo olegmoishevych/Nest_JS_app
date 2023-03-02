@@ -4,6 +4,8 @@ import { BlogsRepository } from '../../blogs/repository/blogs.repository';
 import { CreatePostDto } from '../dto/createPostDto';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { ObjectId } from 'mongodb';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { PaginationDto } from '../../helpers/dto/pagination.dto';
 
 @Injectable()
 export class PostsService {
@@ -11,6 +13,11 @@ export class PostsService {
     public blogsRepository: BlogsRepository,
     public postsRepository: PostsRepository,
   ) {}
+  async findPosts(
+    paginationDto: PaginationDto,
+  ): Promise<PaginationViewModel<PostsViewModal[]>> {
+    return this.postsRepository.findPosts(paginationDto);
+  }
   async createPost(createPost: CreatePostDto): Promise<PostsViewModal> {
     const findBlogById = await this.blogsRepository.findBlogById(
       createPost.blogId,
