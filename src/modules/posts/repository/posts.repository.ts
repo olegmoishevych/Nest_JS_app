@@ -49,7 +49,7 @@ export class PostsRepository {
     return this.postsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
   async updatePostById(id: string, post: CreatePostDto): Promise<boolean> {
-    const result = await this.postsModel.updateOne(
+    return this.postsModel.findOneAndUpdate(
       { id },
       {
         $set: {
@@ -60,6 +60,5 @@ export class PostsRepository {
         },
       },
     );
-    return result.matchedCount === 1;
   }
 }
