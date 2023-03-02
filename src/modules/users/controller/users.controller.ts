@@ -26,9 +26,6 @@ export class UsersController {
 
   @Delete('users/:id')
   async deleteUserById(@Param('id') id: string): Promise<boolean> {
-    const findUserById = await this.usersService.findUserById(id);
-    if (!findUserById)
-      throw new NotFoundException(`User with ID ${id} not found`);
     return this.usersService.deleteUserById(id);
   }
 }

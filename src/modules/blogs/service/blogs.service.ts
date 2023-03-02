@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { BlogsRepository } from '../repository/blogs.repository';
@@ -35,6 +35,9 @@ export class BlogsService {
   }
 
   async deleteBlogById(id: string): Promise<boolean> {
+    const findBlogById = await this.blogsRepository.findBlogById(id);
+    if (!findBlogById)
+      throw new NotFoundException(`User with ID ${id} not found`);
     return this.blogsRepository.deleteBlogById(id);
   }
 

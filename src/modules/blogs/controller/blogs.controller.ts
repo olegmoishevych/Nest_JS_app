@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { BlogsService } from '../service/blogs.service';
@@ -36,9 +37,8 @@ export class BlogsController {
   }
   @Delete('blogs/:id')
   async deleteBlogById(@Param('id') id: string): Promise<boolean> {
-    const findBlogById = await this.blogsService.findBlogById(id);
-    if (!findBlogById)
-      throw new NotFoundException(`User with ID ${id} not found`);
     return this.blogsService.deleteBlogById(id);
   }
+  @Put('blogs/:id')
+  async updateBlogById() {}
 }

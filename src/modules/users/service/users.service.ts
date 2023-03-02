@@ -21,6 +21,9 @@ export class UsersService {
     return this.usersRepository.createUser(newUser);
   }
   async deleteUserById(id: string): Promise<boolean> {
+    const findUserById = await this.usersRepository.findUserById(id);
+    if (!findUserById)
+      throw new NotFoundException(`User with ID ${id} not found`);
     return this.usersRepository.deleteUserById(id);
   }
   async findUserById(id: string): Promise<UserType> {
