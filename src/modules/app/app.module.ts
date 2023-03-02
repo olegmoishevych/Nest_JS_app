@@ -19,6 +19,8 @@ import { PostsService } from '../posts/service/posts.service';
 import { PostsRepository } from '../posts/repository/posts.repository';
 import { PostsController } from '../posts/controller/posts.controller';
 import { Comments, CommentsSchema } from '../comments/schema/comments.schema';
+import { CommentsService } from '../comments/service/comments.service';
+import { CommentsRepository } from '../comments/repository/comments.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -41,6 +43,7 @@ const services = [
   UsersService,
   TestingService,
   PostsService,
+  CommentsService,
 ];
 
 const repositories = [
@@ -48,6 +51,7 @@ const repositories = [
   UsersRepository,
   TestingRepository,
   PostsRepository,
+  CommentsRepository,
 ];
 
 @Module({

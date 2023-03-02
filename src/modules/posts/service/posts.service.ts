@@ -84,4 +84,5 @@ export class PostsService {
       throw new NotFoundException(`Post with ID ${blogId} not found`);
     return this.postsRepository.findPostsByBlogId(blogId, paginationDto);
   }
+  async findCommentsByPostId() {}
 }

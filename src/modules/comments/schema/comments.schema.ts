@@ -37,7 +37,7 @@ export class Comments {
 
 export const CommentsSchema = SchemaFactory.createForClass(Comments);
 
-export class CommentViewModal {
+export class CommentsViewModal {
   constructor(
     public id: string,
     public content: string,

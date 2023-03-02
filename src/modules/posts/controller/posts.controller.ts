@@ -14,10 +14,15 @@ import { CreatePostDtoWithBlogId } from '../dto/createPostDto';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
+import { CommentsService } from '../../comments/service/comments.service';
+import { CommentsViewModal } from '../../comments/schema/comments.schema';
 
 @Controller('api')
 export class PostsController {
-  constructor(public postsService: PostsService) {}
+  constructor(
+    public commentsService: CommentsService,
+    public postsService: PostsService,
+  ) {}
 
   @Get('posts')
   async findPosts(
@@ -56,5 +61,7 @@ export class PostsController {
   async findCommentsByPostId(
     @Param('postId') postId: string,
     @Query() paginationDto: PaginationDto,
-  ) {}
+  ): Promise<PaginationViewModel<CommentsViewModal[]>> {
+    return this.commentsService.findCommentsByPostId(postId, paginationDto);
+  }
 }
