@@ -40,7 +40,7 @@ export class Posts {
 
 export const PostsSchema = SchemaFactory.createForClass(Posts);
 
-export class PostsType_For_DB {
+export class PostsViewModal {
   constructor(
     public id: string,
     public title: string,
