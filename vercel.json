@@ -3,7 +3,7 @@
   "name": "Nest_JS_Bloggers",
   "builds": [
     {
-      "src": "src/index.ts",
+      "src": "src/main.ts",
       "use": "@vercel/node"
     }
   ],
