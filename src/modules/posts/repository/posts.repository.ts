@@ -41,10 +41,9 @@ export class PostsRepository {
     );
   }
 
-  async createPost(newPost: any): Promise<PostsViewModal> {
-    const result = await this.postsModel.insertMany(newPost);
-    const { _id, __v, ...postCopy } = newPost;
-    return postCopy;
+  async createPost(newPost: Posts): Promise<PostsViewModal> {
+    await this.postsModel.create({ ...newPost });
+    return newPost;
   }
 
   async deletePostById(id: string): Promise<boolean> {

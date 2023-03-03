@@ -14,7 +14,7 @@ class LikesInfo {
   newestLikes: [];
 }
 
-@Schema()
+@Schema({ versionKey: false })
 export class Posts {
   @Prop()
   id: string;
@@ -26,14 +26,14 @@ export class Posts {
   content: string;
   @Prop()
   blogId: string;
-  @Prop()
-  parentId: string;
+  // @Prop()
+  // parentId: string;
   @Prop()
   blogName: string;
   @Prop()
-  createdAt: Date;
-  @Prop()
-  userId: string;
+  createdAt: string;
+  // @Prop()
+  // userId: string;
   @Prop()
   extendedLikesInfo: LikesInfo;
 }
