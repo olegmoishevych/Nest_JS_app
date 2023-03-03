@@ -19,7 +19,7 @@ export class UsersRepository {
     paginationDto: UserPaginationDto,
   ): Promise<PaginationViewModel<UsersViewModel[]>> {
     const filter = {
-      $and: [
+      $or: [
         {
           login: { $regex: paginationDto.searchLoginTerm ?? '', $options: 'i' },
         },
