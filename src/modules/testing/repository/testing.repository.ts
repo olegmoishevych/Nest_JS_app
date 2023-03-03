@@ -7,23 +7,28 @@ import {
   Comments,
   CommentsDocument,
 } from '../../comments/schema/comments.schema';
+import { Posts, PostsDocument } from '../../posts/schemas/posts.schema';
 
 @Injectable()
 export class TestingRepository {
   constructor(
     @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
+    @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>,
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,
   ) {}
   async deleteAllData(): Promise<boolean> {
-    const clearBlogs = await this.blogsModel.deleteMany({});
-    const clearUsers = await this.usersModel.deleteMany({});
-    const clearComments = await this.usersModel.deleteMany({});
-    return (
-      clearBlogs.deletedCount === 1 &&
-      clearUsers.deletedCount === 1 &&
-      clearComments.deletedCount === 1
-    );
+    try {
+      await Promise.all([
+        this.usersModel.deleteMany(),
+        this.blogsModel.deleteMany(),
+        this.postsModel.deleteMany(),
+        this.commentsModel.deleteMany(),
+      ]);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
