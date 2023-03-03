@@ -28,10 +28,7 @@ export class PostsService {
     const findBlogById = await this.blogsRepository.findBlogById(
       createPost.blogId,
     );
-    if (!findBlogById)
-      throw new NotFoundException(
-        `Blog with ID ${createPost.blogId} not found`,
-      );
+    if (!findBlogById) throw new NotFoundException([]);
     const newPost: PostsViewModal = {
       id: new ObjectId().toString(),
       title: createPost.title,

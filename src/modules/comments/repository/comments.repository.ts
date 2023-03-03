@@ -21,7 +21,7 @@ export class CommentsRepository {
     paginationDto: PaginationDto,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
     const findAndSortedComments = await this.commentsModel
-      .find({ postId }, { _id: 0, __v: 0 })
+      .find({ postId }, { _id: 0, __v: 0, postId: 0 })
       .sort({
         [paginationDto.sortBy]: paginationDto.sortDirection === 'asc' ? 1 : -1,
       })
