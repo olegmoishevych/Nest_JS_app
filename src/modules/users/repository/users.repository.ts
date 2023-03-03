@@ -48,7 +48,7 @@ export class UsersRepository {
     );
   }
 
-  async createUser(user: UserType_For_DB): Promise<UsersViewModel> {
+  async createUser(user: UsersViewModel): Promise<UsersViewModel> {
     await this.usersModel.create({ ...user });
     return user;
   }

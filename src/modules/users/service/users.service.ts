@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
-import { UsersViewModel, UserType_For_DB } from '../schemas/users.schema';
+import {
+  Users,
+  UsersViewModel,
+  UserType_For_DB,
+} from '../schemas/users.schema';
 import { ObjectId } from 'mongodb';
 import { UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
@@ -17,9 +21,8 @@ export class UsersService {
   }
 
   async createUser(user: UserDto): Promise<UsersViewModel> {
-    const newUser: UserType_For_DB = {
+    const newUser: Users = {
       id: new ObjectId().toString(),
-      _id: new ObjectId(),
       login: user.login,
       email: user.email,
       createdAt: new Date().toISOString(),
