@@ -19,7 +19,7 @@ export class UsersRepository {
     paginationDto: UserPaginationDto,
   ): Promise<PaginationViewModel<UsersViewModel[]>> {
     const filter = {
-      $or: [
+      $and: [
         {
           login: { $regex: paginationDto.searchLoginTerm ?? '', $options: 'i' },
         },
@@ -32,7 +32,7 @@ export class UsersRepository {
       ],
     };
     const findAndSortedUsers = await this.usersModel
-      .find(filter, { _id: 0, passwordHash: 0, emailConfirmation: 0, __v: 0 })
+      .find(filter, { _id: 0, passwordHash: 0, emailConfirmation: 0 })
       .sort({
         [paginationDto.sortBy]: paginationDto.sortDirection === 'asc' ? 1 : -1,
       })
@@ -49,9 +49,8 @@ export class UsersRepository {
   }
 
   async createUser(user: UserType_For_DB): Promise<UsersViewModel> {
-    const result = await this.usersModel.insertMany(user);
-    const { _id, ...newUserCopy } = user;
-    return newUserCopy;
+    await this.usersModel.create({ ...user });
+    return user;
   }
   async deleteUserById(id: string): Promise<boolean> {
     const result = await this.usersModel.deleteOne({ id });

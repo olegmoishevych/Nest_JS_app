@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb';
 
 export type UsersDocument = HydratedDocument<Users>;
 
-@Schema()
+@Schema({ versionKey: false })
 export class Users {
   @Prop({ type: String, required: true })
   id: string;
@@ -18,14 +18,8 @@ export class Users {
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
 
-export class UserType_For_DB {
-  constructor(
-    public id: string,
-    public _id: ObjectId,
-    public login: string,
-    public email: string,
-    public createdAt: string,
-  ) {}
+export class UserType_For_DB extends Users {
+  _id: ObjectId;
 }
 
 export class UsersViewModel {
