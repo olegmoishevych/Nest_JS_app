@@ -43,5 +43,6 @@ export class BlogPaginationDto extends PaginationDto {
 export class UserPaginationDto extends PaginationDto {
   @IsOptional()
   searchLoginTerm: string | null = null;
+  @IsOptional()
   searchEmailTerm: string | null = null;
 }
