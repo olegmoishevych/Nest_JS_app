@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  Users,
-  UsersDocument,
-  UsersViewModel,
-  UserType_For_DB,
-} from '../schemas/users.schema';
+import { Users, UsersDocument, UsersViewModel } from '../schemas/users.schema';
 import { Model } from 'mongoose';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
@@ -15,6 +10,7 @@ export class UsersRepository {
   constructor(
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
   ) {}
+
   async findAllUsers(
     paginationDto: UserPaginationDto,
   ): Promise<PaginationViewModel<UsersViewModel[]>> {
@@ -52,10 +48,12 @@ export class UsersRepository {
     await this.usersModel.create({ ...user });
     return user;
   }
+
   async deleteUserById(id: string): Promise<boolean> {
     const result = await this.usersModel.deleteOne({ id });
     return result.deletedCount === 1;
   }
+
   async findUserById(id: string): Promise<UsersViewModel> {
     return this.usersModel.findOne({ id });
   }

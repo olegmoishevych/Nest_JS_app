@@ -39,10 +39,9 @@ export class BlogsRepository {
     );
   }
 
-  async createBlog(blog: any): Promise<BlogsViewModel> {
-    const result = await this.blogsModel.insertMany(blog);
-    const { _id, __v, ...blogsCopy } = blog;
-    return blogsCopy;
+  async createBlog(blog: Blogs): Promise<BlogsViewModel> {
+    await this.blogsModel.create({ ...blog });
+    return blog;
   }
 
   async deleteBlogById(id: string): Promise<boolean> {

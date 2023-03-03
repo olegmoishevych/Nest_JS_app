@@ -28,7 +28,6 @@ export class BlogsService {
   async createBlog(blog: BlogsDto): Promise<BlogsViewModel> {
     const newBlog: DB_BlogsType = {
       id: new ObjectId().toString(),
-      // _id: new ObjectId(),
       name: blog.name,
       description: blog.description,
       websiteUrl: blog.websiteUrl,

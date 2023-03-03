@@ -33,10 +33,8 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
-
   await app.listen(PORT, () => {
     console.log(`Server started on ${PORT} port`);
   });
 }
-
 bootstrap();
