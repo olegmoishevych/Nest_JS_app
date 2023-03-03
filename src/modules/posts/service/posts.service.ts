@@ -83,11 +83,12 @@ export class PostsService {
       throw new NotFoundException(`Post with ID ${blogId} not found`);
     return this.postsRepository.findPostsByBlogId(blogId, paginationDto);
   }
-  async findCommentsByPostId() {}
+
+  // async findCommentsByPostId() {}
   async createCommentByPostId(
     postId: string,
     commentsDto: CommentsDto,
-  ): Promise<CommentsViewModal[]> {
+  ): Promise<CommentsViewModal> {
     const findPostById: any = await this.postsRepository.findPostById(postId);
     if (!findPostById)
       throw new NotFoundException(`Post with ID ${postId} not found`);

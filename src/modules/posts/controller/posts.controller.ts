@@ -69,7 +69,7 @@ export class PostsController {
   async createCommentByPostId(
     @Param('postId') postId: string,
     @Body() commentsDto: CommentsDto,
-  ): Promise<CommentsViewModal[]> {
+  ): Promise<CommentsViewModal> {
     return this.postsService.createCommentByPostId(postId, commentsDto);
   }
 }

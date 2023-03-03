@@ -44,7 +44,7 @@ export class UsersRepository {
     );
   }
 
-  async createUser(user: UsersViewModel): Promise<UsersViewModel> {
+  async createUser(user: Users): Promise<UsersViewModel> {
     await this.usersModel.create({ ...user });
     return user;
   }

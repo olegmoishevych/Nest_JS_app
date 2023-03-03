@@ -76,10 +76,11 @@ export class PostsRepository {
       findAndSortedPosts,
     );
   }
-  async createCommentByPostId(newComment: any): Promise<CommentsViewModal[]> {
-    const result = await this.commentsModel.insertMany(newComment);
-    const { _id, __v, postId, ...comment } = newComment;
-    return comment;
+  async createCommentByPostId(
+    newComment: Comments,
+  ): Promise<CommentsViewModal> {
+    await this.commentsModel.create({ ...newComment });
+    return newComment;
   }
   async updatePostById(
     id: string,

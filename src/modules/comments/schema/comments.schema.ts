@@ -19,7 +19,7 @@ class CommentatorInfo {
   userLogin: string;
 }
 
-@Schema()
+@Schema({ versionKey: false })
 export class Comments {
   @Prop()
   id: string;
@@ -30,7 +30,7 @@ export class Comments {
   @Prop()
   commentatorInfo: CommentatorInfo;
   @Prop()
-  createdAt: Date;
+  createdAt: string;
   @Prop()
   likesInfo: LikesInfo;
 }
