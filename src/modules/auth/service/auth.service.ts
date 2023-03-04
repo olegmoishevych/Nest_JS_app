@@ -49,5 +49,6 @@ export class AuthService {
         isConfirmed: false,
       },
     };
+    // const result = await
   }
 }

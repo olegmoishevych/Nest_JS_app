@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
-import {
-  Users,
-  UsersViewModel,
-  UserType_For_DB,
-} from '../schemas/users.schema';
+import { Users, UsersViewModel } from '../schemas/users.schema';
 import { ObjectId } from 'mongodb';
 import { UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
