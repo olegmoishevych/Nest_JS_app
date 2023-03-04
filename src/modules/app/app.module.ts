@@ -68,7 +68,8 @@ const repositories = [
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URL'),
+        // uri: configService.get<string>('MONGO_URL'),
+        uri: 'mongodb+srv://oleg_admin:123MuETV1qr@cluster0.tz7rbfv.mongodb.net/bloggers?retryWrites=true&w=majority',
       }),
       inject: [ConfigService],
     }),
