@@ -390,6 +390,27 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/registration": {
+        "post": {
+          "operationId": "AuthController_userRegistration",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -424,6 +445,10 @@ window.onload = function() {
           "properties": {}
         },
         "CommentsDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "AuthDto": {
           "type": "object",
           "properties": {}
         }

@@ -24,6 +24,13 @@ import { CommentsRepository } from '../comments/repository/comments.repository';
 import { CommentsController } from '../comments/controller/comments.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthController } from '../auth/controller/auth.controller';
+import { AuthService } from '../auth/service/auth.service';
+import { AuthRepository } from '../auth/repository/auth.repository';
+import { MailerModule } from '@nest-modules/mailer';
+import { EmailService } from '../email/email.service';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -39,6 +46,7 @@ const controllers = [
   TestingController,
   PostsController,
   CommentsController,
+  AuthController,
 ];
 
 const services = [
@@ -48,6 +56,8 @@ const services = [
   TestingService,
   PostsService,
   CommentsService,
+  AuthService,
+  EmailService,
 ];
 
 const repositories = [
@@ -56,10 +66,20 @@ const repositories = [
   TestingRepository,
   PostsRepository,
   CommentsRepository,
+  AuthRepository,
 ];
+
+const throttlerGuard = {
+  provide: APP_GUARD,
+  useClass: ThrottlerGuard,
+};
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 1,
+      limit: 10,
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
@@ -72,9 +92,18 @@ const repositories = [
       }),
       inject: [ConfigService],
     }),
+    MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: 'user2023newTestPerson@gmail.com',
+          pass: 'chucmvqgtpkxstks',
+        },
+      },
+    }),
     MongooseModule.forFeature(mongooseModels),
   ],
   controllers,
-  providers: [...services, ...repositories],
+  providers: [...services, ...repositories, throttlerGuard],
 })
 export class AppModule {}

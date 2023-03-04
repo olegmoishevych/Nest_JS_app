@@ -5,9 +5,16 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { UserViewModal } from '../schemas/auth.schemas';
+import { EmailService } from '../../email/email.service';
+import { UsersRepository } from '../../users/repository/users.repository';
+
 @Injectable()
 export class AuthService {
-  constructor(public authRepository: AuthRepository) {}
+  constructor(
+    public authRepository: AuthRepository,
+    public usersRepository: UsersRepository,
+    public emailService: EmailService,
+  ) {}
 
   async userRegistration(registrationDto: AuthDto) {
     const findUserByLogin = await this.authRepository.findUserByLogin(
@@ -49,6 +56,16 @@ export class AuthService {
         isConfirmed: false,
       },
     };
-    // const result = await
+    const result = await this.usersRepository.createUser({ ...newUser });
+    const bodyTextMessage = `<h1>Thank for your registration</h1>
+       <p>To finish registration please follow the link below:
+          <a href="https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}">complete registration</a>
+      </p>`;
+    await this.emailService.sentEmail(
+      registrationDto.email,
+      'confirm code',
+      bodyTextMessage,
+    );
+    return result;
   }
 }
