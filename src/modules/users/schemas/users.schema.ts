@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { ObjectId } from 'mongodb';
 
 export type UsersDocument = HydratedDocument<Users>;
 
@@ -17,10 +16,6 @@ export class Users {
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
-
-export class UserType_For_DB extends Users {
-  _id: ObjectId;
-}
 
 export class UsersViewModel {
   constructor(
