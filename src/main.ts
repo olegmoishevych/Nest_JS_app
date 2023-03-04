@@ -57,14 +57,12 @@ async function bootstrap() {
         `Swagger UI bundle file written to: '/swagger-static/swagger-ui-bundle.js'`,
       );
     });
-
     get(`${serverUrl}/swagger/swagger-ui-init.js`, function (response) {
       response.pipe(createWriteStream('swagger-static/swagger-ui-init.js'));
       console.log(
         `Swagger UI init file written to: '/swagger-static/swagger-ui-init.js'`,
       );
     });
-
     get(
       `${serverUrl}/swagger/swagger-ui-standalone-preset.js`,
       function (response) {
