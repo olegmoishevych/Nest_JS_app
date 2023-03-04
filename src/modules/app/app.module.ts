@@ -22,6 +22,8 @@ import { Comments, CommentsSchema } from '../comments/schema/comments.schema';
 import { CommentsService } from '../comments/service/comments.service';
 import { CommentsRepository } from '../comments/repository/comments.repository';
 import { CommentsController } from '../comments/controller/comments.controller';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -58,6 +60,10 @@ const repositories = [
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'swagger-static'),
+      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
+    }),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
