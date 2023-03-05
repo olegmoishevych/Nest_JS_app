@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
-import { UsersModel_For_DB, UsersViewModel } from '../schemas/users.schema';
+import { UsersModel_For_DB, UserModel } from '../schemas/users.schema';
 import { UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { UserViewModal } from '../../auth/schemas/auth.schemas';
 import { add } from 'date-fns';
 import { AuthRepository } from '../../auth/repository/auth.repository';
 import { EmailService } from '../../email/email.service';
@@ -25,7 +24,7 @@ export class UsersService {
     return this.usersRepository.findAllUsers(paginationDto);
   }
 
-  async createUser(user: UserDto): Promise<UsersViewModel> {
+  async createUser(user: UserDto): Promise<UserModel> {
     const findUserByLogin = await this.authRepository.findUserByLogin(
       user.login,
     );
@@ -83,9 +82,5 @@ export class UsersService {
     if (!findUserById)
       throw new NotFoundException(`User with ID ${id} not found`);
     return this.usersRepository.deleteUserById(id);
-  }
-
-  async findUserById(id: string): Promise<UsersModel_For_DB> {
-    return this.usersRepository.findUserById(id);
   }
 }

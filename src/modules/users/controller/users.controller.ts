@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserDto } from '../dto/userDto';
-import { UsersModel_For_DB, UsersViewModel } from '../schemas/users.schema';
+import { UsersModel_For_DB, UserModel } from '../schemas/users.schema';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
@@ -26,7 +26,7 @@ export class UsersController {
   }
 
   @Post('users')
-  async createUser(@Body() createdUserType: UserDto): Promise<UsersViewModel> {
+  async createUser(@Body() createdUserType: UserDto): Promise<UserModel> {
     return this.usersService.createUser(createdUserType);
   }
 

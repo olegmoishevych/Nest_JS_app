@@ -45,7 +45,7 @@ export class UsersModel_For_DB {
   ) {}
 }
 
-export class UsersViewModel {
+export class UserModel {
   constructor(
     public id: string,
     public login: string,

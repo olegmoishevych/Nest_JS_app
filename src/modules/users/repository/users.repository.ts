@@ -4,7 +4,7 @@ import {
   Users,
   UsersDocument,
   UsersModel_For_DB,
-  UsersViewModel,
+  UserModel,
 } from '../schemas/users.schema';
 import { Model } from 'mongoose';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
@@ -49,7 +49,7 @@ export class UsersRepository {
     );
   }
 
-  async createUser(user: Users): Promise<UsersViewModel> {
+  async createUser(user: Users): Promise<UserModel> {
     const result = await this.usersModel.create({ ...user });
     const { passwordHash, emailConfirmation, ...userCopy } = user;
     return userCopy;
@@ -62,5 +62,18 @@ export class UsersRepository {
 
   async findUserById(id: string): Promise<UsersModel_For_DB> {
     return this.usersModel.findOne({ id });
+  }
+  async findUserByCode(code: string): Promise<UsersModel_For_DB> {
+    return this.usersModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+  }
+  async updateConfirmationCode(
+    user: UsersModel_For_DB,
+  ): Promise<UsersModel_For_DB> {
+    return this.usersModel.findOneAndUpdate(
+      { id: user.id },
+      { $set: { 'emailConfirmation.isConfirmed': true } },
+    );
   }
 }
