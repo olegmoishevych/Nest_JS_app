@@ -433,6 +433,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/login": {
+        "post": {
+          "operationId": "AuthController_userLogin",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {

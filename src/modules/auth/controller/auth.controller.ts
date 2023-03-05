@@ -32,4 +32,8 @@ export class AuthController {
   ): Promise<boolean> {
     return this.authService.userRegistrationEmailResending(email);
   }
+
+  @Throttle(5, 10)
+  @Post('auth/login')
+  async userLogin() {}
 }
