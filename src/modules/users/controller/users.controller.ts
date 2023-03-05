@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UserDto } from '../dto/userDto';
-import { UsersViewModel } from '../schemas/users.schema';
+import { UsersModel_For_DB, UsersViewModel } from '../schemas/users.schema';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
@@ -21,7 +21,7 @@ export class UsersController {
   @Get('users')
   async findAllUsers(
     @Query() paginationDto: UserPaginationDto,
-  ): Promise<PaginationViewModel<UsersViewModel[]>> {
+  ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     return this.usersService.findAllUsers(paginationDto);
   }
 

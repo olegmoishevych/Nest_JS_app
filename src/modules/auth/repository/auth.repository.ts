@@ -14,4 +14,5 @@ export class AuthRepository {
   async findUserByEmail(email: string) {
     return this.usersModel.findOne({ email });
   }
+  findUserBy;
 }

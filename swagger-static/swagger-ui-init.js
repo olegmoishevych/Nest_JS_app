@@ -411,6 +411,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/registration-confirmation": {
+        "post": {
+          "operationId": "AuthController_userRegistrationConfirmation",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
