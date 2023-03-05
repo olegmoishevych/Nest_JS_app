@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
-import { UsersModel_For_DB, UserModel } from '../schemas/users.schema';
+import {
+  UsersModel_For_DB,
+  UserModel,
+  EmailConfirmation,
+} from '../schemas/users.schema';
 import { UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
@@ -76,7 +80,33 @@ export class UsersService {
     );
     return result;
   }
-
+  async updateUserByEmailResending(
+    email: string,
+    user: UsersModel_For_DB,
+  ): Promise<boolean> {
+    const code = uuidv4();
+    const newEmailConfirmation: EmailConfirmation = {
+      confirmationCode: code,
+      expirationDate: add(new Date(), {
+        hours: 1,
+        minutes: 3,
+      }),
+      isConfirmed: false,
+    };
+    try {
+      await this.usersRepository.updateUserConfirmationDate(
+        user,
+        newEmailConfirmation,
+      );
+      const message = `https://somesite.com/confirm-email?code=${newEmailConfirmation.confirmationCode}`;
+      await this.emailService.sentEmail(email, 'confirm code', message);
+      return;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+    return true;
+  }
   async deleteUserById(id: string): Promise<boolean> {
     const findUserById = await this.usersRepository.findUserById(id);
     if (!findUserById)

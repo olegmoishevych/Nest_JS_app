@@ -5,6 +5,7 @@ import {
   UsersDocument,
   UsersModel_For_DB,
   UserModel,
+  EmailConfirmation,
 } from '../schemas/users.schema';
 import { Model } from 'mongoose';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
@@ -74,6 +75,18 @@ export class UsersRepository {
     return this.usersModel.findOneAndUpdate(
       { id: user.id },
       { $set: { 'emailConfirmation.isConfirmed': true } },
+    );
+  }
+  async findUserByEmail(email: string): Promise<UsersModel_For_DB> {
+    return this.usersModel.findOne({ email });
+  }
+  async updateUserConfirmationDate(
+    user: UsersModel_For_DB,
+    newEmailConfirmation: EmailConfirmation,
+  ): Promise<UsersModel_For_DB> {
+    return this.usersModel.findOneAndUpdate(
+      { id: user.id },
+      { $set: { emailConfirmation: newEmailConfirmation } },
     );
   }
 }

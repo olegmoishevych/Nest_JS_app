@@ -422,6 +422,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/registration-email-resending": {
+        "post": {
+          "operationId": "AuthController_userRegistrationEmailResending",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
