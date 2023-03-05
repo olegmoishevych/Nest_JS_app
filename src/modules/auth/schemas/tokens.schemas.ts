@@ -14,4 +14,16 @@ export class TokensViewModel {
   constructor(public _id: ObjectId, public refreshToken: string) {}
 }
 
+export class JwtTokenPairViewModel {
+  constructor(public accessToken: string, public refreshToken: string) {}
+}
+
+export class TokensVerifyViewModal {
+  constructor(
+    public userId: string,
+    public deviceId: string,
+    public iat: number,
+    public exp: number,
+  ) {}
+}
 export const TokensSchema = SchemaFactory.createForClass(Tokens);

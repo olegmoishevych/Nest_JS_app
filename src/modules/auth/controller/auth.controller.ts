@@ -7,7 +7,12 @@ import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { JwtPairType } from '../constants';
 import { Cookies } from '../decorator/cookies.decorator';
-import { TokensViewModel } from '../schemas/tokens.schemas';
+import {
+  JwtTokenPairViewModel,
+  TokensViewModel,
+} from '../schemas/tokens.schemas';
+import { Ip } from '../decorator/ip.decorator';
+import { IpDto } from '../dto/api.dto';
 
 @Controller('api')
 export class AuthController {
@@ -61,5 +66,21 @@ export class AuthController {
   @HttpCode(204)
   async userLogout(@Cookies() cookies): Promise<TokensViewModel> {
     return this.authService.logout(cookies.refreshToken);
+  }
+  @Post('auth/refresh-token')
+  async userRefreshToken(
+    @Cookies() cookies,
+    @Ip() ip: IpDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<JwtTokenPairViewModel> {
+    const updateToken = await this.authService.refreshToken(
+      cookies.refreshToken,
+      ip,
+    );
+    res.cookie('refreshToken', updateToken.refreshToken, {
+      httpOnly: false,
+      secure: false,
+    });
+    return updateToken;
   }
 }

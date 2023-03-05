@@ -465,6 +465,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/refresh-token": {
+        "post": {
+          "operationId": "AuthController_userRefreshToken",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {

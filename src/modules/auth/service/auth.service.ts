@@ -8,7 +8,12 @@ import { JwtService } from '@nestjs/jwt';
 import { JWT, JwtPairType } from '../constants';
 import { JwtRepository } from '../repository/jwt.repository';
 import jwt from 'jsonwebtoken';
-import { TokensViewModel } from '../schemas/tokens.schemas';
+import {
+  JwtTokenPairViewModel,
+  TokensVerifyViewModal,
+  TokensViewModel,
+} from '../schemas/tokens.schemas';
+import { IpDto } from '../dto/api.dto';
 
 @Injectable()
 export class AuthService {
@@ -86,8 +91,35 @@ export class AuthService {
     if (!tokenVerify) throw new NotFoundException([]);
     return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
   }
-
-  async tokenVerify(token: string): Promise<string> {
+  async refreshToken(
+    refreshToken: string,
+    ip: IpDto,
+  ): Promise<JwtTokenPairViewModel> {
+    const findRefreshTokenInBlackList =
+      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    if (findRefreshTokenInBlackList)
+      throw new NotFoundException([
+        {
+          message: 'refresh token in black list',
+          field: 'refresh token',
+        },
+      ]);
+    const tokenVerify = await this.tokenVerify(refreshToken);
+    if (!tokenVerify) throw new NotFoundException([]);
+    const createJwtTokenPair = await this.createJwtPair(
+      tokenVerify.userId,
+      ip.title,
+      ip.ip,
+      tokenVerify.deviceId,
+    );
+    try {
+      await this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
+      return createJwtTokenPair;
+    } catch (e) {
+      return null;
+    }
+  }
+  async tokenVerify(token: string): Promise<TokensVerifyViewModal> {
     try {
       const result: any = jwt.verify(token, JWT.jwt_secret);
       return result;
@@ -102,7 +134,7 @@ export class AuthService {
     deviceId: string,
     ip: string,
   ): Promise<JwtPairType> {
-    const payload = { userId, deviceId };
+    const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
         expiresIn: '100000s',
