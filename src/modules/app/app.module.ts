@@ -31,6 +31,7 @@ import { MailerModule } from '@nest-modules/mailer';
 import { EmailService } from '../email/email.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -58,6 +59,7 @@ const services = [
   CommentsService,
   AuthService,
   EmailService,
+  JwtService,
 ];
 
 const repositories = [

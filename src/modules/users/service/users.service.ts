@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { AuthRepository } from '../../auth/repository/auth.repository';
 import { EmailService } from '../../email/email.service';
+import { loginOrEmailType } from '../../auth/constants';
+import { LoginOrEmailDto } from '../../auth/dto/auth.dto';
 
 @Injectable()
 export class UsersService {
@@ -112,5 +114,19 @@ export class UsersService {
     if (!findUserById)
       throw new NotFoundException(`User with ID ${id} not found`);
     return this.usersRepository.deleteUserById(id);
+  }
+  async checkUserCredentials(
+    loginOrEmail: LoginOrEmailDto,
+  ): Promise<UserModel> {
+    const user = await this.usersRepository.findUserByLoginOrEmail(
+      loginOrEmail,
+    );
+    if (!user) throw new NotFoundException(`User not found`);
+    const passwordComparison = bcrypt.compare(
+      loginOrEmail.password,
+      user.passwordHash,
+    );
+    if (!passwordComparison) throw new NotFoundException(`Password not found`);
+    return user;
   }
 }

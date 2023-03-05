@@ -438,6 +438,16 @@ window.onload = function() {
         "post": {
           "operationId": "AuthController_userLogin",
           "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginOrEmailDto"
+                }
+              }
+            }
+          },
           "responses": {
             "201": {
               "description": ""
@@ -482,6 +492,10 @@ window.onload = function() {
           "properties": {}
         },
         "AuthDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "LoginOrEmailDto": {
           "type": "object",
           "properties": {}
         }

@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
+  EmailConfirmation,
+  UserModel,
   Users,
   UsersDocument,
   UsersModel_For_DB,
-  UserModel,
-  EmailConfirmation,
 } from '../schemas/users.schema';
 import { Model } from 'mongoose';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { LoginOrEmailDto } from '../../auth/dto/auth.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -64,11 +65,13 @@ export class UsersRepository {
   async findUserById(id: string): Promise<UsersModel_For_DB> {
     return this.usersModel.findOne({ id });
   }
+
   async findUserByCode(code: string): Promise<UsersModel_For_DB> {
     return this.usersModel.findOne({
       'emailConfirmation.confirmationCode': code,
     });
   }
+
   async updateConfirmationCode(
     user: UsersModel_For_DB,
   ): Promise<UsersModel_For_DB> {
@@ -77,9 +80,11 @@ export class UsersRepository {
       { $set: { 'emailConfirmation.isConfirmed': true } },
     );
   }
+
   async findUserByEmail(email: string): Promise<UsersModel_For_DB> {
     return this.usersModel.findOne({ email });
   }
+
   async updateUserConfirmationDate(
     user: UsersModel_For_DB,
     newEmailConfirmation: EmailConfirmation,
@@ -88,5 +93,16 @@ export class UsersRepository {
       { id: user.id },
       { $set: { emailConfirmation: newEmailConfirmation } },
     );
+  }
+
+  async findUserByLoginOrEmail(
+    loginOrEmail: LoginOrEmailDto,
+  ): Promise<UsersModel_For_DB> {
+    return this.usersModel.findOne({
+      $or: [
+        { email: loginOrEmail.loginOrEmail },
+        { login: loginOrEmail.loginOrEmail },
+      ],
+    });
   }
 }

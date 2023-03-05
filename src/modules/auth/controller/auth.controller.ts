@@ -1,9 +1,11 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { AuthDto } from '../dto/auth.dto';
+import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
+import { AuthDto, LoginOrEmailDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 import { Throttle } from '@nestjs/throttler';
 import { UserModel } from '../../users/schemas/users.schema';
-
+import { User } from '../decorator/request.decorator';
+import { Request, Response } from 'express';
+import { JwtPairType, loginOrEmailType } from '../constants';
 @Controller('api')
 export class AuthController {
   constructor(public authService: AuthService) {}
@@ -35,5 +37,20 @@ export class AuthController {
 
   @Throttle(5, 10)
   @Post('auth/login')
-  async userLogin() {}
+  async userLogin(
+    @Body() loginOrEmail: LoginOrEmailDto,
+    @User()
+    user,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<JwtPairType> {
+    const ip = req.ip;
+    const title = req.headers['user-agent'] || 'browser not found';
+    const jwtPair = await this.authService.login(loginOrEmail, ip, title);
+    res.cookie('refreshToken', jwtPair.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    return jwtPair;
+  }
 }
