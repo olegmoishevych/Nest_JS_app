@@ -471,7 +471,18 @@ window.onload = function() {
           "operationId": "AuthController_userRefreshToken",
           "parameters": [],
           "responses": {
-            "201": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/auth/password-recovery": {
+        "post": {
+          "operationId": "AuthController_userPasswordRecovery",
+          "parameters": [],
+          "responses": {
+            "204": {
               "description": ""
             }
           }

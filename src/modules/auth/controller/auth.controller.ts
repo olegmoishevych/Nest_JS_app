@@ -67,7 +67,9 @@ export class AuthController {
   async userLogout(@Cookies() cookies): Promise<TokensViewModel> {
     return this.authService.logout(cookies.refreshToken);
   }
+
   @Post('auth/refresh-token')
+  @HttpCode(200)
   async userRefreshToken(
     @Cookies() cookies,
     @Ip() ip: IpDto,
@@ -83,4 +85,9 @@ export class AuthController {
     });
     return updateToken;
   }
+
+  @Throttle(5, 10)
+  @Post('auth/password-recovery')
+  @HttpCode(204)
+  async userPasswordRecovery(@Body('email') email: string) {}
 }
