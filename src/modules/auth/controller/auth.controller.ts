@@ -6,6 +6,8 @@ import { UserModel } from '../../users/schemas/users.schema';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { JwtPairType } from '../constants';
+import { Cookies } from '../decorator/cookies.decorator';
+import { TokensViewModel } from '../schemas/tokens.schemas';
 
 @Controller('api')
 export class AuthController {
@@ -49,13 +51,15 @@ export class AuthController {
     const title = req.headers['user-agent'] || 'browser not found';
     const jwtPair = await this.authService.login(loginOrEmail, ip, title);
     res.cookie('refreshToken', jwtPair.refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return jwtPair;
   }
 
   @Post('auth/logout')
   @HttpCode(204)
-  async userLogout(@Cookies()) {}
+  async userLogout(@Cookies() cookies): Promise<TokensViewModel> {
+    return this.authService.logout(cookies.refreshToken);
+  }
 }
