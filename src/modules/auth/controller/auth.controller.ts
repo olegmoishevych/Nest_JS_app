@@ -5,7 +5,8 @@ import { Throttle } from '@nestjs/throttler';
 import { UserModel } from '../../users/schemas/users.schema';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
-import { JwtPairType, loginOrEmailType } from '../constants';
+import { JwtPairType } from '../constants';
+
 @Controller('api')
 export class AuthController {
   constructor(public authService: AuthService) {}
@@ -53,4 +54,8 @@ export class AuthController {
     });
     return jwtPair;
   }
+
+  @Post('auth/logout')
+  @HttpCode(204)
+  async userLogout(@Cookies()) {}
 }

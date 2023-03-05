@@ -454,6 +454,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/logout": {
+        "post": {
+          "operationId": "AuthController_userLogout",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {

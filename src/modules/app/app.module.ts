@@ -32,12 +32,15 @@ import { EmailService } from '../email/email.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
+import { Tokens, TokensSchema } from '../auth/schemas/tokens.schemas';
+import { JwtRepository } from '../auth/repository/jwt.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
   { name: Posts.name, schema: PostsSchema },
   { name: Users.name, schema: UsersSchema },
   { name: Comments.name, schema: CommentsSchema },
+  { name: Tokens.name, schema: TokensSchema },
 ];
 
 const controllers = [
@@ -69,6 +72,7 @@ const repositories = [
   PostsRepository,
   CommentsRepository,
   AuthRepository,
+  JwtRepository,
 ];
 
 const throttlerGuard = {
