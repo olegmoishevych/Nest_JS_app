@@ -67,8 +67,8 @@ export class AuthController {
     const title = req.headers['user-agent'] || 'browser not found';
     const jwtPair = await this.authService.login(loginOrEmail, ip, title);
     res.cookie('refreshToken', jwtPair.refreshToken, {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
     });
     return jwtPair;
   }
@@ -91,8 +91,8 @@ export class AuthController {
       ip,
     );
     res.cookie('refreshToken', updateToken.refreshToken, {
-      httpOnly: false,
-      secure: false,
+      httpOnly: true,
+      secure: true,
     });
     return updateToken;
   }
