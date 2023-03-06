@@ -10,11 +10,12 @@ import {
 } from '@nestjs/common';
 import { CommentsService } from '../service/comments.service';
 import { CommentsViewModal } from '../schema/comments.schema';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CommentsDto } from '../dto/comments.dto';
+import { LikeStatusEnum } from '../schema/likeStatus.schema';
+import { LikeStatusDto } from '../dto/likeStatus.dto';
 
 @Controller('api')
 export class CommentsController {
@@ -34,6 +35,7 @@ export class CommentsController {
   ): Promise<CommentsViewModal> {
     return this.commentsService.findCommentByIdAndDelete(commentId, user.id);
   }
+
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   @Put('comments/:commentId')
@@ -46,6 +48,20 @@ export class CommentsController {
       commentId,
       user.id,
       content.content,
+    );
+  }
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Put('comments/:commentId/like-status')
+  async updateLikeStatusByCommentId(
+    @Param('commentId') commentId: string,
+    @Body() likeStatus: LikeStatusDto,
+    @User() user: UserModel,
+  ): Promise<CommentsViewModal> {
+    return this.commentsService.updateLikeStatusByCommentId(
+      commentId,
+      likeStatus.likeStatus,
+      user,
     );
   }
 }

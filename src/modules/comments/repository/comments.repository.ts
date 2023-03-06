@@ -8,12 +8,19 @@ import {
 import { Model } from 'mongoose';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import {
+  LikeStatus,
+  LikeStatusDocument,
+  LikeStatusModal,
+} from '../schema/likeStatus.schema';
 
 @Injectable()
 export class CommentsRepository {
   constructor(
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,
+    @InjectModel(LikeStatus.name)
+    private readonly likeStatusModel: Model<LikeStatusDocument>,
   ) {}
 
   async findCommentsByPostId(
@@ -42,6 +49,7 @@ export class CommentsRepository {
   async findCommentById(id: string): Promise<CommentsViewModal> {
     return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
   }
+
   async deleteCommentById(
     commentId: string,
     userId: string,
@@ -51,6 +59,7 @@ export class CommentsRepository {
       'commentatorInfo.userId': userId,
     });
   }
+
   async updateCommentById(
     commentId: string,
     userId: string,
@@ -59,6 +68,18 @@ export class CommentsRepository {
     return this.commentsModel.findOneAndUpdate(
       { id: commentId, 'commentatorInfo.userId': userId },
       { $set: { content } },
+    );
+  }
+
+  async updateLikeStatusByCommentId(
+    commentId: string,
+    userId: string,
+    newLikeStatus: LikeStatusModal,
+  ): Promise<CommentsViewModal> {
+    return this.likeStatusModel.findOneAndUpdate(
+      { parentId: commentId, userId },
+      { ...newLikeStatus },
+      { upsert: true },
     );
   }
 }

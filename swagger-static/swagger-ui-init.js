@@ -469,6 +469,36 @@ window.onload = function() {
           }
         }
       },
+      "/api/comments/{commentId}/like-status": {
+        "put": {
+          "operationId": "CommentsController_updateLikeStatusByCommentId",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LikeStatusDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/auth/registration": {
         "post": {
           "operationId": "AuthController_userRegistration",

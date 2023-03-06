@@ -9,6 +9,7 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { CommentsViewModal } from '../schema/comments.schema';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
+import { LikeStatusModal } from '../schema/likeStatus.schema';
 
 @Injectable()
 export class CommentsService {
@@ -66,6 +67,32 @@ export class CommentsService {
       commentId,
       userId,
       content,
+    );
+  }
+  async updateLikeStatusByCommentId(
+    commentId: string,
+    likeStatus: string,
+    user: UserModel,
+  ): Promise<CommentsViewModal> {
+    const findCommentById = await this.commentsRepository.findCommentById(
+      commentId,
+    );
+    if (!findCommentById)
+      throw new NotFoundException({
+        message: 'Comment not found',
+        field: 'comment',
+      });
+    const newLikeStatus: LikeStatusModal = {
+      parentId: commentId,
+      userId: user.id,
+      login: user.login,
+      likeStatus: likeStatus,
+      addedAt: new Date(),
+    };
+    return this.commentsRepository.updateLikeStatusByCommentId(
+      commentId,
+      user.id,
+      newLikeStatus,
     );
   }
 }
