@@ -31,13 +31,17 @@ import { MailerModule } from '@nest-modules/mailer';
 import { EmailService } from '../email/email.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Tokens, TokensSchema } from '../auth/schemas/tokens.schemas';
 import { JwtRepository } from '../auth/repository/jwt.repository';
 import {
   RecoveryCode,
   RecoveryCodeSchema,
 } from '../auth/schemas/recoveryCode.schemas';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JWT } from '../auth/constants';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from '../auth/strategies/jwt.strategy';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -85,11 +89,21 @@ const throttlerGuard = {
   useClass: ThrottlerGuard,
 };
 
+const AuthGuard = {
+  provide: APP_GUARD,
+  useClass: JwtAuthGuard,
+};
+
 @Module({
   imports: [
+    PassportModule,
     ThrottlerModule.forRoot({
       ttl: 1,
       limit: 10,
+    }),
+    JwtModule.register({
+      secret: JWT.jwt_secret,
+      signOptions: { expiresIn: '600s' },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
@@ -115,6 +129,12 @@ const throttlerGuard = {
     MongooseModule.forFeature(mongooseModels),
   ],
   controllers,
-  providers: [...services, ...repositories, throttlerGuard],
+  providers: [
+    ...services,
+    ...repositories,
+    throttlerGuard,
+    AuthGuard,
+    JwtStrategy,
+  ],
 })
 export class AppModule {}

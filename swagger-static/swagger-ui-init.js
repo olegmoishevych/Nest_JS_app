@@ -508,6 +508,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/me": {
+        "get": {
+          "operationId": "AuthController_getUser",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {

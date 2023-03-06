@@ -1,4 +1,13 @@
-import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 import { Throttle } from '@nestjs/throttler';
@@ -14,6 +23,7 @@ import {
 import { Ip } from '../decorator/ip.decorator';
 import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('api')
 export class AuthController {
@@ -104,5 +114,10 @@ export class AuthController {
     return this.authService.findUserByRecoveryCodeAndChangeNewPassword(
       newPassword,
     );
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('auth/me')
+  async getUser(@User() user) {
+    return { email: user.email, login: user.login, userId: user.userId };
   }
 }
