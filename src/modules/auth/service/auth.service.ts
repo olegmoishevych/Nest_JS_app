@@ -46,8 +46,8 @@ export class AuthService {
     if (findUserByCode.emailConfirmation.isConfirmed)
       throw new BadRequestException([
         {
-          message: 'User already confirmed',
-          field: 'user',
+          message: 'user isConfirmed',
+          field: 'code',
         },
       ]);
     return this.usersRepository.updateConfirmationCode(findUserByCode);
