@@ -55,6 +55,7 @@ export class AuthController {
   }
 
   @Throttle(5, 10)
+  @HttpCode(200)
   @Post('auth/login')
   async userLogin(
     @Body() loginOrEmail: LoginOrEmailDto,
