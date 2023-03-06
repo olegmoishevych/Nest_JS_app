@@ -79,7 +79,6 @@ export class PostsRepository {
       .limit(paginationType.pageSize)
       .lean();
     const getCountPosts = await this.postsModel.countDocuments({ blogId });
-    // const postWithLikes = await postsWithLikeStatus(findAndSortedPosts, userId);
     return new PaginationViewModel<any>(
       getCountPosts,
       paginationType.pageNumber,
