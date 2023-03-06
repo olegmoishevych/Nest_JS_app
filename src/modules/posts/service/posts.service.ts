@@ -8,12 +8,16 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { CommentsDto } from '../../comments/dto/comments.dto';
 import { CommentsViewModal } from '../../comments/schema/comments.schema';
+import { LikeStatusModal } from '../../comments/schema/likeStatus.schema';
+import { UserModel } from '../../users/schemas/users.schema';
+import { LikeStatusRepository } from '../repository/likeStatus.repository';
 
 @Injectable()
 export class PostsService {
   constructor(
     public blogsRepository: BlogsRepository,
     public postsRepository: PostsRepository,
+    public likeStatusRepository: LikeStatusRepository,
   ) {}
 
   async findPosts(
@@ -84,7 +88,6 @@ export class PostsService {
     return this.postsRepository.findPostsByBlogId(blogId, paginationDto);
   }
 
-  // async findCommentsByPostId() {}
   async createCommentByPostId(
     postId: string,
     commentsDto: CommentsDto,
@@ -108,5 +111,35 @@ export class PostsService {
       },
     };
     return this.postsRepository.createCommentByPostId(newComment);
+  }
+
+  async findPostByIdAndUpdateLikeStatus(
+    postId: string,
+    likeStatus: string,
+    user: UserModel,
+  ) {
+    const findPostById = await this.postsRepository.findPostById(postId);
+    if (!findPostById)
+      throw new NotFoundException([
+        { message: 'Post not found', field: 'post' },
+      ]);
+
+    const updateLikeStatusByPostId = new LikeStatusModal(
+      postId,
+      user.id,
+      user.login,
+      likeStatus,
+      new Date(),
+    );
+
+    try {
+      await this.likeStatusRepository.updateLikeStatusByPostId(
+        updateLikeStatusByPostId,
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 }

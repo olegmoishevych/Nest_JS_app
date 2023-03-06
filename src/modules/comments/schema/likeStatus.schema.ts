@@ -23,4 +23,14 @@ export class LikeStatus {
   likeStatus: LikeStatusEnum;
 }
 
+export class LikeStatusModal {
+  constructor(
+    public parentId: string,
+    public userId: string,
+    public login: string,
+    public likeStatus: string,
+    public addedAt: Date,
+  ) {}
+}
+
 export const LikeStatusSchema = SchemaFactory.createForClass(LikeStatus);

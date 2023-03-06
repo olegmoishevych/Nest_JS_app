@@ -19,6 +19,7 @@ import { CommentsService } from '../../comments/service/comments.service';
 import { CommentsViewModal } from '../../comments/schema/comments.schema';
 import { CommentsDto } from '../../comments/dto/comments.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { User } from '../../auth/decorator/request.decorator';
 
 @Controller('api')
 export class PostsController {
@@ -76,11 +77,17 @@ export class PostsController {
     return this.postsService.createCommentByPostId(postId, commentsDto);
   }
   @UseGuards(JwtAuthGuard)
-  @Post('posts/:postId/like-status')
+  @Put('posts/:postId/like-status')
+  @HttpCode(204)
   async updateLikeStatusByPostId(
+    @User() user,
     @Param('postId') postId: string,
-    @Body('likeStatus') likeStatus: LikeStatusDto,
-  ) {
-    // return this.postsService
+    @Body() likeStatus: LikeStatusDto,
+  ): Promise<boolean> {
+    return this.postsService.findPostByIdAndUpdateLikeStatus(
+      postId,
+      likeStatus.likeStatus,
+      user,
+    );
   }
 }

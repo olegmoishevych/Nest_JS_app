@@ -46,6 +46,7 @@ import {
   LikeStatus,
   LikeStatusSchema,
 } from '../comments/schema/likeStatus.schema';
+import { LikeStatusRepository } from '../posts/repository/likeStatus.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -87,6 +88,7 @@ const repositories = [
   CommentsRepository,
   AuthRepository,
   JwtRepository,
+  LikeStatusRepository,
 ];
 
 const throttlerGuard = {
@@ -103,7 +105,7 @@ const throttlerGuard = {
     }),
     JwtModule.register({
       secret: JWT.jwt_secret,
-      signOptions: { expiresIn: '600s' },
+      signOptions: { expiresIn: '60000s' },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
