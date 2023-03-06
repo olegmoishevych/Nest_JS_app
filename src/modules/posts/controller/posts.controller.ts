@@ -20,6 +20,7 @@ import { CommentsViewModal } from '../../comments/schema/comments.schema';
 import { CommentsDto } from '../../comments/dto/comments.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
+import { UserModel } from '../../users/schemas/users.schema';
 
 @Controller('api')
 export class PostsController {
@@ -73,8 +74,9 @@ export class PostsController {
   async createCommentByPostId(
     @Param('postId') postId: string,
     @Body() commentsDto: CommentsDto,
+    @User() user: UserModel,
   ): Promise<CommentsViewModal> {
-    return this.postsService.createCommentByPostId(postId, commentsDto);
+    return this.postsService.createCommentByPostId(postId, commentsDto, user);
   }
   @UseGuards(JwtAuthGuard)
   @Put('posts/:postId/like-status')

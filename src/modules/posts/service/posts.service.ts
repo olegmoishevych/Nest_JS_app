@@ -91,6 +91,7 @@ export class PostsService {
   async createCommentByPostId(
     postId: string,
     commentsDto: CommentsDto,
+    user: UserModel,
   ): Promise<CommentsViewModal> {
     const findPostById: any = await this.postsRepository.findPostById(postId);
     if (!findPostById)
@@ -100,8 +101,8 @@ export class PostsService {
       postId: findPostById.id,
       content: commentsDto.content,
       commentatorInfo: {
-        userId: new ObjectId().toString(),
-        userLogin: new ObjectId().toString(),
+        userId: user.id,
+        userLogin: user.login,
       },
       createdAt: new Date().toISOString(),
       likesInfo: {

@@ -48,4 +48,14 @@ export class CommentsRepository {
       userId: userId,
     });
   }
+  async updateCommentById(
+    commentId: string,
+    userId: string,
+    content: string,
+  ): Promise<CommentsViewModal> {
+    return this.commentsModel.findOneAndUpdate(
+      { id: commentId, 'commentatorInfo.userId': userId },
+      { $set: { content } },
+    );
+  }
 }

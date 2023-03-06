@@ -435,7 +435,35 @@ window.onload = function() {
             }
           ],
           "responses": {
-            "200": {
+            "204": {
+              "description": ""
+            }
+          }
+        },
+        "put": {
+          "operationId": "CommentsController_updateCommentByCommentId",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentsDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
               "description": ""
             }
           }

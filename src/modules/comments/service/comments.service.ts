@@ -47,4 +47,25 @@ export class CommentsService {
       throw new ForbiddenException([]);
     return this.commentsRepository.deleteCommentById(commentId, userId);
   }
+  async updateCommentByCommentId(
+    commentId: string,
+    userId: string,
+    content: string,
+  ): Promise<CommentsViewModal> {
+    const findCommentById = await this.commentsRepository.findCommentById(
+      commentId,
+    );
+    if (!findCommentById)
+      throw new NotFoundException({
+        message: 'Comment not found',
+        field: 'comment',
+      });
+    if (findCommentById.commentatorInfo.userId !== userId)
+      throw new ForbiddenException([]);
+    return this.commentsRepository.updateCommentById(
+      commentId,
+      userId,
+      content,
+    );
+  }
 }
