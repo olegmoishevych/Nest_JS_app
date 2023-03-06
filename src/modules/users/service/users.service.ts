@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -39,9 +40,9 @@ export class UsersService {
       user.login,
     );
     if (findUserByLogin)
-      throw new NotFoundException([
+      throw new BadRequestException([
         {
-          message: 'Login not found',
+          message: 'Login found',
           field: 'login',
         },
       ]);
@@ -49,9 +50,9 @@ export class UsersService {
       user.email,
     );
     if (findUserByEmail)
-      throw new NotFoundException([
+      throw new BadRequestException([
         {
-          message: 'Email not found',
+          message: 'Email found',
           field: 'email',
         },
       ]);

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
 import { UserModel } from '../../users/schemas/users.schema';
@@ -36,11 +40,8 @@ export class AuthService {
   async userRegistrationConfirmation(code: string): Promise<UserModel> {
     const findUserByCode = await this.usersRepository.findUserByCode(code);
     if (!findUserByCode)
-      throw new NotFoundException([
-        {
-          message: 'User not found',
-          field: 'user',
-        },
+      throw new BadRequestException([
+        { message: 'code not found', field: 'code' },
       ]);
     if (findUserByCode.emailConfirmation.isConfirmed)
       throw new NotFoundException([
