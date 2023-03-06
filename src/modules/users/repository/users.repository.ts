@@ -118,4 +118,13 @@ export class UsersRepository {
   ): Promise<RecoveryCodeModal> {
     return this.recoveryCodeModel.create({ ...recoveryCode });
   }
+  async findRecoveryUserCode(recoveryCode: string): Promise<RecoveryCodeModal> {
+    return this.recoveryCodeModel.findOne({ recoveryCode });
+  }
+  async updateUserHash(email: string, hash: string): Promise<UserModel> {
+    return this.usersModel.findOneAndUpdate(
+      { email },
+      { $set: { passwordHash: hash } },
+    );
+  }
 }

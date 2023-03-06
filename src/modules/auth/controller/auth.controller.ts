@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
-import { AuthDto, LoginOrEmailDto } from '../dto/auth.dto';
+import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 import { Throttle } from '@nestjs/throttler';
 import { UserModel } from '../../users/schemas/users.schema';
@@ -94,5 +94,15 @@ export class AuthController {
     @Body('email') email: string,
   ): Promise<RecoveryCodeModal> {
     return this.authService.passwordRecovery(email);
+  }
+  @Throttle(5, 10)
+  @Post('auth/new-password')
+  @HttpCode(204)
+  async userNewPassword(
+    @Body() newPassword: NewPasswordDto,
+  ): Promise<UserModel> {
+    return this.authService.findUserByRecoveryCodeAndChangeNewPassword(
+      newPassword,
+    );
   }
 }

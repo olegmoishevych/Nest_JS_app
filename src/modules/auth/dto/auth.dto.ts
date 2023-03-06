@@ -21,3 +21,12 @@ export class LoginOrEmailDto {
   @IsString()
   password: string;
 }
+
+export class NewPasswordDto {
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @Length(6, 20)
+  newPassword: string;
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @IsString()
+  recoveryCode: string;
+}

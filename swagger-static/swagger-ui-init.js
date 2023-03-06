@@ -487,6 +487,27 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/auth/new-password": {
+        "post": {
+          "operationId": "AuthController_userNewPassword",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewPasswordDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {
@@ -529,6 +550,10 @@ window.onload = function() {
           "properties": {}
         },
         "LoginOrEmailDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "NewPasswordDto": {
           "type": "object",
           "properties": {}
         }

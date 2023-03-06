@@ -122,7 +122,7 @@ export class UsersService {
       loginOrEmail,
     );
     if (!user) throw new NotFoundException(`User not found`);
-    const passwordComparison = bcrypt.compare(
+    const passwordComparison = await bcrypt.compare(
       loginOrEmail.password,
       user.passwordHash,
     );

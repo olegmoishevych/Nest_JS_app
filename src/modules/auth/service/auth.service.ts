@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { AuthDto, LoginOrEmailDto } from '../dto/auth.dto';
+import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
 import { UserModel } from '../../users/schemas/users.schema';
 import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
@@ -17,6 +17,7 @@ import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../email/email.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -177,5 +178,24 @@ export class AuthService {
       return null;
     }
     return addRecoveryCodeInList;
+  }
+  async findUserByRecoveryCodeAndChangeNewPassword(
+    newPassword: NewPasswordDto,
+  ): Promise<UserModel> {
+    const findUserByRecoveryCode =
+      await this.usersRepository.findRecoveryUserCode(newPassword.recoveryCode);
+    if (!findUserByRecoveryCode)
+      throw new NotFoundException([
+        {
+          message: 'RecoveryCode not found',
+          field: 'recoveryCode',
+        },
+      ]);
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(newPassword.newPassword, salt);
+    return this.usersRepository.updateUserHash(
+      findUserByRecoveryCode.email,
+      hash,
+    );
   }
 }
