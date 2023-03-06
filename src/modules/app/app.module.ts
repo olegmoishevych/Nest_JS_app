@@ -42,6 +42,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JWT } from '../auth/constants';
 import { JwtStrategy } from '../auth/strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { BasicStrategy } from '../auth/strategies/basic-auth.strategy';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -135,6 +136,7 @@ const throttlerGuard = {
     throttlerGuard,
     // AuthGuard,
     JwtStrategy,
+    BasicStrategy,
   ],
 })
 export class AppModule {}
