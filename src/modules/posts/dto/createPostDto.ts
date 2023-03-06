@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsIn, IsString, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreatePostDto {
@@ -18,6 +18,10 @@ export class CreatePostDtoWithBlogId extends CreatePostDto {
   blogId: string;
 }
 
+export class LikeStatusDto {
+  @IsIn(['None', 'Like', 'Dislike'])
+  likeStatus: string;
+}
 export class PostsType_For_Db {
   constructor(
     public id: string,

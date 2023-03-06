@@ -38,11 +38,14 @@ import {
   RecoveryCode,
   RecoveryCodeSchema,
 } from '../auth/schemas/recoveryCode.schemas';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JWT } from '../auth/constants';
 import { JwtStrategy } from '../auth/strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { BasicStrategy } from '../auth/strategies/basic-auth.strategy';
+import {
+  LikeStatus,
+  LikeStatusSchema,
+} from '../comments/schema/likeStatus.schema';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -51,6 +54,7 @@ const mongooseModels = [
   { name: Comments.name, schema: CommentsSchema },
   { name: Tokens.name, schema: TokensSchema },
   { name: RecoveryCode.name, schema: RecoveryCodeSchema },
+  { name: LikeStatus.name, schema: LikeStatusSchema },
 ];
 
 const controllers = [
@@ -89,11 +93,6 @@ const throttlerGuard = {
   provide: APP_GUARD,
   useClass: ThrottlerGuard,
 };
-
-// const AuthGuard = {
-//   provide: APP_GUARD,
-//   useClass: JwtAuthGuard,
-// };
 
 @Module({
   imports: [
@@ -134,7 +133,6 @@ const throttlerGuard = {
     ...services,
     ...repositories,
     throttlerGuard,
-    // AuthGuard,
     JwtStrategy,
     BasicStrategy,
   ],

@@ -371,6 +371,26 @@ window.onload = function() {
           }
         }
       },
+      "/api/posts/{postId}/like-status": {
+        "post": {
+          "operationId": "PostsController_updateLikeStatusByPostId",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/comments/{id}": {
         "get": {
           "operationId": "CommentsController_findCommentById",
