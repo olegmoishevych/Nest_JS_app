@@ -44,7 +44,7 @@ export class AuthService {
         { message: 'code not found', field: 'code' },
       ]);
     if (findUserByCode.emailConfirmation.isConfirmed)
-      throw new NotFoundException([
+      throw new BadRequestException([
         {
           message: 'User already confirmed',
           field: 'user',
