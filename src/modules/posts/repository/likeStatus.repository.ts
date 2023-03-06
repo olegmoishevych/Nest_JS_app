@@ -7,6 +7,7 @@ import {
   LikeStatusModal,
 } from '../../comments/schema/likeStatus.schema';
 import { PostsViewModal } from '../schemas/posts.schema';
+import { CommentsViewModal } from '../../comments/schema/comments.schema';
 
 @Injectable()
 export class LikeStatusRepository {
@@ -66,5 +67,37 @@ export class LikeStatusRepository {
       postWithLikeStatus.push(post);
     }
     return postWithLikeStatus;
+  }
+  async commentsWithLikeStatus(
+    findAndSortedComments: any,
+    userId: string | null,
+  ): Promise<CommentsViewModal[]> {
+    const commentWithLikeStatus = [];
+    for (const comment of findAndSortedComments) {
+      const countLikes = await this.likeStatusModel.countDocuments({
+        parentId: comment.id,
+        likeStatus: 'Like',
+      });
+      const countDislikes = await this.likeStatusModel.countDocuments({
+        parentId: comment.id,
+        likeStatus: 'Dislike',
+      });
+      const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
+        parentId: comment.id,
+        userId: userId,
+      });
+
+      comment.likesInfo.likesCount = countLikes;
+      comment.likesInfo.dislikesCount = countDislikes;
+
+      if (findCommentWithLikesByUserId) {
+        comment.likesInfo.myStatus = findCommentWithLikesByUserId.likeStatus;
+      } else {
+        comment.likesInfo.myStatus = 'None';
+      }
+
+      commentWithLikeStatus.push(comment);
+    }
+    return commentWithLikeStatus;
   }
 }

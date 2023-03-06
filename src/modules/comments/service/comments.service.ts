@@ -10,21 +10,38 @@ import { CommentsViewModal } from '../schema/comments.schema';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
 import { LikeStatusModal } from '../schema/likeStatus.schema';
+import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 
 @Injectable()
 export class CommentsService {
   constructor(
     private commentsRepository: CommentsRepository,
     private postsRepository: PostsRepository,
+    private likeStatusRepository: LikeStatusRepository,
   ) {}
   async findCommentsByPostId(
     postId: string,
     paginationDto: PaginationDto,
+    userId: string,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
     const findPostById = await this.postsRepository.findPostById(postId);
-    if (!findPostById)
-      throw new NotFoundException(`Post with ID ${postId} not found`);
-    return this.commentsRepository.findCommentsByPostId(postId, paginationDto);
+    if (!findPostById) throw new NotFoundException(`Post not found`);
+    const findAndSortedComments =
+      await this.commentsRepository.findCommentsByPostId(postId, paginationDto);
+    const commentsWithLikeStatus =
+      await this.likeStatusRepository.commentsWithLikeStatus(
+        findAndSortedComments.items,
+        userId,
+      );
+    const getUsersCount = await this.commentsRepository.getCountCollection(
+      postId,
+    );
+    return new PaginationViewModel<any>(
+      getUsersCount,
+      paginationDto.pageNumber,
+      paginationDto.pageSize,
+      commentsWithLikeStatus,
+    );
   }
   async findCommentById(id: string): Promise<CommentsViewModal> {
     const findCommentById = await this.commentsRepository.findCommentById(id);

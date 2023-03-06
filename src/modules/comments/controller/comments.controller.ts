@@ -14,7 +14,6 @@ import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CommentsDto } from '../dto/comments.dto';
-import { LikeStatusEnum } from '../schema/likeStatus.schema';
 import { LikeStatusDto } from '../dto/likeStatus.dto';
 
 @Controller('api')
@@ -50,6 +49,7 @@ export class CommentsController {
       content.content,
     );
   }
+
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   @Put('comments/:commentId/like-status')

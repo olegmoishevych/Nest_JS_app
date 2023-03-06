@@ -72,11 +72,12 @@ export class PostsService {
     return updatedPost;
   }
 
-  async findPostById(id: string): Promise<PostsViewModal[]> {
+  async findPostById(id: string, userId: string): Promise<PostsViewModal> {
     const findPostById = await this.postsRepository.findPostById(id);
-    if (!findPostById)
-      throw new NotFoundException(`Post with ID ${id} not found`);
-    return findPostById;
+    if (!findPostById) throw new NotFoundException(`Post not found`);
+    const postWithLikesStatus =
+      await this.likeStatusRepository.postWithLikeStatus(findPostById, userId);
+    return postWithLikesStatus[0];
   }
 
   async findPostByBlogId(

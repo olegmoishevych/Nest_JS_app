@@ -61,15 +61,23 @@ export class PostsController {
   }
 
   @Get('posts/:id')
-  async findPostById(@Param('id') id: string): Promise<PostsViewModal[]> {
-    return this.postsService.findPostById(id);
+  async findPostById(
+    @Token() userId: string | null,
+    @Param('id') id: string,
+  ): Promise<PostsViewModal> {
+    return this.postsService.findPostById(id, userId);
   }
   @Get('posts/:postId/comments')
   async findCommentsByPostId(
     @Param('postId') postId: string,
+    @Token() userId: string | null,
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
-    return this.commentsService.findCommentsByPostId(postId, paginationDto);
+    return this.commentsService.findCommentsByPostId(
+      postId,
+      paginationDto,
+      userId,
+    );
   }
   @UseGuards(JwtAuthGuard)
   @Post('posts/:postId/comments')

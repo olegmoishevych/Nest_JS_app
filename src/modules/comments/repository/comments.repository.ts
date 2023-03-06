@@ -82,4 +82,7 @@ export class CommentsRepository {
       { upsert: true },
     );
   }
+  async getCountCollection(postId: string): Promise<number> {
+    return this.commentsModel.countDocuments({ postId });
+  }
 }
