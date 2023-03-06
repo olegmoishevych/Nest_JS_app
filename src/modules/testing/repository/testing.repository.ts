@@ -13,11 +13,17 @@ import {
   RecoveryCodeDocument,
 } from '../../auth/schemas/recoveryCode.schemas';
 import { Tokens, TokensDocument } from '../../auth/schemas/tokens.schemas';
+import {
+  LikeStatus,
+  LikeStatusDocument,
+} from '../../comments/schema/likeStatus.schema';
 
 @Injectable()
 export class TestingRepository {
   constructor(
     @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
+    @InjectModel(LikeStatus.name)
+    private readonly likeStatusModel: Model<LikeStatusDocument>,
     @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>,
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
     @InjectModel(RecoveryCode.name)
@@ -36,6 +42,7 @@ export class TestingRepository {
         this.commentsModel.deleteMany(),
         this.tokensModel.deleteMany(),
         this.recoveryCodeModel.deleteMany(),
+        this.likeStatusModel.deleteMany(),
       ]);
       return true;
     } catch (e) {

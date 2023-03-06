@@ -31,7 +31,6 @@ export class CommentsRepository {
     const getCountComments = await this.commentsModel.countDocuments({
       postId,
     });
-    // const postWithLikes = await postsWithLikeStatus(findAndSortedPosts, userId);
     return new PaginationViewModel<any>(
       getCountComments,
       paginationDto.pageNumber,
@@ -40,7 +39,13 @@ export class CommentsRepository {
     );
   }
 
-  async findCommentById(id: string): Promise<CommentsViewModal[]> {
+  async findCommentById(id: string): Promise<CommentsViewModal> {
     return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
+  }
+  async deleteCommentById(commentId: string, userId: string) {
+    return this.commentsModel.findOneAndDelete({
+      parentId: commentId,
+      userId: userId,
+    });
   }
 }

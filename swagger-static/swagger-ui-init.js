@@ -421,6 +421,26 @@ window.onload = function() {
           }
         }
       },
+      "/api/comments/{commentId}": {
+        "delete": {
+          "operationId": "CommentsController_deleteCommentByCommentId",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/auth/registration": {
         "post": {
           "operationId": "AuthController_userRegistration",
