@@ -42,10 +42,13 @@ export class CommentsRepository {
   async findCommentById(id: string): Promise<CommentsViewModal> {
     return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
   }
-  async deleteCommentById(commentId: string, userId: string) {
+  async deleteCommentById(
+    commentId: string,
+    userId: string,
+  ): Promise<CommentsViewModal> {
     return this.commentsModel.findOneAndDelete({
-      parentId: commentId,
-      userId: userId,
+      id: commentId,
+      'commentatorInfo.userId': userId,
     });
   }
   async updateCommentById(
