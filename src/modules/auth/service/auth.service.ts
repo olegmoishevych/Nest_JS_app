@@ -56,7 +56,7 @@ export class AuthService {
   async userRegistrationEmailResending(email: string): Promise<boolean> {
     const findUserByEmail = await this.usersRepository.findUserByEmail(email);
     if (!findUserByEmail || findUserByEmail.emailConfirmation.isConfirmed)
-      throw new NotFoundException([
+      throw new BadRequestException([
         {
           message: 'Email',
           field: 'email',
