@@ -87,6 +87,9 @@ export class PostsRepository {
       findAndSortedPosts,
     );
   }
+  async getCountPostsByBlogId(blogId: string) {
+    return this.postsModel.countDocuments({ blogId });
+  }
   async createCommentByPostId(
     newComment: Comments,
   ): Promise<CommentsViewModal> {

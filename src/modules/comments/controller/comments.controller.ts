@@ -15,14 +15,18 @@ import { UserModel } from '../../users/schemas/users.schema';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CommentsDto } from '../dto/comments.dto';
 import { LikeStatusDto } from '../dto/likeStatus.dto';
+import { Token } from '../../decorators/token.decorator';
 
 @Controller('api')
 export class CommentsController {
   constructor(public commentsService: CommentsService) {}
 
   @Get('comments/:id')
-  async findCommentById(@Param('id') id: string): Promise<CommentsViewModal> {
-    return this.commentsService.findCommentById(id);
+  async findCommentById(
+    @Param('id') id: string,
+    @Token() userId: string,
+  ): Promise<CommentsViewModal> {
+    return this.commentsService.findCommentById(id, userId);
   }
 
   @UseGuards(JwtAuthGuard)

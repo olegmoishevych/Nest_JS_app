@@ -43,11 +43,18 @@ export class CommentsService {
       commentsWithLikeStatus,
     );
   }
-  async findCommentById(id: string): Promise<CommentsViewModal> {
+  async findCommentById(
+    id: string,
+    userId: string,
+  ): Promise<CommentsViewModal> {
     const findCommentById = await this.commentsRepository.findCommentById(id);
-    if (!findCommentById)
-      throw new NotFoundException(`Comment with ID ${id} not found`);
-    return findCommentById;
+    if (!findCommentById) throw new NotFoundException(`Comment not found`);
+    const commentWithLikeStatus =
+      await this.likeStatusRepository.commentsWithLikeStatus(
+        findCommentById,
+        userId,
+      );
+    return commentWithLikeStatus[0];
   }
   async findCommentByIdAndDelete(
     commentId: string,

@@ -83,11 +83,29 @@ export class PostsService {
   async findPostByBlogId(
     blogId: string,
     paginationDto: PaginationDto,
+    userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
     if (!findBlogById)
       throw new NotFoundException(`Post with ID ${blogId} not found`);
-    return this.postsRepository.findPostsByBlogId(blogId, paginationDto);
+    const findAndSortedPosts = await this.postsRepository.findPostsByBlogId(
+      blogId,
+      paginationDto,
+    );
+    const postsWithLikesStatus =
+      await this.likeStatusRepository.postWithLikeStatus(
+        findAndSortedPosts.items,
+        userId,
+      );
+    const postsCountByBlogId = await this.postsRepository.getCountPostsByBlogId(
+      blogId,
+    );
+    return new PaginationViewModel<any>(
+      postsCountByBlogId,
+      paginationDto.pageNumber,
+      paginationDto.pageSize,
+      postsWithLikesStatus,
+    );
   }
 
   async createCommentByPostId(

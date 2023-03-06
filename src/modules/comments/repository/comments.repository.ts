@@ -47,7 +47,9 @@ export class CommentsRepository {
   }
 
   async findCommentById(id: string): Promise<CommentsViewModal> {
-    return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
+    return this.commentsModel
+      .find({ id }, { _id: 0, __v: 0, postId: 0 })
+      .lean();
   }
 
   async deleteCommentById(

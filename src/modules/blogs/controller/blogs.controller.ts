@@ -22,6 +22,7 @@ import { CreatePostDto } from '../../posts/dto/createPostDto';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import { PostsService } from '../../posts/service/posts.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { Token } from '../../decorators/token.decorator';
 
 @Controller('api')
 export class BlogsController {
@@ -73,7 +74,8 @@ export class BlogsController {
   async findPostByBlogId(
     @Param('blogId') blogId: string,
     @Query() paginationDto: PaginationDto,
+    @Token() userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPostByBlogId(blogId, paginationDto);
+    return this.postsService.findPostByBlogId(blogId, paginationDto, userId);
   }
 }
