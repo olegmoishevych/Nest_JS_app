@@ -11,11 +11,18 @@ import { Model } from 'mongoose';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { LoginOrEmailDto } from '../../auth/dto/auth.dto';
+import {
+  RecoveryCode,
+  RecoveryCodeDocument,
+  RecoveryCodeModal,
+} from '../../auth/schemas/recoveryCode.schemas';
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
+    @InjectModel(RecoveryCode.name)
+    private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
   ) {}
 
   async findAllUsers(
@@ -104,5 +111,11 @@ export class UsersRepository {
         { login: loginOrEmail.loginOrEmail },
       ],
     });
+  }
+
+  async addRecoveryUserCode(
+    recoveryCode: RecoveryCodeModal,
+  ): Promise<RecoveryCodeModal> {
+    return this.recoveryCodeModel.create({ ...recoveryCode });
   }
 }

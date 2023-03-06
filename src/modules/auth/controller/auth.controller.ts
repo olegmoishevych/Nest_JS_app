@@ -13,6 +13,7 @@ import {
 } from '../schemas/tokens.schemas';
 import { Ip } from '../decorator/ip.decorator';
 import { IpDto } from '../dto/api.dto';
+import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 
 @Controller('api')
 export class AuthController {
@@ -89,7 +90,9 @@ export class AuthController {
   @Throttle(5, 10)
   @Post('auth/password-recovery')
   @HttpCode(204)
-  async userPasswordRecovery(@Body('email') email: string) {
+  async userPasswordRecovery(
+    @Body('email') email: string,
+  ): Promise<RecoveryCodeModal> {
     return this.authService.passwordRecovery(email);
   }
 }

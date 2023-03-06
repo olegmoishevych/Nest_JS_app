@@ -14,11 +14,15 @@ import {
   TokensViewModel,
 } from '../schemas/tokens.schemas';
 import { IpDto } from '../dto/api.dto';
+import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
+import { v4 as uuidv4 } from 'uuid';
+import { EmailService } from '../../email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     public usersService: UsersService,
+    public emailService: EmailService,
     public jwtService: JwtService,
     public usersRepository: UsersRepository,
     public jwtRepository: JwtRepository,
@@ -91,6 +95,7 @@ export class AuthService {
     if (!tokenVerify) throw new NotFoundException([]);
     return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
   }
+
   async refreshToken(
     refreshToken: string,
     ip: IpDto,
@@ -119,6 +124,7 @@ export class AuthService {
       return null;
     }
   }
+
   async tokenVerify(token: string): Promise<TokensVerifyViewModal> {
     try {
       const result: any = jwt.verify(token, JWT.jwt_secret);
@@ -147,7 +153,8 @@ export class AuthService {
     };
     return jwtPair;
   }
-  async passwordRecovery(email: string) {
+
+  async passwordRecovery(email: string): Promise<RecoveryCodeModal> {
     const findUserByEmail = await this.usersRepository.findUserByEmail(email);
     if (!findUserByEmail)
       throw new NotFoundException([
@@ -156,5 +163,19 @@ export class AuthService {
           field: 'email',
         },
       ]);
+    const recoveryCode: RecoveryCodeModal = {
+      email: email,
+      recoveryCode: uuidv4(),
+    };
+    const addRecoveryCodeInList =
+      await this.usersRepository.addRecoveryUserCode(recoveryCode);
+    try {
+      const message = `https://somesite.com/password-recovery?recoveryCode=${recoveryCode.recoveryCode}`;
+      await this.emailService.sentEmail(email, 'recovery code', message);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    return addRecoveryCodeInList;
   }
 }
