@@ -11,7 +11,7 @@ import {
 import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 import { Throttle } from '@nestjs/throttler';
-import { UserModel } from '../../users/schemas/users.schema';
+import { MeViewModel, UserModel } from '../../users/schemas/users.schema';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { JwtPairType } from '../constants';
@@ -105,6 +105,7 @@ export class AuthController {
   ): Promise<RecoveryCodeModal> {
     return this.authService.passwordRecovery(email);
   }
+
   @Throttle(5, 10)
   @Post('auth/new-password')
   @HttpCode(204)
@@ -115,9 +116,10 @@ export class AuthController {
       newPassword,
     );
   }
+
   @UseGuards(JwtAuthGuard)
   @Get('auth/me')
-  async getUser(@User() user) {
-    return { email: user.email, login: user.login, userId: user.userId };
+  async getUser(@User() user): Promise<MeViewModel> {
+    return { email: user.email, login: user.login, userId: user.id };
   }
 }
