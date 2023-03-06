@@ -40,8 +40,8 @@ import {
 } from '../auth/schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { JWT } from '../auth/constants';
-import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '../auth/strategies/jwt.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -89,10 +89,10 @@ const throttlerGuard = {
   useClass: ThrottlerGuard,
 };
 
-const AuthGuard = {
-  provide: APP_GUARD,
-  useClass: JwtAuthGuard,
-};
+// const AuthGuard = {
+//   provide: APP_GUARD,
+//   useClass: JwtAuthGuard,
+// };
 
 @Module({
   imports: [
@@ -133,7 +133,7 @@ const AuthGuard = {
     ...services,
     ...repositories,
     throttlerGuard,
-    AuthGuard,
+    // AuthGuard,
     JwtStrategy,
   ],
 })
