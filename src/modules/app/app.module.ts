@@ -34,6 +34,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Tokens, TokensSchema } from '../auth/schemas/tokens.schemas';
 import { JwtRepository } from '../auth/repository/jwt.repository';
+import {
+  RecoveryCode,
+  RecoveryCodeSchema,
+} from '../auth/schemas/recoveryCode.schemas';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -41,6 +45,7 @@ const mongooseModels = [
   { name: Users.name, schema: UsersSchema },
   { name: Comments.name, schema: CommentsSchema },
   { name: Tokens.name, schema: TokensSchema },
+  { name: RecoveryCode.name, schema: RecoveryCodeSchema },
 ];
 
 const controllers = [

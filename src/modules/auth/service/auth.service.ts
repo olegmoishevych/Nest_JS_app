@@ -147,4 +147,14 @@ export class AuthService {
     };
     return jwtPair;
   }
+  async passwordRecovery(email: string) {
+    const findUserByEmail = await this.usersRepository.findUserByEmail(email);
+    if (!findUserByEmail)
+      throw new NotFoundException([
+        {
+          message: 'user not found',
+          field: 'email',
+        },
+      ]);
+  }
 }

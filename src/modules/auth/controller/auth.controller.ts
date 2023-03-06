@@ -89,5 +89,7 @@ export class AuthController {
   @Throttle(5, 10)
   @Post('auth/password-recovery')
   @HttpCode(204)
-  async userPasswordRecovery(@Body('email') email: string) {}
+  async userPasswordRecovery(@Body('email') email: string) {
+    return this.authService.passwordRecovery(email);
+  }
 }
