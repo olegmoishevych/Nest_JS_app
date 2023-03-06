@@ -10,6 +10,12 @@ import {
   CommentsDocument,
   CommentsViewModal,
 } from '../../comments/schema/comments.schema';
+import {
+  LikeStatus,
+  LikeStatusDocument,
+} from '../../comments/schema/likeStatus.schema';
+import { LikeStatusRepository } from './likeStatus.repository';
+import { UserModel } from '../../users/schemas/users.schema';
 
 @Injectable()
 export class PostsRepository {
@@ -17,10 +23,12 @@ export class PostsRepository {
     @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>,
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,
+    public likeStatusRepository: LikeStatusRepository,
   ) {}
 
   async findPosts(
     paginationType: PaginationDto,
+    userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const findAndSortedPosts = await this.postsModel
       .find({}, { _id: 0, __v: 0 })
@@ -32,12 +40,15 @@ export class PostsRepository {
       .limit(paginationType.pageSize)
       .lean();
     const getCountPosts = await this.postsModel.countDocuments();
-    // const postWithLikes = await postsWithLikeStatus(findAndSortedPosts, userId);
+    const postWithLikes = await this.likeStatusRepository.postWithLikeStatus(
+      findAndSortedPosts,
+      userId,
+    );
     return new PaginationViewModel<any>(
       getCountPosts,
       paginationType.pageNumber,
       paginationType.pageSize,
-      findAndSortedPosts,
+      postWithLikes,
     );
   }
 

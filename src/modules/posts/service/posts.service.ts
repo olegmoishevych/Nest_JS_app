@@ -22,8 +22,9 @@ export class PostsService {
 
   async findPosts(
     paginationDto: PaginationDto,
+    userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsRepository.findPosts(paginationDto);
+    return this.postsRepository.findPosts(paginationDto, userId);
   }
 
   async createPost(

@@ -21,6 +21,7 @@ import { CommentsDto } from '../../comments/dto/comments.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
+import { Token } from '../../decorators/token.decorator';
 
 @Controller('api')
 export class PostsController {
@@ -31,9 +32,10 @@ export class PostsController {
 
   @Get('posts')
   async findPosts(
+    @Token() userId: string | null,
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPosts(paginationDto);
+    return this.postsService.findPosts(paginationDto, userId);
   }
   @UseGuards(JwtAuthGuard)
   @Post('posts')
