@@ -128,10 +128,8 @@ export class PostsService {
     commentsDto: CommentsDto,
     user: UserModel,
   ): Promise<CommentsViewModal> {
-    const findPostById: any =
-      await this.postsRepository.findPostByIdFromLikesStatus(postId);
-    if (!findPostById)
-      throw new NotFoundException(`Post with ID ${postId} not found`);
+    const findPostById: any = await this.postsRepository.findPostById(postId);
+    if (!findPostById) throw new NotFoundException([]);
     const newComment: CommentsViewModal = {
       id: new ObjectId().toString(),
       postId: findPostById.id,

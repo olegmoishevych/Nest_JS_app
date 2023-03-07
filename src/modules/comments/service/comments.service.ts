@@ -31,6 +31,7 @@ export class CommentsService {
     if (!findPostById) throw new NotFoundException(`Post not found`);
     const findAndSortedComments =
       await this.commentsRepository.findCommentsByPostId(postId, paginationDto);
+    console.log('findAndSortedComments', findAndSortedComments);
     const commentsWithLikeStatus =
       await this.likeStatusRepository.commentsWithLikeStatus(
         findAndSortedComments.items,

@@ -38,6 +38,7 @@ export class CommentsRepository {
     const getCountComments = await this.commentsModel.countDocuments({
       postId,
     });
+    console.log('findAndSortedComments', findAndSortedComments);
     return new PaginationViewModel<any>(
       getCountComments,
       paginationDto.pageNumber,
