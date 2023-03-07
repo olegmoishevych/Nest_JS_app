@@ -92,11 +92,10 @@ export class PostsRepository {
   async getCountPostsByBlogId(blogId: string) {
     return this.postsModel.countDocuments({ blogId });
   }
-  async createCommentByPostId(
-    newComment: Comments,
-  ): Promise<CommentsViewModal> {
-    await this.commentsModel.create({ ...newComment });
-    return newComment;
+  async createCommentByPostId(newComment: any): Promise<CommentsViewModal> {
+    const result = await this.commentsModel.create({ newComment });
+    const { postId, ...commentCopy } = newComment;
+    return commentCopy;
   }
   async updatePostById(
     id: string,
