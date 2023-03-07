@@ -19,6 +19,7 @@ export class CommentsService {
     private postsRepository: PostsRepository,
     private likeStatusRepository: LikeStatusRepository,
   ) {}
+
   async findCommentsByPostId(
     postId: string,
     paginationDto: PaginationDto,
@@ -45,11 +46,13 @@ export class CommentsService {
       commentsWithLikeStatus,
     );
   }
+
   async findCommentById(
     id: string,
     userId: string,
   ): Promise<CommentsViewModal> {
-    const findCommentById = await this.commentsRepository.findCommentById(id);
+    const findCommentById =
+      await this.commentsRepository.findCommentByIdFromLikesStatus(id);
     if (!findCommentById) throw new NotFoundException(`Comment not found`);
     const commentWithLikeStatus =
       await this.likeStatusRepository.commentsWithLikeStatus(
@@ -58,13 +61,13 @@ export class CommentsService {
       );
     return commentWithLikeStatus[0];
   }
+
   async findCommentByIdAndDelete(
     commentId: string,
     userId: string,
   ): Promise<CommentsViewModal> {
-    const findCommentById = await this.commentsRepository.findCommentById(
-      commentId,
-    );
+    const findCommentById =
+      await this.commentsRepository.findCommentByIdFromLikesStatus(commentId);
     if (!findCommentById)
       throw new NotFoundException({
         message: 'Comment not found',
@@ -74,14 +77,14 @@ export class CommentsService {
       throw new ForbiddenException([]);
     return this.commentsRepository.deleteCommentById(commentId, userId);
   }
+
   async updateCommentByCommentId(
     commentId: string,
     userId: string,
     content: string,
   ): Promise<CommentsViewModal> {
-    const findCommentById = await this.commentsRepository.findCommentById(
-      commentId,
-    );
+    const findCommentById =
+      await this.commentsRepository.findCommentByIdFromLikesStatus(commentId);
     if (!findCommentById)
       throw new NotFoundException({
         message: 'Comment not found',
@@ -95,6 +98,7 @@ export class CommentsService {
       content,
     );
   }
+
   async updateLikeStatusByCommentId(
     commentId: string,
     likeStatus: string,
@@ -103,6 +107,7 @@ export class CommentsService {
     const findCommentById = await this.commentsRepository.findCommentById(
       commentId,
     );
+    console.log('findCommentById', findCommentById);
     if (!findCommentById)
       throw new NotFoundException({
         message: 'Comment not found',
