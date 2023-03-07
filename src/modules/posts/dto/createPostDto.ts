@@ -15,8 +15,8 @@ export class CreatePostDto {
 
 export class CreatePostDtoWithBlogId extends CreatePostDto {
   @IsString()
-  @IsNotEmpty()
-  @Length(1, 100)
+  // @IsNotEmpty()
+  // @Length(1, 100)
   blogId: string;
 }
 
