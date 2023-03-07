@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { Token } from '../../decorators/token.decorator';
+import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
 @Controller('api')
 export class PostsController {
@@ -37,20 +38,23 @@ export class PostsController {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsService.findPosts(paginationDto, userId);
   }
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Post('posts')
   async createPost(
     @Body() createPost: CreatePostDtoWithBlogId,
   ): Promise<PostsViewModal> {
     return this.postsService.createPost(createPost);
   }
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Delete('posts/:id')
   @HttpCode(204)
   async deletePostById(@Param('id') id: string): Promise<boolean> {
     return this.postsService.deletePostById(id);
   }
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Put('posts/:id')
   @HttpCode(204)
   async updatePostById(
