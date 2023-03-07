@@ -1,4 +1,4 @@
-import { IsIn, IsString, Length } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString, Length, Min } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreatePostDto {
@@ -15,6 +15,8 @@ export class CreatePostDto {
 
 export class CreatePostDtoWithBlogId extends CreatePostDto {
   @IsString()
+  @IsNotEmpty()
+  @Length(1, 100)
   blogId: string;
 }
 

@@ -29,7 +29,6 @@ export class PaginationDto {
   sortBy: string | null = 'createdAt';
   @IsOptional()
   sortDirection: string | null = 'desc';
-
   public getSkipSize() {
     return (this.pageNumber - 1) * this.pageSize;
   }
