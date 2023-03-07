@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { BlogsRepository } from '../repository/blogs.repository';
@@ -61,7 +65,12 @@ export class BlogsService {
   ): Promise<PostsViewModal> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
     if (!findBlogById)
-      throw new NotFoundException(`User with ID ${blogId} not found`);
+      throw new BadRequestException([
+        {
+          message: 'BlogId not found',
+          field: 'BlogId',
+        },
+      ]);
     const newPost: PostsViewModal = {
       id: new ObjectId().toString(),
       title: newPostByBlogId.title,

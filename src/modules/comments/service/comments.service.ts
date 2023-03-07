@@ -107,7 +107,6 @@ export class CommentsService {
     const findCommentById = await this.commentsRepository.findCommentById(
       commentId,
     );
-    console.log('findCommentById', findCommentById);
     if (!findCommentById)
       throw new NotFoundException({
         message: 'Comment not found',

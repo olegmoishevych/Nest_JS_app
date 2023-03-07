@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostsRepository } from '../repository/posts.repository';
 import { BlogsRepository } from '../../blogs/repository/blogs.repository';
 import { CreatePostDtoWithBlogId } from '../dto/createPostDto';
@@ -33,7 +37,13 @@ export class PostsService {
     const findBlogById = await this.blogsRepository.findBlogById(
       createPost.blogId,
     );
-    if (!findBlogById) throw new NotFoundException([]);
+    if (!findBlogById)
+      throw new BadRequestException([
+        {
+          message: 'BlogId not found',
+          field: 'BlogId',
+        },
+      ]);
     const newPost: PostsViewModal = {
       id: new ObjectId().toString(),
       title: createPost.title,
@@ -53,11 +63,8 @@ export class PostsService {
   }
 
   async deletePostById(id: string): Promise<boolean> {
-    const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
-      id,
-    );
-    if (!findPostById)
-      throw new NotFoundException(`Post with ID ${id} not found`);
+    const findPostById = await this.postsRepository.findPostById(id);
+    if (!findPostById) throw new NotFoundException([]);
     return this.postsRepository.deletePostById(id);
   }
 
@@ -67,7 +74,12 @@ export class PostsService {
   ): Promise<boolean> {
     const findBlogById = await this.blogsRepository.findBlogById(post.blogId);
     if (!findBlogById)
-      throw new NotFoundException(`Post with ID ${id} not found`);
+      throw new BadRequestException([
+        {
+          message: 'BlogId not found',
+          field: 'BlogId',
+        },
+      ]);
     const updatedPost = await this.postsRepository.updatePostById(id, post);
     if (!updatedPost)
       throw new NotFoundException(`Post with ID ${id} not found`);
