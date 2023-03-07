@@ -24,7 +24,9 @@ export class CommentsService {
     paginationDto: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
-    const findPostById = await this.postsRepository.findPostById(postId);
+    const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
+      postId,
+    );
     if (!findPostById) throw new NotFoundException(`Post not found`);
     const findAndSortedComments =
       await this.commentsRepository.findCommentsByPostId(postId, paginationDto);

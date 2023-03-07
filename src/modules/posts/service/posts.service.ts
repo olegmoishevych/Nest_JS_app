@@ -53,7 +53,9 @@ export class PostsService {
   }
 
   async deletePostById(id: string): Promise<boolean> {
-    const findPostById = await this.postsRepository.findPostById(id);
+    const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
+      id,
+    );
     if (!findPostById)
       throw new NotFoundException(`Post with ID ${id} not found`);
     return this.postsRepository.deletePostById(id);
@@ -73,7 +75,9 @@ export class PostsService {
   }
 
   async findPostById(id: string, userId: string): Promise<PostsViewModal> {
-    const findPostById = await this.postsRepository.findPostById(id);
+    const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
+      id,
+    );
     if (!findPostById) throw new NotFoundException(`Post not found`);
     const postWithLikesStatus =
       await this.likeStatusRepository.postWithLikeStatus(findPostById, userId);
@@ -112,7 +116,8 @@ export class PostsService {
     commentsDto: CommentsDto,
     user: UserModel,
   ): Promise<CommentsViewModal> {
-    const findPostById: any = await this.postsRepository.findPostById(postId);
+    const findPostById: any =
+      await this.postsRepository.findPostByIdFromLikesStatus(postId);
     if (!findPostById)
       throw new NotFoundException(`Post with ID ${postId} not found`);
     const newComment: CommentsViewModal = {
@@ -137,7 +142,7 @@ export class PostsService {
     postId: string,
     likeStatus: string,
     user: UserModel,
-  ) {
+  ): Promise<boolean> {
     const findPostById = await this.postsRepository.findPostById(postId);
     if (!findPostById)
       throw new NotFoundException([

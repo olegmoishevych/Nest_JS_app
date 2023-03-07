@@ -62,8 +62,11 @@ export class PostsRepository {
     return result.deletedCount === 1;
   }
 
-  async findPostById(id: string): Promise<PostsViewModal[]> {
+  async findPostByIdFromLikesStatus(id: string): Promise<PostsViewModal[]> {
     return this.postsModel.find({ id }, { _id: 0, __v: 0 }).lean();
+  }
+  async findPostById(id: string): Promise<PostsViewModal[]> {
+    return this.postsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
   async findPostsByBlogId(
     blogId: string,
