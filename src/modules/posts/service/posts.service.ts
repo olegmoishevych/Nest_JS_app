@@ -87,20 +87,17 @@ export class PostsService {
   }
 
   async findPostById(id: string, userId: string): Promise<PostsViewModal> {
-    const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
-      id,
-    );
-    if (!findPostById.length) throw new NotFoundException(`Post not found`);
-    const postWithLikesStatus =
-      await this.likeStatusRepository.postWithLikeStatus(findPostById, userId);
-    return postWithLikesStatus[0];
+    // const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(id);
+    const findPostById = await this.postsRepository.findPostById(id);
+    if (!findPostById) throw new NotFoundException(`Post not found`);
+    return this.likeStatusRepository.postWithLikeStatus(findPostById, userId);
   }
 
   async findPostByBlogId(
     blogId: string,
     paginationDto: PaginationDto,
     userId: string,
-  ): Promise<PaginationViewModel<PostsViewModal>> {
+  ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
     if (!findBlogById) throw new NotFoundException(`Post not found`);
     const findAndSortedPosts = await this.postsRepository.findPostsByBlogId(
@@ -108,7 +105,7 @@ export class PostsService {
       paginationDto,
     );
     const postsWithLikesStatus =
-      await this.likeStatusRepository.postWithLikeStatus(
+      await this.likeStatusRepository.postsWithLikeStatus(
         findAndSortedPosts.items,
         userId,
       );

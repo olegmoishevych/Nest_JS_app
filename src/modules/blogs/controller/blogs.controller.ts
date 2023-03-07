@@ -84,7 +84,7 @@ export class BlogsController {
     @Param('blogId') blogId: string,
     @Query() paginationDto: PaginationDto,
     @Token() userId: string,
-  ): Promise<PaginationViewModel<PostsViewModal>> {
+  ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsService.findPostByBlogId(blogId, paginationDto, userId);
   }
 }

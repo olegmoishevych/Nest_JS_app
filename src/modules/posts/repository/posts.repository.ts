@@ -40,15 +40,15 @@ export class PostsRepository {
       .limit(paginationType.pageSize)
       .lean();
     const getCountPosts = await this.postsModel.countDocuments();
-    const postWithLikes = await this.likeStatusRepository.postWithLikeStatus(
+    const postsWithLikes = await this.likeStatusRepository.postsWithLikeStatus(
       findAndSortedPosts,
       userId,
     );
-    return new PaginationViewModel<any>(
+    return new PaginationViewModel<PostsViewModal[]>(
       getCountPosts,
       paginationType.pageNumber,
       paginationType.pageSize,
-      postWithLikes,
+      postsWithLikes,
     );
   }
 
@@ -62,10 +62,10 @@ export class PostsRepository {
     return result.deletedCount === 1;
   }
 
-  async findPostByIdFromLikesStatus(id: string): Promise<PostsViewModal[]> {
-    return this.postsModel.find({ id }, { _id: 0, __v: 0 }).lean();
-  }
-  async findPostById(id: string): Promise<PostsViewModal[]> {
+  // async findPostByIdFromLikesStatus(id: string): Promise<PostsViewModal[]> {
+  //   return this.postsModel.find({ id }, { _id: 0, __v: 0 }).lean();
+  // }
+  async findPostById(id: string): Promise<PostsViewModal> {
     return this.postsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
   async findPostsByBlogId(
@@ -82,7 +82,7 @@ export class PostsRepository {
       .limit(paginationType.pageSize)
       .lean();
     const getCountPosts = await this.postsModel.countDocuments({ blogId });
-    return new PaginationViewModel<any>(
+    return new PaginationViewModel<PostsViewModal[]>(
       getCountPosts,
       paginationType.pageNumber,
       paginationType.pageSize,

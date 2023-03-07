@@ -15,6 +15,7 @@ export class LikeStatusRepository {
     @InjectModel(LikeStatus.name)
     private readonly likeStatusModel: Model<LikeStatusDocument>,
   ) {}
+
   async updateLikeStatusByPostId(
     updateLikeStatusByPostId: LikeStatusModal,
   ): Promise<LikeStatusModal> {
@@ -27,47 +28,90 @@ export class LikeStatusRepository {
       { upsert: true },
     );
   }
-  async postWithLikeStatus(
-    findAndSortedPost: any,
+
+  async postsWithLikeStatus(
+    posts: PostsViewModal[],
     userId: string | null,
   ): Promise<PostsViewModal[]> {
-    const postWithLikeStatus = [];
-    for (const post of findAndSortedPost) {
-      const countLikes = await this.likeStatusModel.countDocuments({
+    return Promise.all(
+      posts.map(async (c) => {
+        return this.postWithLikeStatus(c, userId);
+      }),
+    );
+  }
+
+  async postWithLikeStatus(
+    post: PostsViewModal,
+    userId: string | null,
+  ): Promise<PostsViewModal> {
+    post.extendedLikesInfo.likesCount =
+      await this.likeStatusModel.countDocuments({
         parentId: post.id,
         likeStatus: 'Like',
       });
-      const countDislikes = await this.likeStatusModel.countDocuments({
+    post.extendedLikesInfo.dislikesCount =
+      await this.likeStatusModel.countDocuments({
         parentId: post.id,
         likeStatus: 'Dislike',
       });
-      const findPostWithLikesByUserId = await this.likeStatusModel.findOne({
-        parentId: post.id,
-        userId: userId,
-      });
-      const findNewestPost = await this.likeStatusModel.find(
+    post.extendedLikesInfo.newestLikes = await this.likeStatusModel
+      .find(
         {
           parentId: post.id,
           likeStatus: 'Like',
         },
         { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
         { sort: { _id: -1 }, limit: 3 },
-      );
-
-      post.extendedLikesInfo.likesCount = countLikes;
-      post.extendedLikesInfo.dislikesCount = countDislikes;
-      post.extendedLikesInfo.newestLikes = findNewestPost;
-
-      if (findPostWithLikesByUserId) {
-        post.extendedLikesInfo.myStatus = findPostWithLikesByUserId.likeStatus;
-      } else {
-        post.extendedLikesInfo.myStatus = 'None';
+      )
+      .lean();
+    if (userId) {
+      const status = await this.likeStatusModel
+        .findOne({ parentId: post.id, userId }, { _id: 0, likeStatus: 1 })
+        .lean();
+      if (status) {
+        post.extendedLikesInfo.myStatus = status.likeStatus;
       }
-
-      postWithLikeStatus.push(post);
     }
-    return postWithLikeStatus;
+    return post;
+
+    // const postWithLikeStatus = [];
+    // for (const post of findAndSortedPost) {
+    //   const countLikes = await this.likeStatusModel.countDocuments({
+    //     parentId: post.id,
+    //     likeStatus: 'Like',
+    //   });
+    //   const countDislikes = await this.likeStatusModel.countDocuments({
+    //     parentId: post.id,
+    //     likeStatus: 'Dislike',
+    //   });
+    //   const findPostWithLikesByUserId = await this.likeStatusModel.findOne({
+    //     parentId: post.id,
+    //     userId: userId,
+    //   });
+    //   const findNewestPost = await this.likeStatusModel.find(
+    //     {
+    //       parentId: post.id,
+    //       likeStatus: 'Like',
+    //     },
+    //     { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
+    //     { sort: { _id: -1 }, limit: 3 },
+    //   );
+    //
+    //   post.extendedLikesInfo.likesCount = countLikes;
+    //   post.extendedLikesInfo.dislikesCount = countDislikes;
+    //   post.extendedLikesInfo.newestLikes = findNewestPost;
+    //
+    //   if (findPostWithLikesByUserId) {
+    //     post.extendedLikesInfo.myStatus = findPostWithLikesByUserId.likeStatus;
+    //   } else {
+    //     post.extendedLikesInfo.myStatus = 'None';
+    //   }
+    //
+    //   postWithLikeStatus.push(post);
+    // }
+    // return postWithLikeStatus;
   }
+
   async commentsWithLikeStatus(
     commentWithLikeStatus: CommentsViewModal[],
     userId: string | null,

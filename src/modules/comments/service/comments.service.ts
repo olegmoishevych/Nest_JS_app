@@ -25,10 +25,8 @@ export class CommentsService {
     paginationDto: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
-    const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
-      postId,
-    );
-    if (!findPostById.length) throw new NotFoundException(`Post not found`);
+    const findPostById = await this.postsRepository.findPostById(postId);
+    if (!findPostById) throw new NotFoundException(`Post not found`);
     const findAndSortedComments =
       await this.commentsRepository.findCommentsByPostId(postId, paginationDto);
     const commentsWithLikeStatus =
@@ -61,7 +59,6 @@ export class CommentsService {
     commentId: string,
     userId: string,
   ): Promise<CommentsViewModal> {
-    // const findCommentById = await this.commentsRepository.findCommentByIdFromLikesStatus(commentId);
     const findCommentById = await this.commentsRepository.findCommentById(
       commentId,
     );
@@ -80,7 +77,6 @@ export class CommentsService {
     userId: string,
     content: string,
   ): Promise<CommentsViewModal> {
-    // const findCommentById = await this.commentsRepository.findCommentByIdFromLikesStatus(commentId);
     const findCommentById = await this.commentsRepository.findCommentById(
       commentId,
     );
