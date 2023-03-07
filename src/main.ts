@@ -7,6 +7,7 @@ import { HttpExceptionFilter } from './exceptionFilter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
+import { useContainer } from "class-validator";
 
 const serverUrl = 'http://localhost:3000';
 async function bootstrap() {
@@ -15,6 +16,7 @@ async function bootstrap() {
   const PORT = parseInt(configService.get<string>('PORT'), 10) || 3000;
   app.enableCors();
   app.use(cookieParser());
+  useContainer(app.select(AppModule), {fallbackOnErrors: true})
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

@@ -47,6 +47,7 @@ import {
   LikeStatusSchema,
 } from '../comments/schema/likeStatus.schema';
 import { LikeStatusRepository } from '../posts/repository/likeStatus.repository';
+import { BlogIsExistRule } from "../blogs/validators/customValidateBlog";
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -137,6 +138,7 @@ const throttlerGuard = {
     // throttlerGuard,
     JwtStrategy,
     BasicStrategy,
+    BlogIsExistRule
   ],
 })
 export class AppModule {}
