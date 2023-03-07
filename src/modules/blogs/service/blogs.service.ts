@@ -65,7 +65,7 @@ export class BlogsService {
   ): Promise<PostsViewModal> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
     if (!findBlogById)
-      throw new BadRequestException([
+      throw new NotFoundException([
         {
           message: 'BlogId not found',
           field: 'BlogId',

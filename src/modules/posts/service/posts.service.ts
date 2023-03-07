@@ -90,7 +90,7 @@ export class PostsService {
     const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(
       id,
     );
-    if (!findPostById) throw new NotFoundException(`Post not found`);
+    if (!findPostById.length) throw new NotFoundException(`Post not found`);
     const postWithLikesStatus =
       await this.likeStatusRepository.postWithLikeStatus(findPostById, userId);
     return postWithLikesStatus[0];
