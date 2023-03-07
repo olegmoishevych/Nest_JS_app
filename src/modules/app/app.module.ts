@@ -99,13 +99,13 @@ const throttlerGuard = {
 @Module({
   imports: [
     PassportModule,
-    ThrottlerModule.forRoot({
-      ttl: 1,
-      limit: 10,
-    }),
+    // ThrottlerModule.forRoot({
+    //   ttl: 1,
+    //   limit: 10,
+    // }),
     JwtModule.register({
       secret: JWT.jwt_secret,
-      signOptions: { expiresIn: '60000s' },
+      signOptions: { expiresIn: '600s' },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
@@ -134,7 +134,7 @@ const throttlerGuard = {
   providers: [
     ...services,
     ...repositories,
-    throttlerGuard,
+    // throttlerGuard,
     JwtStrategy,
     BasicStrategy,
   ],
