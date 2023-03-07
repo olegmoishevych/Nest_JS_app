@@ -38,7 +38,6 @@ export class CommentsRepository {
     const getCountComments = await this.commentsModel.countDocuments({
       postId,
     });
-    console.log('findAndSortedComments', findAndSortedComments);
     return new PaginationViewModel<any>(
       getCountComments,
       paginationDto.pageNumber,
@@ -47,11 +46,11 @@ export class CommentsRepository {
     );
   }
 
-  async findCommentByIdFromLikesStatus(id: string): Promise<CommentsViewModal> {
-    return this.commentsModel
-      .find({ id }, { _id: 0, __v: 0, postId: 0 })
-      .lean();
-  }
+  // async findCommentByIdFromLikesStatus(id: string): Promise<CommentsViewModal[]> {
+  //   return this.commentsModel
+  //     .findOne({ id }, { _id: 0, __v: 0, postId: 0 })
+  //     // .lean();
+  // }
   async findCommentById(id: string): Promise<CommentsViewModal> {
     return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
   }

@@ -69,35 +69,65 @@ export class LikeStatusRepository {
     return postWithLikeStatus;
   }
   async commentsWithLikeStatus(
-    findAndSortedComments: any,
+    commentWithLikeStatus: CommentsViewModal[],
     userId: string | null,
   ): Promise<CommentsViewModal[]> {
-    const commentWithLikeStatus = [];
-    for (const comment of findAndSortedComments) {
-      const countLikes = await this.likeStatusModel.countDocuments({
-        parentId: comment.id,
-        likeStatus: 'Like',
-      });
-      const countDislikes = await this.likeStatusModel.countDocuments({
+    return Promise.all(
+      commentWithLikeStatus.map(async (c) => {
+        return this.commentWithLikeStatus(c, userId);
+      }),
+    );
+  }
+
+  async commentWithLikeStatus(
+    comment: CommentsViewModal,
+    userId: string | null,
+  ): Promise<CommentsViewModal> {
+    comment.likesInfo.likesCount = await this.likeStatusModel.countDocuments({
+      parentId: comment.id,
+      likeStatus: 'Like',
+    });
+    comment.likesInfo.dislikesCount = await this.likeStatusModel.countDocuments(
+      {
         parentId: comment.id,
         likeStatus: 'Dislike',
-      });
-      const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
-        parentId: comment.id,
-        userId: userId,
-      });
-
-      comment.likesInfo.likesCount = countLikes;
-      comment.likesInfo.dislikesCount = countDislikes;
-
-      if (findCommentWithLikesByUserId) {
-        comment.likesInfo.myStatus = findCommentWithLikesByUserId.likeStatus;
-      } else {
-        comment.likesInfo.myStatus = 'None';
+      },
+    );
+    if (userId) {
+      const status = await this.likeStatusModel
+        .findOne({ parentId: comment.id, userId }, { _id: 0, likeStatus: 1 })
+        .lean();
+      if (status) {
+        comment.likesInfo.myStatus = status.likeStatus;
       }
-
-      commentWithLikeStatus.push(comment);
     }
-    return commentWithLikeStatus;
+    return comment;
+    // const commentWithLikeStatus = [];
+    // for (const comment of findAndSortedComments) {
+    //   const countLikes = await this.likeStatusModel.countDocuments({
+    //     parentId: comment.id,
+    //     likeStatus: 'Like',
+    //   });
+    //   const countDislikes = await this.likeStatusModel.countDocuments({
+    //     parentId: comment.id,
+    //     likeStatus: 'Dislike',
+    //   });
+    //   const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
+    //     parentId: comment.id,
+    //     userId: userId,
+    //   });
+    //
+    //   comment.likesInfo.likesCount = countLikes;
+    //   comment.likesInfo.dislikesCount = countDislikes;
+    //
+    //   if (findCommentWithLikesByUserId) {
+    //     comment.likesInfo.myStatus = findCommentWithLikesByUserId.likeStatus;
+    //   } else {
+    //     comment.likesInfo.myStatus = 'None';
+    //   }
+    //
+    //   commentWithLikeStatus.push(comment);
+    // }
+    // return commentWithLikeStatus;
   }
 }
