@@ -1,5 +1,8 @@
 import {
   BadRequestException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -112,7 +115,8 @@ export class AuthService {
         },
       ]);
     const tokenVerify = await this.tokenVerify(refreshToken);
-    if (!tokenVerify) throw new NotFoundException([]);
+    if (!tokenVerify)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     try {
       await this.deviceService.deleteSessionByUserId(
         tokenVerify.userId,
@@ -139,7 +143,8 @@ export class AuthService {
         },
       ]);
     const tokenVerify = await this.tokenVerify(refreshToken);
-    if (!tokenVerify) throw new NotFoundException([]);
+    if (!tokenVerify)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const createJwtTokenPair = await this.createJwtPair(
       tokenVerify.userId,
       ip.title,
@@ -183,11 +188,11 @@ export class AuthService {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '100000s',
+        expiresIn: '10s',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '200000s',
+        expiresIn: '20s',
         secret: JWT.jwt_secret,
       }),
     };
