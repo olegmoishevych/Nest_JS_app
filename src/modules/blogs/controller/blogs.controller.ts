@@ -38,14 +38,12 @@ export class BlogsController {
     return this.blogsService.getBlogs(paginationDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @UseGuards(BasicAuthGuard)
   @Post('blogs')
   async createBlog(@Body() createBlogType: BlogsDto) {
     return this.blogsService.createBlog(createBlogType);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @UseGuards(BasicAuthGuard)
   @Delete('blogs/:id')
   @HttpCode(204)
@@ -53,7 +51,6 @@ export class BlogsController {
     return this.blogsService.deleteBlogById(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @UseGuards(BasicAuthGuard)
   @Put('blogs/:id')
   @HttpCode(204)
@@ -69,7 +66,6 @@ export class BlogsController {
     return this.blogsService.findBlogById(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @UseGuards(BasicAuthGuard)
   @Post('blogs/:blogId/posts')
   async createPostByBlogId(

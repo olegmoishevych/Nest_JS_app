@@ -47,7 +47,7 @@ import {
   LikeStatusSchema,
 } from '../comments/schema/likeStatus.schema';
 import { LikeStatusRepository } from '../posts/repository/likeStatus.repository';
-import { BlogIsExistRule } from "../blogs/validators/customValidateBlog";
+import { BlogIsExistRule } from '../blogs/validators/customValidateBlog';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -100,10 +100,10 @@ const throttlerGuard = {
 @Module({
   imports: [
     PassportModule,
-    // ThrottlerModule.forRoot({
-    //   ttl: 1,
-    //   limit: 10,
-    // }),
+    ThrottlerModule.forRoot({
+      ttl: 1,
+      limit: 10,
+    }),
     JwtModule.register({
       secret: JWT.jwt_secret,
       signOptions: { expiresIn: '600s' },
@@ -135,10 +135,10 @@ const throttlerGuard = {
   providers: [
     ...services,
     ...repositories,
-    // throttlerGuard,
+    throttlerGuard,
     JwtStrategy,
     BasicStrategy,
-    BlogIsExistRule
+    BlogIsExistRule,
   ],
 })
 export class AppModule {}

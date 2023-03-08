@@ -38,7 +38,7 @@ export class PostsController {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsService.findPosts(paginationDto, userId);
   }
-  // @UseGuards(JwtAuthGuard)
+
   @UseGuards(BasicAuthGuard)
   @Post('posts')
   async createPost(
@@ -46,14 +46,14 @@ export class PostsController {
   ): Promise<PostsViewModal> {
     return this.postsService.createPost(createPost);
   }
-  // @UseGuards(JwtAuthGuard)
+
   @UseGuards(BasicAuthGuard)
   @Delete('posts/:id')
   @HttpCode(204)
   async deletePostById(@Param('id') id: string): Promise<boolean> {
     return this.postsService.deletePostById(id);
   }
-  // @UseGuards(JwtAuthGuard)
+
   @UseGuards(BasicAuthGuard)
   @Put('posts/:id')
   @HttpCode(204)
