@@ -149,7 +149,8 @@ export class AuthService {
       await this.deviceService.updateUserSession(
         ip.ip,
         ip.title,
-        lastActiveDate,
+        // lastActiveDate,
+        new Date(),
         tokenVerify.deviceId,
         tokenVerify.userId,
       );

@@ -30,7 +30,8 @@ export class DevicesService {
     const newSession = new DevicesModal(
       ip,
       title,
-      lastActiveDate,
+      // lastActiveDate,
+      new Date(),
       deviceId,
       userId,
     );
@@ -47,14 +48,15 @@ export class DevicesService {
   async updateUserSession(
     ip: string,
     title: string,
-    lastActiveDate: string,
+    lastActiveDate: Date,
     deviceId: string,
     userId: string,
   ): Promise<DevicesModal> {
     const updatedSession = new DevicesModal(
       ip,
       title,
-      lastActiveDate,
+      // lastActiveDate,
+      new Date(),
       deviceId,
       userId,
     );
