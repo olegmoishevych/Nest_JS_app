@@ -131,12 +131,7 @@ export class AuthService {
     const findRefreshTokenInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
     if (findRefreshTokenInBlackList)
-      throw new NotFoundException([
-        {
-          message: 'refresh token in black list',
-          field: 'refresh token',
-        },
-      ]);
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const tokenVerify = await this.tokenVerify(refreshToken);
     if (!tokenVerify)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
