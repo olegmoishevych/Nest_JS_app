@@ -90,7 +90,8 @@ export class AuthService {
       await this.deviceService.createUserSession(
         ip,
         title,
-        lastActiveDate,
+        // lastActiveDate,
+        new Date(),
         deviceId,
         findUserByLoginOrEmail.id,
       );
@@ -141,15 +142,10 @@ export class AuthService {
       ip.ip,
       tokenVerify.deviceId,
     );
-    const lastActiveDate = await this.getLastActiveDate(
-      createJwtTokenPair.refreshToken,
-    );
-
     try {
       await this.deviceService.updateUserSession(
         ip.ip,
         ip.title,
-        // lastActiveDate,
         new Date(),
         tokenVerify.deviceId,
         tokenVerify.userId,
