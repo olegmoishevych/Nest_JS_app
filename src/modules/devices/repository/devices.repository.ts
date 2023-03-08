@@ -24,4 +24,10 @@ export class DevicesRepository {
     const result = await this.devicesModel.deleteMany({ userId, deviceId });
     return result.deletedCount === 1;
   }
+  async updateUserSessionById(updatedSession: Devices): Promise<DevicesModal> {
+    return this.devicesModel.findOneAndUpdate(
+      { userId: updatedSession.userId, deviceId: updatedSession.deviceId },
+      { $set: updatedSession },
+    );
+  }
 }

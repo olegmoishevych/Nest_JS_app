@@ -146,7 +146,18 @@ export class AuthService {
       ip.ip,
       tokenVerify.deviceId,
     );
+    const lastActiveDate = await this.getLastActiveDate(
+      createJwtTokenPair.refreshToken,
+    );
+
     try {
+      await this.deviceService.updateUserSession(
+        ip.ip,
+        ip.title,
+        lastActiveDate,
+        tokenVerify.deviceId,
+        tokenVerify.userId,
+      );
       await this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
       return createJwtTokenPair;
     } catch (e) {

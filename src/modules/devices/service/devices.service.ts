@@ -28,4 +28,20 @@ export class DevicesService {
   ): Promise<boolean> {
     return this.devicesRepository.deleteSessionByUserId(deviceId, userId);
   }
+  async updateUserSession(
+    ip: string,
+    title: string,
+    lastActiveDate: string,
+    deviceId: string,
+    userId: string,
+  ): Promise<DevicesModal> {
+    const updatedSession = new DevicesModal(
+      ip,
+      title,
+      lastActiveDate,
+      deviceId,
+      userId,
+    );
+    return this.devicesRepository.updateUserSessionById(updatedSession);
+  }
 }
