@@ -637,6 +637,35 @@ window.onload = function() {
               "description": ""
             }
           }
+        },
+        "delete": {
+          "operationId": "DevicesController_deleteAllDevices",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/security/devices/{deviceId}": {
+        "delete": {
+          "operationId": "DevicesController_deleteDevicesByDeviceId",
+          "parameters": [
+            {
+              "name": "deviceId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
         }
       }
     },

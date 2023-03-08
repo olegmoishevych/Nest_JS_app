@@ -1,13 +1,20 @@
 import { DevicesRepository } from '../repository/devices.repository';
 import { DevicesModal, UserVerifyDataModal } from '../schemas/devices.schemas';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { TokensVerifyViewModal } from '../../auth/schemas/tokens.schemas';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import jwt from 'jsonwebtoken';
 import { JWT } from '../../auth/constants';
+import { JwtRepository } from '../../auth/repository/jwt.repository';
 
 @Injectable()
 export class DevicesService {
-  constructor(public devicesRepository: DevicesRepository) {}
+  constructor(
+    public devicesRepository: DevicesRepository,
+    public jwtRepository: JwtRepository,
+  ) {}
 
   async createUserSession(
     ip: string,
@@ -51,10 +58,13 @@ export class DevicesService {
   }
 
   async getAllDevices(refreshToken: string): Promise<DevicesModal> {
+    const findUserInBlackList =
+      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    if (findUserInBlackList) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
     const userId = getUserDataByToken.userId;
-    return this.devicesRepository.findUserDeviceById(userId);
+    return this.devicesRepository.findUserDeviceByUserId(userId);
   }
 
   async tokenVerify(token: string): Promise<UserVerifyDataModal> {
@@ -64,5 +74,35 @@ export class DevicesService {
     } catch (error) {
       return null;
     }
+  }
+
+  async deleteAllDevices(refreshToken: string): Promise<boolean> {
+    const findUserInBlackList =
+      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    if (findUserInBlackList) throw new UnauthorizedException([]);
+    const getUserDataByToken = await this.tokenVerify(refreshToken);
+    if (!getUserDataByToken) throw new UnauthorizedException([]);
+    const userId = getUserDataByToken.userId;
+    const deviceId = getUserDataByToken.deviceId;
+    return this.devicesRepository.deleteAllDevicesById(userId, deviceId);
+  }
+  async deleteAllDevicesByDeviceId(
+    refreshToken: string,
+    deviceId: string,
+  ): Promise<boolean> {
+    const getUserDataByToken = await this.tokenVerify(refreshToken);
+    if (!getUserDataByToken)
+      throw new UnauthorizedException(['User by token not found']);
+    const findDeviceByDeviceId =
+      await this.devicesRepository.findDeviceByDeviceId(deviceId);
+    if (!findDeviceByDeviceId) throw new NotFoundException(['User not found']);
+    // const findDeviceByUserId = await this.devicesRepository.findUserDeviceByUserId(getUserDataByToken.userId);
+    // if (!findDeviceByUserId) throw new NotFoundException(['Device not found']);
+    if (getUserDataByToken.userId !== findDeviceByDeviceId.userId)
+      throw new UnauthorizedException(['Its not your device']);
+    return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
+      getUserDataByToken.userId,
+      deviceId,
+    );
   }
 }

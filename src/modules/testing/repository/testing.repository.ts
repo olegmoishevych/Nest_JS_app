@@ -17,11 +17,17 @@ import {
   LikeStatus,
   LikeStatusDocument,
 } from '../../comments/schema/likeStatus.schema';
+import {
+  Devices,
+  DevicesDocument,
+} from '../../devices/schemas/devices.schemas';
 
 @Injectable()
 export class TestingRepository {
   constructor(
     @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
+    @InjectModel(Devices.name)
+    private readonly devicesModel: Model<DevicesDocument>,
     @InjectModel(LikeStatus.name)
     private readonly likeStatusModel: Model<LikeStatusDocument>,
     @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>,
@@ -33,6 +39,7 @@ export class TestingRepository {
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,
   ) {}
+
   async deleteAllData(): Promise<boolean> {
     try {
       await Promise.all([
@@ -43,6 +50,7 @@ export class TestingRepository {
         this.tokensModel.deleteMany(),
         this.recoveryCodeModel.deleteMany(),
         this.likeStatusModel.deleteMany(),
+        this.devicesModel.deleteMany(),
       ]);
       return true;
     } catch (e) {

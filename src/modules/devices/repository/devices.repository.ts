@@ -30,7 +30,27 @@ export class DevicesRepository {
       { $set: updatedSession },
     );
   }
-  async findUserDeviceById(userId: string): Promise<DevicesModal> {
+  async findUserDeviceByUserId(userId: string): Promise<DevicesModal> {
     return this.devicesModel.findOne({ userId }, { _id: 0, userId: 0 });
+  }
+  async findDeviceByDeviceId(deviceId: string): Promise<DevicesModal> {
+    return this.devicesModel.findOne({ deviceId });
+  }
+  async deleteAllDevicesById(
+    userId: string,
+    deviceId: string,
+  ): Promise<boolean> {
+    const result = await this.devicesModel.deleteMany({
+      userId,
+      deviceId: { $in: deviceId },
+    });
+    return result.deletedCount === 1;
+  }
+  async deleteUserSessionByUserAndDeviceId(
+    userId: string,
+    deviceId: string,
+  ): Promise<boolean> {
+    const res = await this.devicesModel.deleteOne({ userId, deviceId });
+    return res.deletedCount === 1;
   }
 }
