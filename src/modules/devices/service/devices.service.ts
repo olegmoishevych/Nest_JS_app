@@ -65,7 +65,7 @@ export class DevicesService {
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
     const userId = getUserDataByToken.userId;
-    return this.devicesRepository.findUserDeviceByUserId(userId);
+    return this.devicesRepository.findAllUserDevicesByUserId(userId);
   }
 
   async tokenVerify(token: string): Promise<UserVerifyDataModal> {
