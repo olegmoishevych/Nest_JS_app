@@ -1,6 +1,7 @@
 import { DevicesRepository } from '../repository/devices.repository';
 import { DevicesModal, UserVerifyDataModal } from '../schemas/devices.schemas';
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -99,7 +100,7 @@ export class DevicesService {
     // const findDeviceByUserId = await this.devicesRepository.findUserDeviceByUserId(getUserDataByToken.userId);
     // if (!findDeviceByUserId) throw new NotFoundException(['Device not found']);
     if (getUserDataByToken.userId !== findDeviceByDeviceId.userId)
-      throw new UnauthorizedException(['Its not your device']);
+      throw new ForbiddenException(['Its not your device']);
     return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
       getUserDataByToken.userId,
       deviceId,
