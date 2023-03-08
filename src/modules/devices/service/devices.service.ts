@@ -86,6 +86,7 @@ export class DevicesService {
     if (!getUserDataByToken) throw new UnauthorizedException([]);
     const userId = getUserDataByToken.userId;
     const deviceId = getUserDataByToken.deviceId;
+    console.log('deviceId', typeof deviceId);
     return this.devicesRepository.deleteAllDevicesById(userId, deviceId);
   }
 

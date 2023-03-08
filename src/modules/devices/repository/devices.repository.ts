@@ -43,6 +43,7 @@ export class DevicesRepository {
   }
 
   async deleteAllDevicesById(userId, deviceId): Promise<DeleteResult> {
+    console.log('userId', userId);
     return this.devicesModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },
