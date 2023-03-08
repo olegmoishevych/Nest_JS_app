@@ -78,7 +78,7 @@ export class AuthService {
     const findUserByLoginOrEmail = await this.usersService.checkUserCredentials(
       loginOrEmail,
     );
-    const deviceId: string = new ObjectId().toString();
+    const deviceId = new ObjectId().toString();
     const createJwt = await this.createJwtPair(
       findUserByLoginOrEmail.id,
       title,
@@ -178,11 +178,11 @@ export class AuthService {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '10s',
+        expiresIn: '1000s',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '20s',
+        expiresIn: '2000s',
         secret: JWT.jwt_secret,
       }),
     };
