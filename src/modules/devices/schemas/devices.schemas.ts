@@ -28,3 +28,12 @@ export class DevicesModal {
     public userId: string,
   ) {}
 }
+
+export class UserVerifyDataModal {
+  constructor(
+    public userId: string,
+    public deviceId: string,
+    public iat: number,
+    public exp: number,
+  ) {}
+}

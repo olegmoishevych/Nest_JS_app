@@ -14,7 +14,6 @@ import { Throttle } from '@nestjs/throttler';
 import { MeViewModel, UserModel } from '../../users/schemas/users.schema';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
-import { JwtPairType } from '../constants';
 import { Cookies } from '../decorator/cookies.decorator';
 import {
   JwtTokenPairViewModel,

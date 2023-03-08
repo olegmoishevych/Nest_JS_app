@@ -627,6 +627,17 @@ window.onload = function() {
             }
           }
         }
+      },
+      "/api/security/devices": {
+        "get": {
+          "operationId": "DevicesController_getAllDevices",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
       }
     },
     "info": {

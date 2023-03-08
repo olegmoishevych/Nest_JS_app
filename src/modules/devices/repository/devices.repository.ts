@@ -30,4 +30,7 @@ export class DevicesRepository {
       { $set: updatedSession },
     );
   }
+  async findUserDeviceById(userId: string): Promise<DevicesModal> {
+    return this.devicesModel.findOne({ userId }, { _id: 0, userId: 0 });
+  }
 }
