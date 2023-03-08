@@ -22,6 +22,7 @@ import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../email/email.service';
 import * as bcrypt from 'bcrypt';
+import { DevicesService } from '../../devices/service/devices.service';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +32,7 @@ export class AuthService {
     public jwtService: JwtService,
     public usersRepository: UsersRepository,
     public jwtRepository: JwtRepository,
+    public deviceService: DevicesService,
   ) {}
 
   async userRegistration(registrationDto: AuthDto): Promise<UserModel> {
@@ -80,9 +82,25 @@ export class AuthService {
       deviceId,
       ip,
     );
-    return createJwt;
+    const lastActiveDate = await this.getLastActiveDate(createJwt.refreshToken);
+    try {
+      await this.deviceService.createUserSession(
+        ip,
+        title,
+        lastActiveDate,
+        deviceId,
+        findUserByLoginOrEmail.id,
+      );
+      return createJwt;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
-
+  async getLastActiveDate(refreshToken: string): Promise<string> {
+    const payload: any = await this.jwtService.decode(refreshToken);
+    return new Date(payload.iat * 1000).toISOString();
+  }
   async logout(refreshToken: string): Promise<TokensViewModel> {
     const findRefreshTokenInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
@@ -95,7 +113,16 @@ export class AuthService {
       ]);
     const tokenVerify = await this.tokenVerify(refreshToken);
     if (!tokenVerify) throw new NotFoundException([]);
-    return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
+    try {
+      await this.deviceService.deleteSessionByUserId(
+        tokenVerify.userId,
+        tokenVerify.deviceId,
+      );
+      return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
   async refreshToken(

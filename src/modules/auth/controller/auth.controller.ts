@@ -24,6 +24,7 @@ import { Ip } from '../decorator/ip.decorator';
 import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { AccessTokenModal } from '../schemas/auth.schemas';
 
 @Controller('api')
 export class AuthController {
@@ -63,15 +64,19 @@ export class AuthController {
     user,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<JwtPairType> {
+  ): Promise<AccessTokenModal> {
     const ip = req.ip;
     const title = req.headers['user-agent'] || 'browser not found';
-    const jwtPair = await this.authService.login(loginOrEmail, ip, title);
-    res.cookie('refreshToken', jwtPair.refreshToken, {
-      httpOnly: true,
-      secure: true,
+    const { accessToken, refreshToken } = await this.authService.login(
+      loginOrEmail,
+      ip,
+      title,
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: false,
+      secure: false,
     });
-    return jwtPair;
+    return { accessToken: accessToken };
   }
 
   @Post('auth/logout')
@@ -92,8 +97,8 @@ export class AuthController {
       ip,
     );
     res.cookie('refreshToken', updateToken.refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return updateToken;
   }

@@ -48,6 +48,10 @@ import {
 } from '../comments/schema/likeStatus.schema';
 import { LikeStatusRepository } from '../posts/repository/likeStatus.repository';
 import { BlogIsExistRule } from '../blogs/validators/customValidateBlog';
+import { DevicesRepository } from '../devices/repository/devices.repository';
+import { DevicesService } from '../devices/service/devices.service';
+import { DevicesController } from '../devices/controller/devices.controller';
+import { Devices, DevicesSchema } from '../devices/schemas/devices.schemas';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -57,6 +61,7 @@ const mongooseModels = [
   { name: Tokens.name, schema: TokensSchema },
   { name: RecoveryCode.name, schema: RecoveryCodeSchema },
   { name: LikeStatus.name, schema: LikeStatusSchema },
+  { name: Devices.name, schema: DevicesSchema },
 ];
 
 const controllers = [
@@ -67,6 +72,7 @@ const controllers = [
   PostsController,
   CommentsController,
   AuthController,
+  DevicesController,
 ];
 
 const services = [
@@ -79,6 +85,7 @@ const services = [
   AuthService,
   EmailService,
   JwtService,
+  DevicesService,
 ];
 
 const repositories = [
@@ -90,6 +97,7 @@ const repositories = [
   AuthRepository,
   JwtRepository,
   LikeStatusRepository,
+  DevicesRepository,
 ];
 
 const throttlerGuard = {
