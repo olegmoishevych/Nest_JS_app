@@ -9,6 +9,7 @@ import {
 import jwt from 'jsonwebtoken';
 import { JWT } from '../../auth/constants';
 import { JwtRepository } from '../../auth/repository/jwt.repository';
+import { DeleteResult } from 'mongodb';
 
 @Injectable()
 export class DevicesService {
@@ -58,7 +59,7 @@ export class DevicesService {
     return this.devicesRepository.updateUserSessionById(updatedSession);
   }
 
-  async getAllDevices(refreshToken: string): Promise<DevicesModal> {
+  async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
     const findUserInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
     if (findUserInBlackList) throw new UnauthorizedException([]);
@@ -77,7 +78,7 @@ export class DevicesService {
     }
   }
 
-  async deleteAllDevices(refreshToken: string): Promise<boolean> {
+  async deleteAllDevices(refreshToken: string): Promise<DeleteResult> {
     const findUserInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
     if (findUserInBlackList) throw new UnauthorizedException([]);
@@ -87,6 +88,7 @@ export class DevicesService {
     const deviceId = getUserDataByToken.deviceId;
     return this.devicesRepository.deleteAllDevicesById(userId, deviceId);
   }
+
   async deleteAllDevicesByDeviceId(
     refreshToken: string,
     deviceId: string,
@@ -97,8 +99,6 @@ export class DevicesService {
     const findDeviceByDeviceId =
       await this.devicesRepository.findDeviceByDeviceId(deviceId);
     if (!findDeviceByDeviceId) throw new NotFoundException(['User not found']);
-    // const findDeviceByUserId = await this.devicesRepository.findUserDeviceByUserId(getUserDataByToken.userId);
-    // if (!findDeviceByUserId) throw new NotFoundException(['Device not found']);
     if (getUserDataByToken.userId !== findDeviceByDeviceId.userId)
       throw new ForbiddenException(['Its not your device']);
     return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
