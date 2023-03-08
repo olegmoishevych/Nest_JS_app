@@ -60,9 +60,9 @@ export class DevicesService {
   }
 
   async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
-    const findUserInBlackList =
-      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    if (findUserInBlackList) throw new UnauthorizedException([]);
+    // const findUserInBlackList =
+    //   await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    // if (findUserInBlackList) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
     const userId = getUserDataByToken.userId;
@@ -79,9 +79,9 @@ export class DevicesService {
   }
 
   async deleteAllDevices(refreshToken: string): Promise<DeleteResult> {
-    const findUserInBlackList =
-      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    if (findUserInBlackList) throw new UnauthorizedException([]);
+    // const findUserInBlackList =
+    //   await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    // if (findUserInBlackList) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
     const userId = getUserDataByToken.userId;
