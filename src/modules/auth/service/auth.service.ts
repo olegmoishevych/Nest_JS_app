@@ -87,11 +87,9 @@ export class AuthService {
       deviceId,
       // ip,
     );
-    // const lastActiveDate = this.getLastActiveDate(createJwt.refreshToken);
     await this.deviceService.createUserSession(
       ip,
       title,
-      // lastActiveDate,
       new Date(),
       deviceId,
       findUserByLoginOrEmail.id,
@@ -99,29 +97,25 @@ export class AuthService {
     return createJwt;
   }
 
-  getLastActiveDate(refreshToken: string): string {
-    const payload: any = this.jwtService.decode(refreshToken);
-    return new Date(payload.iat * 1000).toISOString();
-  }
+  // getLastActiveDate(refreshToken: string): string {
+  //   const payload: any = this.jwtService.decode(refreshToken);
+  //   return new Date(payload.iat * 1000).toISOString();
+  // }
 
   async logout(refreshToken: string): Promise<TokensViewModel> {
     const findRefreshTokenInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    console.log('findRefreshTokenInBlackList', findRefreshTokenInBlackList);
     if (findRefreshTokenInBlackList)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const tokenVerify = await this.tokenVerify(refreshToken);
     if (!tokenVerify)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    try {
-      await this.deviceService.deleteSessionByUserId(
-        tokenVerify.userId,
-        tokenVerify.deviceId,
-      );
-      return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
+    await this.deviceService.deleteSessionByUserId(
+      tokenVerify.userId,
+      tokenVerify.deviceId,
+    );
+    return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
   }
 
   async refreshToken(
@@ -138,20 +132,16 @@ export class AuthService {
     const createJwtTokenPair = await this.createJwtPair(
       tokenVerify.userId,
       ip.title,
-      // ip.ip,
       tokenVerify.deviceId,
     );
-    console.log('tokenVerify', tokenVerify);
-    // const getLastActiveDate = this.getLastActiveDate(refreshToken);
     const newSession = new DevicesModal(
       ip.ip,
       ip.title,
       new Date(),
       tokenVerify.deviceId,
       tokenVerify.userId,
-      // getLastActiveDate,
     );
-    console.log('newSession', newSession);
+    await this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
     await this.deviceRepository.updateUserSessionById(newSession);
     return createJwtTokenPair;
   }
@@ -169,7 +159,6 @@ export class AuthService {
     userId: string,
     title: string,
     deviceId: string,
-    // ip: string,
   ): Promise<JwtPairType> {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
