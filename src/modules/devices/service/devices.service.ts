@@ -23,15 +23,14 @@ export class DevicesService {
   async createUserSession(
     ip: string,
     title: string,
-    lastActiveDate: string,
+    lastActiveDate: Date,
     deviceId: string,
     userId: string,
   ): Promise<DevicesModal> {
     const newSession = new DevicesModal(
       ip,
       title,
-      lastActiveDate,
-      // new Date(),
+      new Date(),
       deviceId,
       userId,
     );

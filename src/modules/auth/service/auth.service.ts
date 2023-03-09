@@ -87,11 +87,12 @@ export class AuthService {
       deviceId,
       // ip,
     );
-    const lastActiveDate = this.getLastActiveDate(createJwt.refreshToken);
+    // const lastActiveDate = this.getLastActiveDate(createJwt.refreshToken);
     await this.deviceService.createUserSession(
       ip,
       title,
-      lastActiveDate,
+      // lastActiveDate,
+      new Date(),
       deviceId,
       findUserByLoginOrEmail.id,
     );
@@ -141,13 +142,14 @@ export class AuthService {
       tokenVerify.deviceId,
     );
     console.log('tokenVerify', tokenVerify);
-    const getLastActiveDate = this.getLastActiveDate(refreshToken);
+    // const getLastActiveDate = this.getLastActiveDate(refreshToken);
     const newSession = new DevicesModal(
       ip.ip,
       ip.title,
+      new Date(),
       tokenVerify.deviceId,
       tokenVerify.userId,
-      getLastActiveDate,
+      // getLastActiveDate,
     );
     console.log('newSession', newSession);
     await this.deviceRepository.updateUserSessionById(newSession);

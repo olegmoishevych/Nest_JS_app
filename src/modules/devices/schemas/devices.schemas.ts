@@ -9,8 +9,8 @@ export class Devices {
   ip: string;
   @Prop({ type: String })
   title: string;
-  @Prop({ type: String })
-  lastActiveDate: string;
+  @Prop({ type: Date })
+  lastActiveDate: Date;
   @Prop({ type: String })
   deviceId: string;
   @Prop({ type: String })
@@ -23,7 +23,7 @@ export class DevicesModal {
   constructor(
     public ip: string,
     public title: string,
-    public lastActiveDate: string,
+    public lastActiveDate: Date,
     public deviceId: string,
     public userId: string,
   ) {}
