@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -26,6 +25,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../email/email.service';
 import * as bcrypt from 'bcrypt';
 import { DevicesService } from '../../devices/service/devices.service';
+import { DevicesRepository } from '../../devices/repository/devices.repository';
+import { DevicesModal } from '../../devices/schemas/devices.schemas';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +37,7 @@ export class AuthService {
     public usersRepository: UsersRepository,
     public jwtRepository: JwtRepository,
     public deviceService: DevicesService,
+    public deviceRepository: DevicesRepository,
   ) {}
 
   async userRegistration(registrationDto: AuthDto): Promise<UserModel> {
@@ -83,28 +85,24 @@ export class AuthService {
       findUserByLoginOrEmail.id,
       title,
       deviceId,
-      ip,
+      // ip,
     );
-    const lastActiveDate = await this.getLastActiveDate(createJwt.refreshToken);
-    try {
-      await this.deviceService.createUserSession(
-        ip,
-        title,
-        // lastActiveDate,
-        new Date(),
-        deviceId,
-        findUserByLoginOrEmail.id,
-      );
-      return createJwt;
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
+    const lastActiveDate = this.getLastActiveDate(createJwt.refreshToken);
+    await this.deviceService.createUserSession(
+      ip,
+      title,
+      lastActiveDate,
+      deviceId,
+      findUserByLoginOrEmail.id,
+    );
+    return createJwt;
   }
-  async getLastActiveDate(refreshToken: string): Promise<string> {
-    const payload: any = await this.jwtService.decode(refreshToken);
+
+  getLastActiveDate(refreshToken: string): string {
+    const payload: any = this.jwtService.decode(refreshToken);
     return new Date(payload.iat * 1000).toISOString();
   }
+
   async logout(refreshToken: string): Promise<TokensViewModel> {
     const findRefreshTokenInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
@@ -139,22 +137,21 @@ export class AuthService {
     const createJwtTokenPair = await this.createJwtPair(
       tokenVerify.userId,
       ip.title,
-      ip.ip,
+      // ip.ip,
       tokenVerify.deviceId,
     );
-    try {
-      await this.deviceService.updateUserSession(
-        ip.ip,
-        ip.title,
-        new Date(),
-        tokenVerify.deviceId,
-        tokenVerify.userId,
-      );
-      await this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
-      return createJwtTokenPair;
-    } catch (e) {
-      return null;
-    }
+    console.log('tokenVerify', tokenVerify);
+    const getLastActiveDate = this.getLastActiveDate(refreshToken);
+    const newSession = new DevicesModal(
+      ip.ip,
+      ip.title,
+      tokenVerify.deviceId,
+      tokenVerify.userId,
+      getLastActiveDate,
+    );
+    console.log('newSession', newSession);
+    await this.deviceRepository.updateUserSessionById(newSession);
+    return createJwtTokenPair;
   }
 
   async tokenVerify(token: string): Promise<TokensVerifyViewModal> {
@@ -170,16 +167,16 @@ export class AuthService {
     userId: string,
     title: string,
     deviceId: string,
-    ip: string,
+    // ip: string,
   ): Promise<JwtPairType> {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '10s',
+        expiresIn: '1000s',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '20s',
+        expiresIn: '2000s',
         secret: JWT.jwt_secret,
       }),
     };
@@ -210,6 +207,7 @@ export class AuthService {
     }
     return addRecoveryCodeInList;
   }
+
   async findUserByRecoveryCodeAndChangeNewPassword(
     newPassword: NewPasswordDto,
   ): Promise<UserModel> {

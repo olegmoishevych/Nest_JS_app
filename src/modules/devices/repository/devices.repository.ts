@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { DeleteResult } from 'mongodb';
+import { DeleteResult, UpdateResult } from 'mongodb';
 import { Model } from 'mongoose';
 import {
   Devices,
@@ -26,10 +26,18 @@ export class DevicesRepository {
     const result = await this.devicesModel.deleteMany({ userId, deviceId });
     return result.deletedCount === 1;
   }
-  async updateUserSessionById(updatedSession: Devices): Promise<DevicesModal> {
-    return this.devicesModel.findOneAndUpdate(
-      { userId: updatedSession.userId, deviceId: updatedSession.deviceId },
-      { $set: updatedSession },
+
+  async updateUserSessionById(
+    // userId: string,
+    // deviceId: string,
+    // ip: string,
+    // title: string,
+    // date: string,
+    newSession: DevicesModal,
+  ): Promise<UpdateResult> {
+    return this.devicesModel.updateOne(
+      { userId: newSession.userId, deviceId: newSession.deviceId },
+      { $set: { ...newSession } },
     );
   }
 
@@ -42,7 +50,6 @@ export class DevicesRepository {
   }
 
   async deleteAllDevicesById(userId, deviceId): Promise<DeleteResult> {
-    console.log('userId', userId);
     return this.devicesModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },

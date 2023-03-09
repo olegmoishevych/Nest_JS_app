@@ -9,7 +9,7 @@ import {
 import jwt from 'jsonwebtoken';
 import { JWT } from '../../auth/constants';
 import { JwtRepository } from '../../auth/repository/jwt.repository';
-import { DeleteResult } from 'mongodb';
+import { DeleteResult, UpdateResult } from 'mongodb';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -23,15 +23,15 @@ export class DevicesService {
   async createUserSession(
     ip: string,
     title: string,
-    lastActiveDate: Date,
+    lastActiveDate: string,
     deviceId: string,
     userId: string,
   ): Promise<DevicesModal> {
     const newSession = new DevicesModal(
       ip,
       title,
-      // lastActiveDate,
-      new Date(),
+      lastActiveDate,
+      // new Date(),
       deviceId,
       userId,
     );
@@ -45,29 +45,31 @@ export class DevicesService {
     return this.devicesRepository.deleteSessionByUserId(deviceId, userId);
   }
 
-  async updateUserSession(
-    ip: string,
-    title: string,
-    lastActiveDate: Date,
-    deviceId: string,
-    userId: string,
-  ): Promise<DevicesModal> {
-    const updatedSession = new DevicesModal(
-      ip,
-      title,
-      // lastActiveDate,
-      new Date(),
-      deviceId,
-      userId,
-    );
-    return this.devicesRepository.updateUserSessionById(updatedSession);
-  }
+  // async updateUserSession(
+  //   ip: string,
+  //   title: string,
+  //   lastActiveDate: Date,
+  //   deviceId: string,
+  //   userId: string,
+  // ): Promise<UpdateResult> {
+  //   const updatedSession = new DevicesModal(
+  //     ip,
+  //     title,
+  //     // lastActiveDate,
+  //     new Date(),
+  //     deviceId,
+  //     userId,
+  //   );
+  //   return this.devicesRepository.updateUserSessionById(updatedSession);
+  // }
 
   async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
+    console.log('refreshToken', refreshToken);
     const findUserInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
     if (findUserInBlackList) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
+    console.log('getUserDataByToken', getUserDataByToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
     const userId = getUserDataByToken.userId;
     return this.devicesRepository.findAllUserDevicesByUserId(userId);

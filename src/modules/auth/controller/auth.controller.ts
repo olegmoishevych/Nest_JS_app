@@ -72,8 +72,8 @@ export class AuthController {
       title,
     );
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return { accessToken: accessToken };
   }
@@ -91,13 +91,14 @@ export class AuthController {
     @Ip() ip: IpDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<JwtTokenPairViewModel> {
+    console.log('cookies', cookies);
     const updateToken = await this.authService.refreshToken(
       cookies.refreshToken,
       ip,
     );
     res.cookie('refreshToken', updateToken.refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return updateToken;
   }
