@@ -85,7 +85,6 @@ export class AuthService {
       findUserByLoginOrEmail.id,
       title,
       deviceId,
-      // ip,
     );
     await this.deviceService.createUserSession(
       ip,
@@ -105,7 +104,6 @@ export class AuthService {
   async logout(refreshToken: string): Promise<TokensViewModel> {
     const findRefreshTokenInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    console.log('findRefreshTokenInBlackList', findRefreshTokenInBlackList);
     if (findRefreshTokenInBlackList)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const tokenVerify = await this.tokenVerify(refreshToken);
