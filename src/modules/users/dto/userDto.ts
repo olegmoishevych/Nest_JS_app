@@ -1,4 +1,4 @@
-import { IsEmail, Length } from 'class-validator';
+import { IsBoolean, IsEmail, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class UserDto {
@@ -11,4 +11,11 @@ export class UserDto {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsEmail()
   email: string;
+}
+export class BanUserDto {
+  @IsBoolean()
+  isBanned: boolean;
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @Length(20, 1000)
+  banReason: string;
 }

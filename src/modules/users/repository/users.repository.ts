@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
+  BanInfo,
   EmailConfirmation,
   UserModel,
   Users,
@@ -125,6 +126,12 @@ export class UsersRepository {
     return this.usersModel.findOneAndUpdate(
       { email },
       { $set: { passwordHash: hash } },
+    );
+  }
+  async banUserById(id: string, updateUser: BanInfo): Promise<boolean> {
+    return this.usersModel.findOneAndUpdate(
+      { id },
+      { $set: { banInfo: updateUser } },
     );
   }
 }

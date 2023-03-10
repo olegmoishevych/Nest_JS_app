@@ -9,8 +9,9 @@ import {
   UsersModel_For_DB,
   UserModel,
   EmailConfirmation,
+  BanInfo,
 } from '../schemas/users.schema';
-import { UserDto } from '../dto/userDto';
+import { BanUserDto, UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import * as bcrypt from 'bcrypt';
@@ -124,5 +125,18 @@ export class UsersService {
     );
     if (!passwordComparison) throw new UnauthorizedException();
     return user;
+  }
+  async banUserById(id: string, banUserModel: BanUserDto) {
+    const user = await this.usersRepository.findUserById(id);
+    console.log('user', user);
+    if (!user) throw new NotFoundException(['User not found']);
+    const updateUser: BanInfo = {
+      isBanned: banUserModel.isBanned,
+      banReason: banUserModel.banReason,
+      banDate: new Date(),
+    };
+    const res = await this.usersRepository.banUserById(id, updateUser);
+    console.log('res', res);
+    return res;
   }
 }

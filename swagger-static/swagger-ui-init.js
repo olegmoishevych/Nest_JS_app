@@ -280,6 +280,36 @@ window.onload = function() {
           }
         }
       },
+      "/api/sa/users/{id}/ban": {
+        "put": {
+          "operationId": "UsersController_banUserById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BanUserDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAllData",
@@ -720,6 +750,10 @@ window.onload = function() {
           "properties": {}
         },
         "UserDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "BanUserDto": {
           "type": "object",
           "properties": {}
         },
