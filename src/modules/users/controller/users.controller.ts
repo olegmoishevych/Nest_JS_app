@@ -16,11 +16,11 @@ import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
-@Controller('api')
+@Controller('users')
 export class UsersController {
   constructor(public usersService: UsersService) {}
 
-  @Get('users')
+  @Get('/')
   async findAllUsers(
     @Query() paginationDto: UserPaginationDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
@@ -28,12 +28,12 @@ export class UsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Post('users')
+  @Post('/')
   async createUser(@Body() createdUserType: UserDto): Promise<UserModel> {
     return this.usersService.createUser(createdUserType);
   }
   @UseGuards(BasicAuthGuard)
-  @Delete('users/:id')
+  @Delete('/:id')
   @HttpCode(204)
   async deleteUserById(@Param('id') id: string): Promise<boolean> {
     return this.usersService.deleteUserById(id);

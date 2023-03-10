@@ -15,29 +15,26 @@ import { MeViewModel, UserModel } from '../../users/schemas/users.schema';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { Cookies } from '../decorator/cookies.decorator';
-import {
-  JwtTokenPairViewModel,
-  TokensViewModel,
-} from '../schemas/tokens.schemas';
+import { JwtTokenPairViewModel } from '../schemas/tokens.schemas';
 import { Ip } from '../decorator/ip.decorator';
 import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AccessTokenModal } from '../schemas/auth.schemas';
 
-@Controller('api')
+@Controller('auth')
 export class AuthController {
   constructor(public authService: AuthService) {}
 
   @Throttle(5, 10)
-  @Post('auth/registration')
+  @Post('/registration')
   @HttpCode(204)
   async userRegistration(@Body() registrationDto: AuthDto): Promise<UserModel> {
     return this.authService.userRegistration(registrationDto);
   }
 
   @Throttle(5, 10)
-  @Post('auth/registration-confirmation')
+  @Post('/registration-confirmation')
   @HttpCode(204)
   async userRegistrationConfirmation(
     @Body('code') code: string,
@@ -46,7 +43,7 @@ export class AuthController {
   }
 
   @Throttle(5, 10)
-  @Post('auth/registration-email-resending')
+  @Post('/registration-email-resending')
   @HttpCode(204)
   async userRegistrationEmailResending(
     @Body('email') email: string,
@@ -56,7 +53,7 @@ export class AuthController {
 
   @Throttle(5, 10)
   @HttpCode(200)
-  @Post('auth/login')
+  @Post('/login')
   async userLogin(
     @Body() loginOrEmail: LoginOrEmailDto,
     @User()
@@ -72,39 +69,38 @@ export class AuthController {
       title,
     );
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return { accessToken: accessToken };
   }
 
-  @Post('auth/logout')
+  @Post('/logout')
   @HttpCode(204)
-  async userLogout(@Cookies() cookies): Promise<TokensViewModel> {
+  async userLogout(@Cookies() cookies): Promise<boolean> {
     return this.authService.logout(cookies.refreshToken);
   }
 
-  @Post('auth/refresh-token')
+  @Post('/refresh-token')
   @HttpCode(200)
   async userRefreshToken(
     @Cookies() cookies,
     @Ip() ip: IpDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<JwtTokenPairViewModel> {
-    console.log('cookies', cookies);
     const updateToken = await this.authService.refreshToken(
       cookies.refreshToken,
       ip,
     );
     res.cookie('refreshToken', updateToken.refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return updateToken;
   }
 
   @Throttle(5, 10)
-  @Post('auth/password-recovery')
+  @Post('/password-recovery')
   @HttpCode(204)
   async userPasswordRecovery(
     @Body('email') email: string,
@@ -113,7 +109,7 @@ export class AuthController {
   }
 
   @Throttle(5, 10)
-  @Post('auth/new-password')
+  @Post('/new-password')
   @HttpCode(204)
   async userNewPassword(
     @Body() newPassword: NewPasswordDto,
@@ -124,7 +120,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('auth/me')
+  @Get('/me')
   async getUser(@User() user): Promise<MeViewModel> {
     return { email: user.email, login: user.login, userId: user.id };
   }

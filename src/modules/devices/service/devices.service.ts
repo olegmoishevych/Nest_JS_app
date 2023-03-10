@@ -23,14 +23,15 @@ export class DevicesService {
   async createUserSession(
     ip: string,
     title: string,
-    lastActiveDate: Date,
+    lastActiveDate: string,
     deviceId: string,
     userId: string,
   ): Promise<DevicesModal> {
     const newSession = new DevicesModal(
       ip,
       title,
-      new Date(),
+      // new Date(),
+      lastActiveDate,
       deviceId,
       userId,
     );
@@ -44,33 +45,10 @@ export class DevicesService {
     return this.devicesRepository.deleteSessionByUserId(deviceId, userId);
   }
 
-  // async updateUserSession(
-  //   ip: string,
-  //   title: string,
-  //   lastActiveDate: Date,
-  //   deviceId: string,
-  //   userId: string,
-  // ): Promise<UpdateResult> {
-  //   const updatedSession = new DevicesModal(
-  //     ip,
-  //     title,
-  //     // lastActiveDate,
-  //     new Date(),
-  //     deviceId,
-  //     userId,
-  //   );
-  //   return this.devicesRepository.updateUserSessionById(updatedSession);
-  // }
-
   async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
-    // console.log('refreshToken', refreshToken);
-    // const findUserInBlackList =
-    //   await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    // if (findUserInBlackList) throw new UnauthorizedException([]);
-    const getUserDataByToken = await this.tokenVerify(refreshToken);
-    console.log('getUserDataByToken', getUserDataByToken);
-    if (!getUserDataByToken) throw new UnauthorizedException([]);
-    const { userId, deviceId } = getUserDataByToken;
+    const findUserByToken = await this.tokenVerify(refreshToken);
+    if (!findUserByToken) throw new UnauthorizedException([]);
+    const userId = findUserByToken.userId;
     return this.devicesRepository.findAllUserDevicesByUserId(userId);
   }
 
@@ -83,13 +61,11 @@ export class DevicesService {
     }
   }
   async deleteAllDevices(refreshToken: string): Promise<DeleteResult> {
-    const findUserInBlackList =
-      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    if (findUserInBlackList) throw new UnauthorizedException([]);
+    const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
+    if (!lastActiveDate) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
-    const userId = getUserDataByToken.userId;
-    const deviceId = getUserDataByToken.deviceId;
+    const { userId, deviceId } = getUserDataByToken;
     return this.devicesRepository.deleteAllDevicesById(userId, deviceId);
   }
 
@@ -109,5 +85,9 @@ export class DevicesService {
       getUserDataByToken.userId,
       deviceId,
     );
+  }
+  getLastActiveDateFromRefreshToken(refreshToken: string): string {
+    const payload: any = jwt.decode(refreshToken);
+    return new Date(payload.iat * 1000).toISOString();
   }
 }

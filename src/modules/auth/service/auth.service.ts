@@ -17,7 +17,6 @@ import jwt from 'jsonwebtoken';
 import {
   JwtTokenPairViewModel,
   TokensVerifyViewModal,
-  TokensViewModel,
 } from '../schemas/tokens.schemas';
 import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
@@ -46,17 +45,9 @@ export class AuthService {
 
   async userRegistrationConfirmation(code: string): Promise<UserModel> {
     const findUserByCode = await this.usersRepository.findUserByCode(code);
-    if (!findUserByCode)
-      throw new BadRequestException([
-        { message: 'code not found', field: 'code' },
-      ]);
+    if (!findUserByCode) throw new BadRequestException([]);
     if (findUserByCode.emailConfirmation.isConfirmed)
-      throw new BadRequestException([
-        {
-          message: 'user isConfirmed',
-          field: 'code',
-        },
-      ]);
+      throw new BadRequestException([]);
     return this.usersRepository.updateConfirmationCode(findUserByCode);
   }
 
@@ -86,29 +77,30 @@ export class AuthService {
       title,
       deviceId,
     );
+    const lastActiveDate = this.getLastActiveDateFromRefreshToken(
+      createJwt.refreshToken,
+    );
     await this.deviceService.createUserSession(
       ip,
       title,
-      new Date(),
+      lastActiveDate,
       deviceId,
       findUserByLoginOrEmail.id,
     );
     return createJwt;
   }
 
-  async logout(refreshToken: string): Promise<TokensViewModel> {
-    const findRefreshTokenInBlackList =
-      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    if (findRefreshTokenInBlackList)
+  async logout(refreshToken: string): Promise<boolean> {
+    const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
+    if (!lastActiveDate)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const tokenVerify = await this.tokenVerify(refreshToken);
     if (!tokenVerify)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    await this.deviceService.deleteSessionByUserId(
+    return this.deviceService.deleteSessionByUserId(
       tokenVerify.userId,
       tokenVerify.deviceId,
     );
-    return this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
   }
 
   async refreshToken(
@@ -122,7 +114,7 @@ export class AuthService {
       await this.deviceRepository.findDeviceByUserIdDeviceIdAndLastActiveDate(
         tokenVerify.userId,
         tokenVerify.deviceId,
-        new Date(tokenVerify.iat * 1000),
+        new Date(tokenVerify.iat * 1000).toISOString(),
       );
     if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
@@ -145,9 +137,9 @@ export class AuthService {
     return createJwtTokenPair;
   }
 
-  getLastActiveDateFromRefreshToken(refreshToken: string): Date {
+  getLastActiveDateFromRefreshToken(refreshToken: string): string {
     const payload: any = jwt.decode(refreshToken);
-    return new Date(payload.iat * 1000);
+    return new Date(payload.iat * 1000).toISOString();
   }
 
   async tokenVerify(token: string): Promise<TokensVerifyViewModal> {

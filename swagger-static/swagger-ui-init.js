@@ -11,7 +11,7 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/": {
+      "/api": {
         "get": {
           "operationId": "AppController_getHello",
           "parameters": [],
@@ -22,7 +22,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/blogs": {
+      "/api/api/blogs": {
         "get": {
           "operationId": "BlogsController_findBlogs",
           "parameters": [],
@@ -52,7 +52,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/blogs/{id}": {
+      "/api/api/blogs/{id}": {
         "delete": {
           "operationId": "BlogsController_deleteBlogById",
           "parameters": [
@@ -118,7 +118,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/blogs/{blogId}/posts": {
+      "/api/api/blogs/{blogId}/posts": {
         "post": {
           "operationId": "BlogsController_createPostByBlogId",
           "parameters": [
@@ -216,7 +216,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/testing/all-data": {
+      "/api/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAllData",
           "parameters": [],
@@ -227,7 +227,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/posts": {
+      "/api/api/posts": {
         "get": {
           "operationId": "PostsController_findPosts",
           "parameters": [],
@@ -257,7 +257,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/posts/{id}": {
+      "/api/api/posts/{id}": {
         "delete": {
           "operationId": "PostsController_deletePostById",
           "parameters": [
@@ -323,7 +323,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/posts/{postId}/comments": {
+      "/api/api/posts/{postId}/comments": {
         "get": {
           "operationId": "PostsController_findCommentsByPostId",
           "parameters": [
@@ -371,7 +371,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/posts/{postId}/like-status": {
+      "/api/api/posts/{postId}/like-status": {
         "put": {
           "operationId": "PostsController_updateLikeStatusByPostId",
           "parameters": [
@@ -401,7 +401,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/comments/{id}": {
+      "/api/api/comments/{id}": {
         "get": {
           "operationId": "CommentsController_findCommentById",
           "parameters": [
@@ -421,7 +421,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/comments/{commentId}": {
+      "/api/api/comments/{commentId}": {
         "delete": {
           "operationId": "CommentsController_deleteCommentByCommentId",
           "parameters": [
@@ -469,7 +469,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/comments/{commentId}/like-status": {
+      "/api/api/comments/{commentId}/like-status": {
         "put": {
           "operationId": "CommentsController_updateLikeStatusByCommentId",
           "parameters": [

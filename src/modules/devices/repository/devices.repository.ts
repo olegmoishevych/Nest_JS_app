@@ -52,7 +52,7 @@ export class DevicesRepository {
   async findDeviceByUserIdDeviceIdAndLastActiveDate(
     userId: string,
     deviceId: string,
-    lastActiveDate: Date,
+    lastActiveDate: string,
   ): Promise<DevicesModal | null> {
     return this.devicesModel.findOne({ userId, deviceId, lastActiveDate });
   }

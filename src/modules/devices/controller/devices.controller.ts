@@ -4,22 +4,22 @@ import { Cookies } from '../../auth/decorator/cookies.decorator';
 import { DevicesModal } from '../schemas/devices.schemas';
 import { DeleteResult } from 'mongodb';
 
-@Controller('api')
+@Controller('security')
 export class DevicesController {
   constructor(public devicesService: DevicesService) {}
 
-  @Get('security/devices')
+  @Get('/devices')
   async getAllDevices(@Cookies() cookies): Promise<DevicesModal[]> {
     return this.devicesService.getAllDevices(cookies.refreshToken);
   }
 
-  @Delete('security/devices')
+  @Delete('/devices')
   @HttpCode(204)
   async deleteAllDevices(@Cookies() cookies): Promise<DeleteResult> {
     return this.devicesService.deleteAllDevices(cookies.refreshToken);
   }
 
-  @Delete('security/devices/:deviceId')
+  @Delete('/devices/:deviceId')
   @HttpCode(204)
   async deleteDevicesByDeviceId(
     @Cookies() cookies,
