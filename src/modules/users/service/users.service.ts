@@ -36,26 +36,12 @@ export class UsersService {
   }
 
   async createUser(user: UserDto): Promise<UserModel> {
-    const findUserByLogin = await this.authRepository.findUserByLogin(
-      user.login,
-    );
-    if (findUserByLogin)
-      throw new BadRequestException([
-        {
-          message: 'Login found',
-          field: 'login',
-        },
-      ]);
+    const findUser = await this.authRepository.findUserByLogin(user.login);
+    if (findUser) throw new BadRequestException([]);
     const findUserByEmail = await this.authRepository.findUserByEmail(
       user.email,
     );
-    if (findUserByEmail)
-      throw new BadRequestException([
-        {
-          message: 'Email found',
-          field: 'email',
-        },
-      ]);
+    if (findUserByEmail) throw new BadRequestException([]);
     const password = user.password;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -73,6 +59,11 @@ export class UsersService {
           minutes: 3,
         }),
         isConfirmed: false,
+      },
+      banInfo: {
+        isBanned: false,
+        banDate: null,
+        banReason: null,
       },
     };
     const result = await this.usersRepository.createUser({ ...newUser });

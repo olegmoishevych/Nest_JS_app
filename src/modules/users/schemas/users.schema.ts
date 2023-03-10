@@ -11,7 +11,14 @@ export class EmailConfirmation {
   @Prop({ type: Boolean })
   isConfirmed: boolean;
 }
-
+export class BanInfo {
+  @Prop({ type: Boolean })
+  isBanned: boolean;
+  @Prop({ type: Date })
+  banDate: Date;
+  @Prop({ type: String })
+  banReason: string;
+}
 @Schema({ versionKey: false })
 export class Users {
   @Prop({ type: String, required: true })
@@ -26,6 +33,8 @@ export class Users {
   createdAt: string;
   @Prop({ type: Object })
   emailConfirmation: EmailConfirmation;
+  @Prop({ type: Object })
+  banInfo: BanInfo;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
@@ -41,6 +50,11 @@ export class UsersModel_For_DB {
       confirmationCode: string;
       expirationDate: Date;
       isConfirmed: boolean;
+    },
+    public banInfo: {
+      isBanned: boolean;
+      banDate: Date;
+      banReason: string;
     },
   ) {}
 }
