@@ -1,11 +1,13 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PostsRepository } from '../repository/posts.repository';
 import { BlogsRepository } from '../../blogs/repository/blogs.repository';
 import {
+  CreatePostDto,
   CreatePostDtoWithBlogId,
   PostsViewModalFor_DB,
 } from '../dto/createPostDto';
@@ -35,27 +37,21 @@ export class PostsService {
   }
 
   async createPost(
-    createPost: CreatePostDtoWithBlogId,
+    createPost: CreatePostDto,
+    blogId: string,
+    userId: string,
   ): Promise<PostsViewModal> {
-    const findBlogById = await this.blogsRepository.findBlogById(
-      createPost.blogId,
-    );
-    if (!findBlogById)
-      throw new BadRequestException([
-        {
-          message: 'BlogId not found',
-          field: 'BlogId',
-        },
-      ]);
+    const findBlogById = await this.blogsRepository.findBlogById(blogId);
+    if (!findBlogById) throw new BadRequestException([]);
     const newPost: PostsViewModalFor_DB = {
       id: new ObjectId().toString(),
       title: createPost.title,
       shortDescription: createPost.shortDescription,
       content: createPost.content,
-      blogId: createPost.blogId,
+      userId: userId,
+      blogId: blogId,
       blogName: findBlogById.name,
       createdAt: new Date().toISOString(),
-      userId: new ObjectId().toString(), // рефакторить нужно на СВОЙ айди
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
@@ -66,32 +62,24 @@ export class PostsService {
     return this.postsRepository.createPost(newPost);
   }
 
-  async deletePostById(id: string): Promise<boolean> {
-    const findPostById = await this.postsRepository.findPostById(id);
-    if (!findPostById) throw new NotFoundException([]);
-    return this.postsRepository.deletePostById(id);
-  }
+  // async deletePostById(id: string): Promise<boolean> {
+  //   const findPostById = await this.postsRepository.findPostById(id);
+  //   if (!findPostById) throw new NotFoundException([]);
+  //   return this.postsRepository.deletePostById(id);
+  // }
 
   async updatePostById(
     id: string,
     post: CreatePostDtoWithBlogId,
+    userId: string,
   ): Promise<boolean> {
-    const findBlogById = await this.blogsRepository.findBlogById(post.blogId);
-    if (!findBlogById)
-      throw new BadRequestException([
-        {
-          message: 'BlogId not found',
-          field: 'BlogId',
-        },
-      ]);
-    const updatedPost = await this.postsRepository.updatePostById(id, post);
-    if (!updatedPost)
-      throw new NotFoundException(`Post with ID ${id} not found`);
-    return updatedPost;
+    const blog = await this.blogsRepository.findBlogById(post.blogId);
+    if (!blog) throw new BadRequestException([]);
+    if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
+    return this.postsRepository.updatePostById(id, post, userId);
   }
 
   async findPostById(id: string, userId: string): Promise<PostsViewModal> {
-    // const findPostById = await this.postsRepository.findPostByIdFromLikesStatus(id);
     const findPostById = await this.postsRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException(`Post not found`);
     return this.likeStatusRepository.postWithLikeStatus(findPostById, userId);

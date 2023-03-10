@@ -9,21 +9,24 @@ import { BlogsRepository } from '../repository/blogs.repository';
 import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { Model } from 'mongoose';
-import { ObjectId } from 'mongodb';
+import { DeleteResult, ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import {
   CreatePostDto,
+  CreatePostDtoWithBlogId,
   PostsViewModalFor_DB,
 } from '../../posts/dto/createPostDto';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
+import { PostsService } from '../../posts/service/posts.service';
 
 @Injectable()
 export class BlogsService {
   constructor(
     private blogsRepository: BlogsRepository,
     private postsRepository: PostsRepository,
+    private postsService: PostsService,
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
@@ -83,24 +86,18 @@ export class BlogsService {
     userId: string,
   ): Promise<PostsViewModal> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
-    if (!findBlogById)
-      throw new NotFoundException([
-        {
-          message: 'BlogId not found',
-          field: 'BlogId',
-        },
-      ]);
+    if (!findBlogById) throw new NotFoundException([]);
     if (findBlogById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);
     const newPost: PostsViewModalFor_DB = {
       id: new ObjectId().toString(),
+      userId: userId,
       title: newPostByBlogId.title,
       shortDescription: newPostByBlogId.shortDescription,
       content: newPostByBlogId.content,
       blogId: blogId,
       blogName: findBlogById.name,
       createdAt: new Date().toISOString(),
-      userId: userId,
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
@@ -108,6 +105,31 @@ export class BlogsService {
         newestLikes: [],
       },
     };
-    return this.postsRepository.createPost({ ...newPost });
+    return this.postsRepository.createPost(newPost);
+  }
+  async updatePostByBlogsAndPostsId(
+    postId: string,
+    blogId: string,
+    userId: string,
+    updatePost: CreatePostDto,
+  ): Promise<boolean> {
+    const blog = await this.blogsRepository.findBlogById(blogId);
+    if (!blog) throw new NotFoundException([]);
+    const post = await this.postsRepository.findPostById(postId);
+    if (!post) throw new NotFoundException([]);
+    if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
+    return this.postsRepository.updatePostById(postId, updatePost, userId);
+  }
+  async deletePostByBlogsAndPostsId(
+    postId: string,
+    blogId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const blog = await this.blogsRepository.findBlogById(blogId);
+    if (!blog) throw new NotFoundException([]);
+    const post = await this.postsRepository.findPostById(postId);
+    if (!post) throw new NotFoundException([]);
+    if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
+    return this.postsRepository.deletePostById(postId, userId);
   }
 }

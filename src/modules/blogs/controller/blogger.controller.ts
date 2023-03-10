@@ -29,6 +29,7 @@ import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
+import { DeleteResult } from 'mongodb';
 
 @Controller('blogger')
 export class BloggerController {
@@ -78,7 +79,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/blogs/:blogId/posts') // 5
+  @Post('/blogs/:blogId/posts')
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
@@ -95,11 +96,31 @@ export class BloggerController {
   @Put('/blogs/:blogId/posts/:postId')
   @HttpCode(204)
   async updatePostByBlogsAndPostsId(
-    @Param() blogId: string,
-    postId: string,
-    @Body() updatePost: CreatePostDtoWithBlogId,
-  ) {}
-
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+    @User() user: UserModel,
+    @Body() updatePost: CreatePostDto,
+  ): Promise<boolean> {
+    return this.blogsService.updatePostByBlogsAndPostsId(
+      postId,
+      blogId,
+      user.id,
+      updatePost,
+    );
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete('/blogs/:blogId/posts/:postId')
+  async deletePostByBlogsAndPostsId(
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+    @User() user: UserModel,
+  ): Promise<boolean> {
+    return this.blogsService.deletePostByBlogsAndPostsId(
+      postId,
+      blogId,
+      user.id,
+    );
+  }
   @Get('/blogs/:blogId/posts')
   async findPostByBlogId(
     @Param('blogId') blogId: string,

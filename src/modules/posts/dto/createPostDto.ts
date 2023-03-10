@@ -1,11 +1,4 @@
-import {
-  IsIn,
-  IsNotEmpty,
-  IsString,
-  Length,
-  Min,
-  Validate,
-} from 'class-validator';
+import { IsIn, IsString, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BlogIsExistRule } from '../../blogs/validators/customValidateBlog';
 
@@ -35,13 +28,13 @@ export class LikeStatusDto {
 export class PostsViewModalFor_DB {
   constructor(
     public id: string,
+    public userId: string,
     public title: string,
     public shortDescription: string,
     public content: string,
     public blogId: string,
     public blogName: string,
     public createdAt: string,
-    public userId: string,
     public extendedLikesInfo: {
       likesCount: number;
       dislikesCount: number;

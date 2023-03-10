@@ -19,6 +19,8 @@ export class Posts {
   @Prop()
   id: string;
   @Prop()
+  userId: string;
+  @Prop()
   title: string;
   @Prop()
   shortDescription: string;

@@ -4,21 +4,14 @@ import { Posts, PostsDocument, PostsViewModal } from '../schemas/posts.schema';
 import { Model } from 'mongoose';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import {
-  CreatePostDtoWithBlogId,
-  PostsViewModalFor_DB,
-} from '../dto/createPostDto';
+import { CreatePostDto, PostsViewModalFor_DB } from '../dto/createPostDto';
 import {
   Comments,
   CommentsDocument,
   CommentsViewModal,
 } from '../../comments/schema/comments.schema';
-import {
-  LikeStatus,
-  LikeStatusDocument,
-} from '../../comments/schema/likeStatus.schema';
 import { LikeStatusRepository } from './likeStatus.repository';
-import { UserModel } from '../../users/schemas/users.schema';
+import { DeleteResult } from 'mongodb';
 
 @Injectable()
 export class PostsRepository {
@@ -61,17 +54,15 @@ export class PostsRepository {
     return postCopy;
   }
 
-  async deletePostById(id: string): Promise<boolean> {
-    const result = await this.postsModel.deleteOne({ id });
+  async deletePostById(postId: string, userId: string): Promise<boolean> {
+    const result = await this.postsModel.deleteOne({ id: postId, userId });
     return result.deletedCount === 1;
   }
 
-  // async findPostByIdFromLikesStatus(id: string): Promise<PostsViewModal[]> {
-  //   return this.postsModel.find({ id }, { _id: 0, __v: 0 }).lean();
-  // }
   async findPostById(id: string): Promise<PostsViewModal> {
     return this.postsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
+
   async findPostsByBlogId(
     blogId: string,
     paginationType: PaginationDto,
@@ -93,26 +84,29 @@ export class PostsRepository {
       findAndSortedPosts,
     );
   }
+
   async getCountPostsByBlogId(blogId: string): Promise<number> {
     return this.postsModel.countDocuments({ blogId });
   }
+
   async createCommentByPostId(newComment: any): Promise<CommentsViewModal> {
     const result = await this.commentsModel.create({ ...newComment });
     const { postId, ...commentCopy } = newComment;
     return commentCopy;
   }
+
   async updatePostById(
     id: string,
-    post: CreatePostDtoWithBlogId,
+    post: CreatePostDto,
+    userId: string,
   ): Promise<boolean> {
     return this.postsModel.findOneAndUpdate(
-      { id },
+      { id, userId },
       {
         $set: {
           title: post.title,
           shortDescription: post.shortDescription,
           content: post.content,
-          blogId: post.blogId,
         },
       },
     );

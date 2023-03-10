@@ -39,20 +39,20 @@ export class PostsController {
     return this.postsService.findPosts(paginationDto, userId);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Post('/')
-  async createPost(
-    @Body() createPost: CreatePostDtoWithBlogId,
-  ): Promise<PostsViewModal> {
-    return this.postsService.createPost(createPost);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Post('/')
+  // async createPost(
+  //   @Body() createPost: CreatePostDtoWithBlogId,
+  // ): Promise<PostsViewModal> {
+  //   // return this.postsService.createPost(createPost);
+  // }
 
-  @UseGuards(BasicAuthGuard)
-  @Delete('/:id')
-  @HttpCode(204)
-  async deletePostById(@Param('id') id: string): Promise<boolean> {
-    return this.postsService.deletePostById(id);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Delete('/:id')
+  // @HttpCode(204)
+  // async deletePostById(@Param('id') id: string): Promise<boolean> {
+  //   return this.postsService.deletePostById(id);
+  // }
 
   @UseGuards(BasicAuthGuard)
   @Put('/:id')
@@ -60,8 +60,9 @@ export class PostsController {
   async updatePostById(
     @Param('id') id: string,
     @Body() updatePost: CreatePostDtoWithBlogId,
+    @User() user: UserModel,
   ): Promise<boolean> {
-    return this.postsService.updatePostById(id, updatePost);
+    return this.postsService.updatePostById(id, updatePost, user.id);
   }
 
   @Get('/:id')

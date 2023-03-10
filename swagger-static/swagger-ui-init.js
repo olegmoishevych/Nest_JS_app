@@ -169,19 +169,62 @@ window.onload = function() {
       "/api/blogger/blogs/{blogId}/posts/{postId}": {
         "put": {
           "operationId": "BloggerController_updatePostByBlogsAndPostsId",
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
           "requestBody": {
             "required": true,
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreatePostDtoWithBlogId"
+                  "$ref": "#/components/schemas/CreatePostDto"
                 }
               }
             }
           },
           "responses": {
             "204": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "BloggerController_deletePostByBlogsAndPostsId",
+          "parameters": [
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
               "description": ""
             }
           }
@@ -257,46 +300,9 @@ window.onload = function() {
               "description": ""
             }
           }
-        },
-        "post": {
-          "operationId": "PostsController_createPost",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreatePostDtoWithBlogId"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": ""
-            }
-          }
         }
       },
       "/api/posts/{id}": {
-        "delete": {
-          "operationId": "PostsController_deletePostById",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "204": {
-              "description": ""
-            }
-          }
-        },
         "put": {
           "operationId": "PostsController_updatePostById",
           "parameters": [
@@ -713,11 +719,11 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
-        "CreatePostDtoWithBlogId": {
+        "UserDto": {
           "type": "object",
           "properties": {}
         },
-        "UserDto": {
+        "CreatePostDtoWithBlogId": {
           "type": "object",
           "properties": {}
         },
