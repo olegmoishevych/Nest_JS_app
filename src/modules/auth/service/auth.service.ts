@@ -96,11 +96,6 @@ export class AuthService {
     return createJwt;
   }
 
-  // getLastActiveDate(refreshToken: string): string {
-  //   const payload: any = this.jwtService.decode(refreshToken);
-  //   return new Date(payload.iat * 1000).toISOString();
-  // }
-
   async logout(refreshToken: string): Promise<TokensViewModel> {
     const findRefreshTokenInBlackList =
       await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
@@ -120,28 +115,39 @@ export class AuthService {
     refreshToken: string,
     ip: IpDto,
   ): Promise<JwtTokenPairViewModel> {
-    const findRefreshTokenInBlackList =
-      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    if (findRefreshTokenInBlackList)
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const tokenVerify = await this.tokenVerify(refreshToken);
     if (!tokenVerify)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    const isDeviceActive =
+      await this.deviceRepository.findDeviceByUserIdDeviceIdAndLastActiveDate(
+        tokenVerify.userId,
+        tokenVerify.deviceId,
+        new Date(tokenVerify.iat * 1000),
+      );
+    if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const createJwtTokenPair = await this.createJwtPair(
       tokenVerify.userId,
       ip.title,
       tokenVerify.deviceId,
     );
+    const lastActiveDate = this.getLastActiveDateFromRefreshToken(
+      createJwtTokenPair.refreshToken,
+    );
     const newSession = new DevicesModal(
       ip.ip,
       ip.title,
-      new Date(),
+      lastActiveDate,
       tokenVerify.deviceId,
       tokenVerify.userId,
     );
-    await this.jwtRepository.addRefreshTokenInBlackList(refreshToken);
     await this.deviceRepository.updateUserSessionById(newSession);
     return createJwtTokenPair;
+  }
+
+  getLastActiveDateFromRefreshToken(refreshToken: string): Date {
+    const payload: any = jwt.decode(refreshToken);
+    return new Date(payload.iat * 1000);
   }
 
   async tokenVerify(token: string): Promise<TokensVerifyViewModal> {

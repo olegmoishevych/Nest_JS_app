@@ -63,14 +63,14 @@ export class DevicesService {
   // }
 
   async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
-    console.log('refreshToken', refreshToken);
-    const findUserInBlackList =
-      await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
-    if (findUserInBlackList) throw new UnauthorizedException([]);
+    // console.log('refreshToken', refreshToken);
+    // const findUserInBlackList =
+    //   await this.jwtRepository.findRefreshTokenInBlackList(refreshToken);
+    // if (findUserInBlackList) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     console.log('getUserDataByToken', getUserDataByToken);
     if (!getUserDataByToken) throw new UnauthorizedException([]);
-    const userId = getUserDataByToken.userId;
+    const { userId, deviceId } = getUserDataByToken;
     return this.devicesRepository.findAllUserDevicesByUserId(userId);
   }
 

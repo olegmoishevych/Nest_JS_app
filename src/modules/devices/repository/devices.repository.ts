@@ -45,8 +45,16 @@ export class DevicesRepository {
     return this.devicesModel.find({ userId }, { _id: 0, userId: 0 });
   }
 
-  async findDeviceByDeviceId(deviceId: string): Promise<DevicesModal> {
+  async findDeviceByDeviceId(deviceId: string): Promise<DevicesModal | null> {
     return this.devicesModel.findOne({ deviceId });
+  }
+
+  async findDeviceByUserIdDeviceIdAndLastActiveDate(
+    userId: string,
+    deviceId: string,
+    lastActiveDate: Date,
+  ): Promise<DevicesModal | null> {
+    return this.devicesModel.findOne({ userId, deviceId, lastActiveDate });
   }
 
   async deleteAllDevicesById(userId, deviceId): Promise<DeleteResult> {
