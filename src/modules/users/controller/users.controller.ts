@@ -20,6 +20,7 @@ import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 export class UsersController {
   constructor(public usersService: UsersService) {}
 
+  @UseGuards(BasicAuthGuard)
   @Get('/users')
   async findAllUsers(
     @Query() paginationDto: UserPaginationDto,
