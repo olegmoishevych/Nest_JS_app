@@ -4,7 +4,7 @@ import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import { BlogsDto } from '../dto/blogsDto';
+import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 
 @Injectable()
 export class BlogsRepository {
@@ -22,7 +22,7 @@ export class BlogsRepository {
       },
     };
     const findAndSortedBlogs = await this.blogsModel
-      .find(filter, { _id: 0, __v: 0 })
+      .find(filter, { _id: 0, __v: 0, blogOwnerInfo: 0 })
       .sort({
         [paginationType.sortBy]:
           paginationType.sortDirection === 'asc' ? 1 : -1,
@@ -39,9 +39,10 @@ export class BlogsRepository {
     );
   }
 
-  async createBlog(blog: Blogs): Promise<BlogsViewModel> {
+  async createBlog(blog: BlogsModal_For_DB): Promise<BlogsViewModel> {
     await this.blogsModel.create({ ...blog });
-    return blog;
+    const { blogOwnerInfo, ...blogCopy } = blog;
+    return blogCopy;
   }
 
   async deleteBlogById(id: string): Promise<boolean> {
@@ -49,7 +50,7 @@ export class BlogsRepository {
     return result.deletedCount === 1;
   }
 
-  async findBlogById(id: string): Promise<BlogsViewModel> {
+  async findBlogById(id: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
 

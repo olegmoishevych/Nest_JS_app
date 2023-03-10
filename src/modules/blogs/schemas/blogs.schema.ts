@@ -3,6 +3,13 @@ import { HydratedDocument } from 'mongoose';
 
 export type BlogsDocument = HydratedDocument<Blogs>;
 
+export class BlogOwnerInfo {
+  @Prop({ type: String })
+  userId: string;
+  @Prop({ type: String })
+  userLogin: string;
+}
+
 @Schema({ versionKey: false })
 export class Blogs {
   @Prop({ type: String })
@@ -17,6 +24,8 @@ export class Blogs {
   createdAt: string;
   @Prop({ type: Boolean })
   isMembership: boolean;
+  @Prop({ type: BlogOwnerInfo })
+  blogOwnerInfo: BlogOwnerInfo;
 }
 
 export const BlogsSchema = SchemaFactory.createForClass(Blogs);

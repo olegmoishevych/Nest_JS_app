@@ -18,12 +18,17 @@ import {
 import { BlogsDto } from '../dto/blogsDto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../schemas/blogs.schema';
-import { CreatePostDto } from '../../posts/dto/createPostDto';
+import {
+  CreatePostDto,
+  CreatePostDtoWithBlogId,
+} from '../../posts/dto/createPostDto';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import { PostsService } from '../../posts/service/posts.service';
 import { Token } from '../../decorators/token.decorator';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { User } from '../../auth/decorator/request.decorator';
+import { UserModel } from '../../users/schemas/users.schema';
 
 @Controller('blogger')
 export class BloggerController {
@@ -32,7 +37,7 @@ export class BloggerController {
     public postsService: PostsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // 1
   @Get('/blogs')
   async findBlogs(
     @Query() paginationDto: BlogPaginationDto,
@@ -41,20 +46,23 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/blogs')
-  async createBlog(@Body() createBlogType: BlogsDto) {
-    return this.blogsService.createBlog(createBlogType);
+  @Post('/blogs') // 2
+  async createBlog(@Body() createBlogType: BlogsDto, @User() user: UserModel) {
+    return this.blogsService.createBlog(createBlogType, user);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Delete('/blogs/:id')
+  @UseGuards(JwtAuthGuard)
+  @Delete('/blogs/:id') // 3
   @HttpCode(204)
-  async deleteBlogById(@Param('id') id: string): Promise<boolean> {
-    return this.blogsService.deleteBlogById(id);
+  async deleteBlogById(
+    @User() user: UserModel,
+    @Param('id') id: string,
+  ): Promise<boolean> {
+    return this.blogsService.deleteBlogById(id, user.id);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Put('/blogs/:id')
+  @UseGuards(JwtAuthGuard)
+  @Put('/blogs/:id') // 4
   @HttpCode(204)
   async updateBlogById(
     @Param('id') id: string,
@@ -68,14 +76,23 @@ export class BloggerController {
     return this.blogsService.findBlogById(id);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Post('/blogs/:blogId/posts')
+  @UseGuards(JwtAuthGuard)
+  @Post('/blogs/:blogId/posts') // 5
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
   ): Promise<PostsViewModal> {
     return this.blogsService.createPostByBlogId(blogId, newPostByBlogId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/blogs/:blogId/posts/:postId')
+  @HttpCode(204)
+  async updatePostByBlogsAndPostsId(
+    @Param() blogId: string,
+    postId: string,
+    @Body() updatePost: CreatePostDtoWithBlogId,
+  ) {}
 
   @Get('/blogs/:blogId/posts')
   async findPostByBlogId(

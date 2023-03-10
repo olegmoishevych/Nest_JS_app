@@ -1,5 +1,6 @@
 import { IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { BlogOwnerInfo } from '../schemas/blogs.schema';
 
 export class BlogsDto {
   @Length(1, 15)
@@ -13,14 +14,14 @@ export class BlogsDto {
   websiteUrl: string;
 }
 
-export class DB_BlogsType {
+export class BlogsModal_For_DB {
   constructor(
     public id: string,
-    // public _id: ObjectId,
     public name: string,
     public description: string,
     public websiteUrl: string,
     public createdAt: string,
     public isMembership: boolean,
+    public blogOwnerInfo: BlogOwnerInfo,
   ) {}
 }

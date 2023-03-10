@@ -166,6 +166,27 @@ window.onload = function() {
           }
         }
       },
+      "/api/blogger/blogs/{blogId}/posts/{postId}": {
+        "put": {
+          "operationId": "BloggerController_updatePostByBlogsAndPostsId",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostDtoWithBlogId"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/users": {
         "get": {
           "operationId": "UsersController_findAllUsers",
@@ -692,11 +713,11 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
-        "UserDto": {
+        "CreatePostDtoWithBlogId": {
           "type": "object",
           "properties": {}
         },
-        "CreatePostDtoWithBlogId": {
+        "UserDto": {
           "type": "object",
           "properties": {}
         },
