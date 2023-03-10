@@ -67,8 +67,9 @@ export class BloggerController {
   async updateBlogById(
     @Param('id') id: string,
     @Body() updateBlogType: BlogsDto,
+    @User() user: UserModel,
   ): Promise<boolean> {
-    return this.blogsService.updateBlogById(id, updateBlogType);
+    return this.blogsService.updateBlogById(id, updateBlogType, user.id);
   }
 
   @Get('/blogs/:id')
@@ -81,8 +82,13 @@ export class BloggerController {
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
+    @User() user: UserModel,
   ): Promise<PostsViewModal> {
-    return this.blogsService.createPostByBlogId(blogId, newPostByBlogId);
+    return this.blogsService.createPostByBlogId(
+      blogId,
+      newPostByBlogId,
+      user.id,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

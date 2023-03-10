@@ -54,9 +54,13 @@ export class BlogsRepository {
     return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
 
-  async updateBlogById(id: string, user: BlogsDto): Promise<boolean> {
-    const result = await this.blogsModel.updateOne(
-      { id },
+  async updateBlogById(
+    id: string,
+    user: BlogsDto,
+    userId: string,
+  ): Promise<boolean> {
+    return this.blogsModel.findOneAndUpdate(
+      { id, 'blogOwnerInfo.userId': userId },
       {
         $set: {
           name: user.name,
@@ -65,6 +69,5 @@ export class BlogsRepository {
         },
       },
     );
-    return result.matchedCount === 1;
   }
 }

@@ -1,6 +1,13 @@
-import { IsIn, IsNotEmpty, IsString, Length, Min, Validate } from "class-validator";
+import {
+  IsIn,
+  IsNotEmpty,
+  IsString,
+  Length,
+  Min,
+  Validate,
+} from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { BlogIsExistRule } from "../../blogs/validators/customValidateBlog";
+import { BlogIsExistRule } from '../../blogs/validators/customValidateBlog';
 
 export class CreatePostDto {
   @Length(1, 30)
@@ -23,4 +30,23 @@ export class CreatePostDtoWithBlogId extends CreatePostDto {
 export class LikeStatusDto {
   @IsIn(['None', 'Like', 'Dislike'])
   likeStatus: string;
+}
+
+export class PostsViewModalFor_DB {
+  constructor(
+    public id: string,
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: string,
+    public blogName: string,
+    public createdAt: string,
+    public userId: string,
+    public extendedLikesInfo: {
+      likesCount: number;
+      dislikesCount: number;
+      myStatus: string;
+      newestLikes: [];
+    },
+  ) {}
 }

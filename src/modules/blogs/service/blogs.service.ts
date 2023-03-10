@@ -12,7 +12,10 @@ import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
-import { CreatePostDto } from '../../posts/dto/createPostDto';
+import {
+  CreatePostDto,
+  PostsViewModalFor_DB,
+} from '../../posts/dto/createPostDto';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
 
@@ -62,15 +65,22 @@ export class BlogsService {
     return findBlogById;
   }
 
-  async updateBlogById(id: string, user: BlogsDto): Promise<boolean> {
-    const result = await this.blogsRepository.updateBlogById(id, user);
-    if (!result) throw new NotFoundException(`User with ID ${id} not found`);
-    return result;
+  async updateBlogById(
+    id: string,
+    user: BlogsDto,
+    userId: string,
+  ): Promise<boolean> {
+    const findBlogById = await this.blogsRepository.findBlogById(id);
+    if (!findBlogById) throw new NotFoundException(`Blog not found`);
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException(['It not your blog']);
+    return this.blogsRepository.updateBlogById(id, user, userId);
   }
 
   async createPostByBlogId(
     blogId: string,
     newPostByBlogId: CreatePostDto,
+    userId: string,
   ): Promise<PostsViewModal> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
     if (!findBlogById)
@@ -80,7 +90,9 @@ export class BlogsService {
           field: 'BlogId',
         },
       ]);
-    const newPost: PostsViewModal = {
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
+    const newPost: PostsViewModalFor_DB = {
       id: new ObjectId().toString(),
       title: newPostByBlogId.title,
       shortDescription: newPostByBlogId.shortDescription,
@@ -88,6 +100,7 @@ export class BlogsService {
       blogId: blogId,
       blogName: findBlogById.name,
       createdAt: new Date().toISOString(),
+      userId: userId,
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
@@ -95,6 +108,6 @@ export class BlogsService {
         newestLikes: [],
       },
     };
-    return this.postsRepository.createPost(newPost);
+    return this.postsRepository.createPost({ ...newPost });
   }
 }

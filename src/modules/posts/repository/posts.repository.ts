@@ -4,7 +4,10 @@ import { Posts, PostsDocument, PostsViewModal } from '../schemas/posts.schema';
 import { Model } from 'mongoose';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import { CreatePostDtoWithBlogId } from '../dto/createPostDto';
+import {
+  CreatePostDtoWithBlogId,
+  PostsViewModalFor_DB,
+} from '../dto/createPostDto';
 import {
   Comments,
   CommentsDocument,
@@ -52,9 +55,10 @@ export class PostsRepository {
     );
   }
 
-  async createPost(newPost: Posts): Promise<PostsViewModal> {
+  async createPost(newPost: PostsViewModalFor_DB): Promise<PostsViewModal> {
     await this.postsModel.create({ ...newPost });
-    return newPost;
+    const { userId, ...postCopy } = newPost;
+    return postCopy;
   }
 
   async deletePostById(id: string): Promise<boolean> {

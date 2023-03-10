@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { PostsRepository } from '../repository/posts.repository';
 import { BlogsRepository } from '../../blogs/repository/blogs.repository';
-import { CreatePostDtoWithBlogId } from '../dto/createPostDto';
+import {
+  CreatePostDtoWithBlogId,
+  PostsViewModalFor_DB,
+} from '../dto/createPostDto';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
@@ -44,7 +47,7 @@ export class PostsService {
           field: 'BlogId',
         },
       ]);
-    const newPost: PostsViewModal = {
+    const newPost: PostsViewModalFor_DB = {
       id: new ObjectId().toString(),
       title: createPost.title,
       shortDescription: createPost.shortDescription,
@@ -52,6 +55,7 @@ export class PostsService {
       blogId: createPost.blogId,
       blogName: findBlogById.name,
       createdAt: new Date().toISOString(),
+      userId: new ObjectId().toString(), // рефакторить нужно на СВОЙ айди
       extendedLikesInfo: {
         likesCount: 0,
         dislikesCount: 0,
