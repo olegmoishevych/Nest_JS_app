@@ -8,17 +8,11 @@ import {
 } from '@nestjs/common';
 import jwt from 'jsonwebtoken';
 import { JWT } from '../../auth/constants';
-import { JwtRepository } from '../../auth/repository/jwt.repository';
-import { DeleteResult, UpdateResult } from 'mongodb';
-import { JwtService } from '@nestjs/jwt';
+import { DeleteResult } from 'mongodb';
 
 @Injectable()
 export class DevicesService {
-  constructor(
-    public devicesRepository: DevicesRepository,
-    public jwtRepository: JwtRepository,
-    public jwtService: JwtService,
-  ) {}
+  constructor(public devicesRepository: DevicesRepository) {}
 
   async createUserSession(
     ip: string,
@@ -30,7 +24,6 @@ export class DevicesService {
     const newSession = new DevicesModal(
       ip,
       title,
-      // new Date(),
       lastActiveDate,
       deviceId,
       userId,
@@ -60,6 +53,7 @@ export class DevicesService {
       return null;
     }
   }
+
   async deleteAllDevices(refreshToken: string): Promise<DeleteResult> {
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
     if (!lastActiveDate) throw new UnauthorizedException([]);
@@ -86,6 +80,7 @@ export class DevicesService {
       deviceId,
     );
   }
+
   getLastActiveDateFromRefreshToken(refreshToken: string): string {
     const payload: any = jwt.decode(refreshToken);
     return new Date(payload.iat * 1000).toISOString();

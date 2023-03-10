@@ -12,7 +12,6 @@ import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { JWT, JwtPairType } from '../constants';
-import { JwtRepository } from '../repository/jwt.repository';
 import jwt from 'jsonwebtoken';
 import {
   JwtTokenPairViewModel,
@@ -34,7 +33,6 @@ export class AuthService {
     public emailService: EmailService,
     public jwtService: JwtService,
     public usersRepository: UsersRepository,
-    public jwtRepository: JwtRepository,
     public deviceService: DevicesService,
     public deviceRepository: DevicesRepository,
   ) {}
@@ -159,11 +157,11 @@ export class AuthService {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '10s',
+        expiresIn: '1000s',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '20s',
+        expiresIn: '2000s',
         secret: JWT.jwt_secret,
       }),
     };

@@ -23,36 +23,38 @@ import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import { PostsService } from '../../posts/service/posts.service';
 import { Token } from '../../decorators/token.decorator';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
-@Controller('api')
-export class BlogsController {
+@Controller('blogger')
+export class BloggerController {
   constructor(
     public blogsService: BlogsService,
     public postsService: PostsService,
   ) {}
 
-  @Get('blogs')
+  @UseGuards(JwtAuthGuard)
+  @Get('/blogs')
   async findBlogs(
     @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.blogsService.getBlogs(paginationDto);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Post('blogs')
+  @UseGuards(JwtAuthGuard)
+  @Post('/blogs')
   async createBlog(@Body() createBlogType: BlogsDto) {
     return this.blogsService.createBlog(createBlogType);
   }
 
   @UseGuards(BasicAuthGuard)
-  @Delete('blogs/:id')
+  @Delete('/blogs/:id')
   @HttpCode(204)
   async deleteBlogById(@Param('id') id: string): Promise<boolean> {
     return this.blogsService.deleteBlogById(id);
   }
 
   @UseGuards(BasicAuthGuard)
-  @Put('blogs/:id')
+  @Put('/blogs/:id')
   @HttpCode(204)
   async updateBlogById(
     @Param('id') id: string,
@@ -61,13 +63,13 @@ export class BlogsController {
     return this.blogsService.updateBlogById(id, updateBlogType);
   }
 
-  @Get('blogs/:id')
+  @Get('/blogs/:id')
   async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
     return this.blogsService.findBlogById(id);
   }
 
   @UseGuards(BasicAuthGuard)
-  @Post('blogs/:blogId/posts')
+  @Post('/blogs/:blogId/posts')
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
@@ -75,7 +77,7 @@ export class BlogsController {
     return this.blogsService.createPostByBlogId(blogId, newPostByBlogId);
   }
 
-  @Get('blogs/:blogId/posts')
+  @Get('/blogs/:blogId/posts')
   async findPostByBlogId(
     @Param('blogId') blogId: string,
     @Query() paginationDto: PaginationDto,

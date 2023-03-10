@@ -22,9 +22,9 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/blogs": {
+      "/api/blogger/blogs": {
         "get": {
-          "operationId": "BlogsController_findBlogs",
+          "operationId": "BloggerController_findBlogs",
           "parameters": [],
           "responses": {
             "200": {
@@ -33,7 +33,7 @@ window.onload = function() {
           }
         },
         "post": {
-          "operationId": "BlogsController_createBlog",
+          "operationId": "BloggerController_createBlog",
           "parameters": [],
           "requestBody": {
             "required": true,
@@ -52,9 +52,9 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/blogs/{id}": {
+      "/api/blogger/blogs/{id}": {
         "delete": {
-          "operationId": "BlogsController_deleteBlogById",
+          "operationId": "BloggerController_deleteBlogById",
           "parameters": [
             {
               "name": "id",
@@ -72,7 +72,7 @@ window.onload = function() {
           }
         },
         "put": {
-          "operationId": "BlogsController_updateBlogById",
+          "operationId": "BloggerController_updateBlogById",
           "parameters": [
             {
               "name": "id",
@@ -100,7 +100,7 @@ window.onload = function() {
           }
         },
         "get": {
-          "operationId": "BlogsController_findBlogById",
+          "operationId": "BloggerController_findBlogById",
           "parameters": [
             {
               "name": "id",
@@ -118,9 +118,9 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/blogs/{blogId}/posts": {
+      "/api/blogger/blogs/{blogId}/posts": {
         "post": {
-          "operationId": "BlogsController_createPostByBlogId",
+          "operationId": "BloggerController_createPostByBlogId",
           "parameters": [
             {
               "name": "blogId",
@@ -148,7 +148,7 @@ window.onload = function() {
           }
         },
         "get": {
-          "operationId": "BlogsController_findPostByBlogId",
+          "operationId": "BloggerController_findPostByBlogId",
           "parameters": [
             {
               "name": "blogId",
@@ -216,7 +216,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/testing/all-data": {
+      "/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAllData",
           "parameters": [],
@@ -227,7 +227,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/posts": {
+      "/api/posts": {
         "get": {
           "operationId": "PostsController_findPosts",
           "parameters": [],
@@ -257,7 +257,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/posts/{id}": {
+      "/api/posts/{id}": {
         "delete": {
           "operationId": "PostsController_deletePostById",
           "parameters": [
@@ -323,7 +323,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/posts/{postId}/comments": {
+      "/api/posts/{postId}/comments": {
         "get": {
           "operationId": "PostsController_findCommentsByPostId",
           "parameters": [
@@ -371,7 +371,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/posts/{postId}/like-status": {
+      "/api/posts/{postId}/like-status": {
         "put": {
           "operationId": "PostsController_updateLikeStatusByPostId",
           "parameters": [
@@ -401,7 +401,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/comments/{id}": {
+      "/api/comments/{id}": {
         "get": {
           "operationId": "CommentsController_findCommentById",
           "parameters": [
@@ -421,7 +421,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/comments/{commentId}": {
+      "/api/comments/{commentId}": {
         "delete": {
           "operationId": "CommentsController_deleteCommentByCommentId",
           "parameters": [
@@ -469,7 +469,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/api/comments/{commentId}/like-status": {
+      "/api/comments/{commentId}/like-status": {
         "put": {
           "operationId": "CommentsController_updateLikeStatusByCommentId",
           "parameters": [

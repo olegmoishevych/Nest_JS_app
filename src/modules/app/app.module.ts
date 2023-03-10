@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BlogsRepository } from '../blogs/repository/blogs.repository';
 import { Blogs, BlogsSchema } from '../blogs/schemas/blogs.schema';
 import { BlogsService } from '../blogs/service/blogs.service';
-import { BlogsController } from '../blogs/controller/blogs.controller';
 import { UsersController } from '../users/controller/users.controller';
 import { UsersService } from '../users/service/users.service';
 import { UsersRepository } from '../users/repository/users.repository';
@@ -33,7 +32,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Tokens, TokensSchema } from '../auth/schemas/tokens.schemas';
-import { JwtRepository } from '../auth/repository/jwt.repository';
 import {
   RecoveryCode,
   RecoveryCodeSchema,
@@ -52,13 +50,13 @@ import { DevicesRepository } from '../devices/repository/devices.repository';
 import { DevicesService } from '../devices/service/devices.service';
 import { DevicesController } from '../devices/controller/devices.controller';
 import { Devices, DevicesSchema } from '../devices/schemas/devices.schemas';
+import { BloggerController } from '../blogs/controller/blogger.controller';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
   { name: Posts.name, schema: PostsSchema },
   { name: Users.name, schema: UsersSchema },
   { name: Comments.name, schema: CommentsSchema },
-  { name: Tokens.name, schema: TokensSchema },
   { name: RecoveryCode.name, schema: RecoveryCodeSchema },
   { name: LikeStatus.name, schema: LikeStatusSchema },
   { name: Devices.name, schema: DevicesSchema },
@@ -66,7 +64,7 @@ const mongooseModels = [
 
 const controllers = [
   AppController,
-  BlogsController,
+  BloggerController,
   UsersController,
   TestingController,
   PostsController,
@@ -95,7 +93,6 @@ const repositories = [
   PostsRepository,
   CommentsRepository,
   AuthRepository,
-  JwtRepository,
   LikeStatusRepository,
   DevicesRepository,
 ];

@@ -24,14 +24,14 @@ import { UserModel } from '../../users/schemas/users.schema';
 import { Token } from '../../decorators/token.decorator';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
-@Controller('api')
+@Controller('posts')
 export class PostsController {
   constructor(
     public commentsService: CommentsService,
     public postsService: PostsService,
   ) {}
 
-  @Get('posts')
+  @Get('/')
   async findPosts(
     @Token() userId: string | null,
     @Query() paginationDto: PaginationDto,
@@ -40,7 +40,7 @@ export class PostsController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Post('posts')
+  @Post('/')
   async createPost(
     @Body() createPost: CreatePostDtoWithBlogId,
   ): Promise<PostsViewModal> {
@@ -48,14 +48,14 @@ export class PostsController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Delete('posts/:id')
+  @Delete('/:id')
   @HttpCode(204)
   async deletePostById(@Param('id') id: string): Promise<boolean> {
     return this.postsService.deletePostById(id);
   }
 
   @UseGuards(BasicAuthGuard)
-  @Put('posts/:id')
+  @Put('/:id')
   @HttpCode(204)
   async updatePostById(
     @Param('id') id: string,
@@ -64,14 +64,14 @@ export class PostsController {
     return this.postsService.updatePostById(id, updatePost);
   }
 
-  @Get('posts/:id')
+  @Get('/:id')
   async findPostById(
     @Token() userId: string | null,
     @Param('id') id: string,
   ): Promise<PostsViewModal> {
     return this.postsService.findPostById(id, userId);
   }
-  @Get('posts/:postId/comments')
+  @Get('/:postId/comments')
   async findCommentsByPostId(
     @Param('postId') postId: string,
     @Token() userId: string | null,
@@ -84,7 +84,7 @@ export class PostsController {
     );
   }
   @UseGuards(JwtAuthGuard)
-  @Post('posts/:postId/comments')
+  @Post('/:postId/comments')
   async createCommentByPostId(
     @Param('postId') postId: string,
     @Body() commentsDto: CommentsDto,
@@ -93,7 +93,7 @@ export class PostsController {
     return this.postsService.createCommentByPostId(postId, commentsDto, user);
   }
   @UseGuards(JwtAuthGuard)
-  @Put('posts/:postId/like-status')
+  @Put('/:postId/like-status')
   @HttpCode(204)
   async updateLikeStatusByPostId(
     @User() user,

@@ -17,11 +17,11 @@ import { CommentsDto } from '../dto/comments.dto';
 import { LikeStatusDto } from '../dto/likeStatus.dto';
 import { Token } from '../../decorators/token.decorator';
 
-@Controller('api')
+@Controller('comments')
 export class CommentsController {
   constructor(public commentsService: CommentsService) {}
 
-  @Get('comments/:id')
+  @Get('/:id')
   async findCommentById(
     @Param('id') id: string,
     @Token() userId: string,
@@ -31,7 +31,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  @Delete('comments/:commentId')
+  @Delete('/:commentId')
   async deleteCommentByCommentId(
     @User() user: UserModel,
     @Param('commentId') commentId: string,
@@ -41,7 +41,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  @Put('comments/:commentId')
+  @Put('/:commentId')
   async updateCommentByCommentId(
     @User() user: UserModel,
     @Param('commentId') commentId: string,
@@ -56,7 +56,7 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  @Put('comments/:commentId/like-status')
+  @Put('/:commentId/like-status')
   async updateLikeStatusByCommentId(
     @Param('commentId') commentId: string,
     @Body() likeStatus: LikeStatusDto,
