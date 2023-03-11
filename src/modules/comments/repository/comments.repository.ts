@@ -13,6 +13,7 @@ import {
   LikeStatusDocument,
   LikeStatusModal,
 } from '../schema/likeStatus.schema';
+import { UsersModel_For_DB } from '../../users/schemas/users.schema';
 
 @Injectable()
 export class CommentsRepository {
@@ -90,10 +91,16 @@ export class CommentsRepository {
   async getCountCollection(postId: string): Promise<number> {
     return this.commentsModel.countDocuments({ postId });
   }
-  async updateBannedUserById(id: string): Promise<boolean> {
+  async updateBannedUserById(
+    id: string,
+    user: UsersModel_For_DB,
+  ): Promise<boolean> {
+    const set = user.banInfo.isBanned
+      ? { isUserBanned: false }
+      : { isUserBanned: true };
     return this.commentsModel.findOneAndUpdate(
       { 'commentatorInfo.userId': id },
-      { $set: { isUserBanned: true } },
+      { $set: set },
     );
   }
 }

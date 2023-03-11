@@ -11,6 +11,7 @@ import {
   CommentsViewModal,
 } from '../../comments/schema/comments.schema';
 import { LikeStatusRepository } from './likeStatus.repository';
+import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
 
 @Injectable()
 export class PostsRepository {
@@ -101,13 +102,15 @@ export class PostsRepository {
     return commentCopy;
   }
 
-  async updateBannedUserById(userId: string): Promise<boolean> {
-    return this.postsModel.findOneAndUpdate(
-      { userId },
-      { $set: { isUserBanned: true } },
-    );
+  async updateBannedUserById(
+    userId: string,
+    user: UsersModel_For_DB,
+  ): Promise<boolean> {
+    const set = user.banInfo.isBanned
+      ? { isUserBanned: false }
+      : { isUserBanned: true };
+    return this.postsModel.findOneAndUpdate({ userId }, { $set: set });
   }
-
   async updatePostById(
     id: string,
     post: CreatePostDto,

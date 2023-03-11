@@ -93,6 +93,7 @@ export class BloggerController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('/blogs/:blogId/posts/:postId')
+  @HttpCode(204)
   async deletePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,

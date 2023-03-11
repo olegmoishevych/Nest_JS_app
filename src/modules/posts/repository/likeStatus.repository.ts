@@ -8,6 +8,7 @@ import {
 } from '../../comments/schema/likeStatus.schema';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { CommentsViewModal } from '../../comments/schema/comments.schema';
+import { UsersModel_For_DB } from '../../users/schemas/users.schema';
 
 @Injectable()
 export class LikeStatusRepository {
@@ -111,10 +112,13 @@ export class LikeStatusRepository {
     }
     return comment;
   }
-  async updateBannedUserById(userId: string): Promise<boolean> {
-    return this.likeStatusModel.findOneAndUpdate(
-      { userId },
-      { $set: { isUserBanned: true } },
-    );
+  async updateBannedUserById(
+    userId: string,
+    user: UsersModel_For_DB,
+  ): Promise<boolean> {
+    const set = user.banInfo.isBanned
+      ? { isUserBanned: false }
+      : { isUserBanned: false };
+    return this.likeStatusModel.findOneAndUpdate({ userId }, { $set: set });
   }
 }

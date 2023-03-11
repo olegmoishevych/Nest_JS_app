@@ -148,10 +148,10 @@ export class UsersService {
           banDate: new Date(),
         };
     try {
-      await this.postsRepository.updateBannedUserById(id),
-        await this.likesRepository.updateBannedUserById(id),
+      await this.postsRepository.updateBannedUserById(id, user),
+        await this.likesRepository.updateBannedUserById(id, user),
         await this.deviceRepository.deleteSessionsBanUserById(id),
-        await this.commentsRepository.updateBannedUserById(id);
+        await this.commentsRepository.updateBannedUserById(id, user);
       await this.usersRepository.banUserById(id, updateUser);
       return true;
     } catch (e) {
