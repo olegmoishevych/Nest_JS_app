@@ -146,24 +146,6 @@ window.onload = function() {
               "description": ""
             }
           }
-        },
-        "get": {
-          "operationId": "BloggerController_findPostByBlogId",
-          "parameters": [
-            {
-              "name": "blogId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
         }
       },
       "/api/blogger/blogs/{blogId}/posts/{postId}": {
@@ -749,6 +731,37 @@ window.onload = function() {
           ],
           "responses": {
             "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/blogs": {
+        "get": {
+          "operationId": "BlogsController_findAllBlogsForUsers",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/blogs/{blogId}/posts": {
+        "get": {
+          "operationId": "BlogsController_findPostByBlogId",
+          "parameters": [
+            {
+              "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
               "description": ""
             }
           }

@@ -31,7 +31,6 @@ import { EmailService } from '../email/email.service';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Tokens, TokensSchema } from '../auth/schemas/tokens.schemas';
 import {
   RecoveryCode,
   RecoveryCodeSchema,
@@ -73,6 +72,7 @@ const controllers = [
   CommentsController,
   AuthController,
   DevicesController,
+  BlogsController,
 ];
 
 const services = [
@@ -147,7 +147,6 @@ const throttlerGuard = {
     LocalStrategy,
     BasicStrategy,
     BlogIsExistRule,
-    BlogsController,
   ],
 })
 export class AppModule {}

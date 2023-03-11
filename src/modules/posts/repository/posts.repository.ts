@@ -68,7 +68,10 @@ export class PostsRepository {
     paginationType: PaginationDto,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const findAndSortedPosts = await this.postsModel
-      .find({ blogId }, { _id: 0, __v: 0 })
+      .find(
+        { blogId, isUserBanned: false },
+        { _id: 0, __v: 0, isUserBanned: 0, userId: 0 },
+      )
       .sort({
         [paginationType.sortBy]:
           paginationType.sortDirection === 'asc' ? 1 : -1,

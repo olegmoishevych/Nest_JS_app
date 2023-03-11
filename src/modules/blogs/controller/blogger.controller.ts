@@ -33,7 +33,7 @@ export class BloggerController {
     public postsService: PostsService,
   ) {}
 
-  @UseGuards(JwtAuthGuard) // 1
+  @UseGuards(JwtAuthGuard)
   @Get('/blogs')
   async findBlogs(
     @Query() paginationDto: BlogPaginationDto,
@@ -116,14 +116,5 @@ export class BloggerController {
       blogId,
       user.id,
     );
-  }
-
-  @Get('/blogs/:blogId/posts')
-  async findPostByBlogId(
-    @Param('blogId') blogId: string,
-    @Query() paginationDto: PaginationDto,
-    @Token() userId: string,
-  ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPostByBlogId(blogId, paginationDto, userId);
   }
 }
