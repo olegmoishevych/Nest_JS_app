@@ -140,11 +140,13 @@ export class UsersService {
   async banUserById(id: string, banUserModel: BanUserDto): Promise<boolean> {
     const user = await this.usersRepository.findUserById(id);
     if (!user) throw new NotFoundException(['User not found']);
-    const updateUser: BanInfo = {
-      isBanned: banUserModel.isBanned,
-      banReason: banUserModel.banReason,
-      banDate: new Date(),
-    };
+    const updateUser: BanInfo = user.banInfo.isBanned
+      ? { isBanned: banUserModel.isBanned, banReason: null, banDate: null }
+      : {
+          isBanned: banUserModel.isBanned,
+          banReason: banUserModel.banReason,
+          banDate: new Date(),
+        };
     try {
       await this.postsRepository.updateBannedUserById(id),
         await this.likesRepository.updateBannedUserById(id),
