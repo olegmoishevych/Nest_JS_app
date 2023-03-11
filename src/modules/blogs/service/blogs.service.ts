@@ -87,6 +87,7 @@ export class BlogsService {
     userId: string,
   ): Promise<PostsViewModal> {
     const findBlogById = await this.blogsRepository.findBlogById(blogId);
+    console.log('findBlogById', findBlogById);
     if (!findBlogById) throw new NotFoundException([]);
     if (findBlogById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);

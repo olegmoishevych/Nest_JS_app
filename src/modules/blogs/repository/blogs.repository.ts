@@ -53,10 +53,7 @@ export class BlogsRepository {
   }
 
   async findBlogById(id: string): Promise<BlogsModal_For_DB> {
-    return this.blogsModel.findOne(
-      { id },
-      { _id: 0, __v: 0, blogOwnerInfo: 0 },
-    );
+    return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
 
   async updateBlogById(

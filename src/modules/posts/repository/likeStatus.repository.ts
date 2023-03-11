@@ -94,22 +94,20 @@ export class LikeStatusRepository {
     comment.likesInfo.likesCount = await this.likeStatusModel.countDocuments({
       parentId: comment.id,
       likeStatus: 'Like',
-      isUserBanned: false,
+      // isUserBanned: false,
     });
     comment.likesInfo.dislikesCount = await this.likeStatusModel.countDocuments(
       {
         parentId: comment.id,
         likeStatus: 'Dislike',
-        isUserBanned: false,
+        // isUserBanned: false,
       },
     );
     if (userId) {
       const status = await this.likeStatusModel
         .findOne({ parentId: comment.id, userId }, { _id: 0, likeStatus: 1 })
         .lean();
-      if (status) {
-        comment.likesInfo.myStatus = status.likeStatus;
-      }
+      comment.likesInfo.myStatus = status ? status.likeStatus : 'None';
     }
     return comment;
   }
