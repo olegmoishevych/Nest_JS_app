@@ -28,7 +28,10 @@ export class CommentsRepository {
     paginationDto: PaginationDto,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
     const findAndSortedComments = await this.commentsModel
-      .find({ postId }, { _id: 0, __v: 0, postId: 0 })
+      .find(
+        { postId, isUserBanned: false },
+        { _id: 0, __v: 0, postId: 0, isUserBanned: 0 },
+      )
       .sort({
         [paginationDto.sortBy]: paginationDto.sortDirection === 'asc' ? 1 : -1,
       })
@@ -47,7 +50,10 @@ export class CommentsRepository {
   }
 
   async findCommentById(id: string): Promise<CommentsViewModal> {
-    return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
+    return this.commentsModel.findOne(
+      { id, isUserBanned: false },
+      { _id: 0, __v: 0, postId: 0, isUserBanned: 0 },
+    );
   }
   async deleteCommentById(
     commentId: string,

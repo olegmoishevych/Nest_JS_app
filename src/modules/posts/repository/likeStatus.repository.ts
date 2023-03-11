@@ -48,25 +48,31 @@ export class LikeStatusRepository {
       await this.likeStatusModel.countDocuments({
         parentId: post.id,
         likeStatus: 'Like',
+        isUserBanned: false,
       });
     post.extendedLikesInfo.dislikesCount =
       await this.likeStatusModel.countDocuments({
         parentId: post.id,
         likeStatus: 'Dislike',
+        isUserBanned: false,
       });
     post.extendedLikesInfo.newestLikes = await this.likeStatusModel
       .find(
         {
           parentId: post.id,
           likeStatus: 'Like',
+          isUserBanned: false,
         },
-        { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
+        { _id: 0, __v: 0, parentId: 0, likeStatus: 0, isUserBanned: 0 },
         { sort: { _id: -1 }, limit: 3 },
       )
       .lean();
     if (userId) {
       const status = await this.likeStatusModel
-        .findOne({ parentId: post.id, userId }, { _id: 0, likeStatus: 1 })
+        .findOne(
+          { parentId: post.id, userId },
+          { _id: 0, likeStatus: 1, isUserBanned: 0 },
+        )
         .lean();
       if (status) {
         post.extendedLikesInfo.myStatus = status.likeStatus;
@@ -93,16 +99,21 @@ export class LikeStatusRepository {
     comment.likesInfo.likesCount = await this.likeStatusModel.countDocuments({
       parentId: comment.id,
       likeStatus: 'Like',
+      isUserBanned: false,
     });
     comment.likesInfo.dislikesCount = await this.likeStatusModel.countDocuments(
       {
         parentId: comment.id,
         likeStatus: 'Dislike',
+        isUserBanned: false,
       },
     );
     if (userId) {
       const status = await this.likeStatusModel
-        .findOne({ parentId: comment.id, userId }, { _id: 0, likeStatus: 1 })
+        .findOne(
+          { parentId: comment.id, userId },
+          { _id: 0, likeStatus: 1, isUserBanned: 0 },
+        )
         .lean();
       if (status) {
         comment.likesInfo.myStatus = status.likeStatus;
