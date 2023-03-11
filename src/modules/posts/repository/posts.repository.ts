@@ -11,7 +11,6 @@ import {
   CommentsViewModal,
 } from '../../comments/schema/comments.schema';
 import { LikeStatusRepository } from './likeStatus.repository';
-import { DeleteResult } from 'mongodb';
 
 @Injectable()
 export class PostsRepository {
@@ -26,8 +25,9 @@ export class PostsRepository {
     paginationType: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
+    const projection = { _id: 0, __v: 0, isUserBanned: 0 };
     const findAndSortedPosts = await this.postsModel
-      .find({}, { _id: 0, __v: 0 })
+      .find({ isUserBanned: false }, projection)
       .sort({
         [paginationType.sortBy]:
           paginationType.sortDirection === 'asc' ? 1 : -1,
@@ -50,7 +50,7 @@ export class PostsRepository {
 
   async createPost(newPost: PostsViewModalFor_DB): Promise<PostsViewModal> {
     await this.postsModel.create({ ...newPost });
-    const { userId, ...postCopy } = newPost;
+    const { userId, isUserBanned, ...postCopy } = newPost;
     return postCopy;
   }
 
@@ -91,8 +91,15 @@ export class PostsRepository {
 
   async createCommentByPostId(newComment: any): Promise<CommentsViewModal> {
     const result = await this.commentsModel.create({ ...newComment });
-    const { postId, ...commentCopy } = newComment;
+    const { postId, isUserBanned, ...commentCopy } = newComment;
     return commentCopy;
+  }
+
+  async updateBannedUserById(userId: string): Promise<boolean> {
+    return this.postsModel.findOneAndUpdate(
+      { userId },
+      { $set: { isUserBanned: true } },
+    );
   }
 
   async updatePostById(

@@ -29,6 +29,7 @@ export class PostsViewModalFor_DB {
   constructor(
     public id: string,
     public userId: string,
+    public isUserBanned: boolean,
     public title: string,
     public shortDescription: string,
     public content: string,

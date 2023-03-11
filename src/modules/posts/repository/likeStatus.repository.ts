@@ -73,43 +73,6 @@ export class LikeStatusRepository {
       }
     }
     return post;
-
-    // const postWithLikeStatus = [];
-    // for (const post of findAndSortedPost) {
-    //   const countLikes = await this.likeStatusModel.countDocuments({
-    //     parentId: post.id,
-    //     likeStatus: 'Like',
-    //   });
-    //   const countDislikes = await this.likeStatusModel.countDocuments({
-    //     parentId: post.id,
-    //     likeStatus: 'Dislike',
-    //   });
-    //   const findPostWithLikesByUserId = await this.likeStatusModel.findOne({
-    //     parentId: post.id,
-    //     userId: userId,
-    //   });
-    //   const findNewestPost = await this.likeStatusModel.find(
-    //     {
-    //       parentId: post.id,
-    //       likeStatus: 'Like',
-    //     },
-    //     { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
-    //     { sort: { _id: -1 }, limit: 3 },
-    //   );
-    //
-    //   post.extendedLikesInfo.likesCount = countLikes;
-    //   post.extendedLikesInfo.dislikesCount = countDislikes;
-    //   post.extendedLikesInfo.newestLikes = findNewestPost;
-    //
-    //   if (findPostWithLikesByUserId) {
-    //     post.extendedLikesInfo.myStatus = findPostWithLikesByUserId.likeStatus;
-    //   } else {
-    //     post.extendedLikesInfo.myStatus = 'None';
-    //   }
-    //
-    //   postWithLikeStatus.push(post);
-    // }
-    // return postWithLikeStatus;
   }
 
   async commentsWithLikeStatus(
@@ -146,32 +109,11 @@ export class LikeStatusRepository {
       }
     }
     return comment;
-    // const commentWithLikeStatus = [];
-    // for (const comment of findAndSortedComments) {
-    //   const countLikes = await this.likeStatusModel.countDocuments({
-    //     parentId: comment.id,
-    //     likeStatus: 'Like',
-    //   });
-    //   const countDislikes = await this.likeStatusModel.countDocuments({
-    //     parentId: comment.id,
-    //     likeStatus: 'Dislike',
-    //   });
-    //   const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
-    //     parentId: comment.id,
-    //     userId: userId,
-    //   });
-    //
-    //   comment.likesInfo.likesCount = countLikes;
-    //   comment.likesInfo.dislikesCount = countDislikes;
-    //
-    //   if (findCommentWithLikesByUserId) {
-    //     comment.likesInfo.myStatus = findCommentWithLikesByUserId.likeStatus;
-    //   } else {
-    //     comment.likesInfo.myStatus = 'None';
-    //   }
-    //
-    //   commentWithLikeStatus.push(comment);
-    // }
-    // return commentWithLikeStatus;
+  }
+  async updateBannedUserById(userId: string): Promise<boolean> {
+    return this.likeStatusModel.findOneAndUpdate(
+      { userId },
+      { $set: { isUserBanned: true } },
+    );
   }
 }

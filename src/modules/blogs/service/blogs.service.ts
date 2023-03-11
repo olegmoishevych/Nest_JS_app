@@ -93,6 +93,7 @@ export class BlogsService {
     const newPost: PostsViewModalFor_DB = {
       id: new ObjectId().toString(),
       userId: userId,
+      isUserBanned: false,
       title: newPostByBlogId.title,
       shortDescription: newPostByBlogId.shortDescription,
       content: newPostByBlogId.content,

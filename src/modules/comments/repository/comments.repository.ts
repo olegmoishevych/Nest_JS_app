@@ -46,11 +46,6 @@ export class CommentsRepository {
     );
   }
 
-  // async findCommentByIdFromLikesStatus(id: string): Promise<CommentsViewModal[]> {
-  //   return this.commentsModel
-  //     .findOne({ id }, { _id: 0, __v: 0, postId: 0 })
-  //     // .lean();
-  // }
   async findCommentById(id: string): Promise<CommentsViewModal> {
     return this.commentsModel.findOne({ id }, { _id: 0, __v: 0, postId: 0 });
   }
@@ -88,5 +83,11 @@ export class CommentsRepository {
   }
   async getCountCollection(postId: string): Promise<number> {
     return this.commentsModel.countDocuments({ postId });
+  }
+  async updateBannedUserById(id: string): Promise<boolean> {
+    return this.commentsModel.findOneAndUpdate(
+      { 'commentatorInfo.userId': id },
+      { $set: { isUserBanned: true } },
+    );
   }
 }

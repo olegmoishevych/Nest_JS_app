@@ -24,6 +24,8 @@ export class Comments {
   @Prop()
   id: string;
   @Prop()
+  isUserBanned: boolean;
+  @Prop()
   content: string;
   @Prop()
   postId: string;
@@ -36,6 +38,25 @@ export class Comments {
 }
 
 export const CommentsSchema = SchemaFactory.createForClass(Comments);
+
+export class CommentsViewModalFor_DB {
+  constructor(
+    public id: string,
+    public isUserBanned: boolean,
+    public content: string,
+    public postId: string,
+    public commentatorInfo: {
+      userId: string;
+      userLogin: string;
+    },
+    public createdAt: string,
+    public likesInfo: {
+      likesCount: number;
+      dislikesCount: number;
+      myStatus: string;
+    },
+  ) {}
+}
 
 export class CommentsViewModal {
   constructor(

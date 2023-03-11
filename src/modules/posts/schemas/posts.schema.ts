@@ -21,6 +21,8 @@ export class Posts {
   @Prop()
   userId: string;
   @Prop()
+  isUserBanned: boolean;
+  @Prop()
   title: string;
   @Prop()
   shortDescription: string;
@@ -28,14 +30,10 @@ export class Posts {
   content: string;
   @Prop()
   blogId: string;
-  // @Prop()
-  // parentId: string;
   @Prop()
   blogName: string;
   @Prop()
   createdAt: string;
-  // @Prop()
-  // userId: string;
   @Prop()
   extendedLikesInfo: LikesInfo;
 }

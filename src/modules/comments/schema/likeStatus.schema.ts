@@ -13,6 +13,8 @@ export enum LikeStatusEnum {
 export class LikeStatus {
   @Prop({ type: String })
   parentId: string;
+  @Prop({ type: Boolean })
+  isUserBanned: boolean;
   @Prop({ type: String })
   userId: string;
   @Prop({ type: String })
@@ -21,6 +23,17 @@ export class LikeStatus {
   addedAt: Date;
   @Prop({ type: String, enum: LikeStatusEnum })
   likeStatus: LikeStatusEnum;
+}
+
+export class LikeStatusModalFor_Db {
+  constructor(
+    public parentId: string,
+    public isUserBanned: boolean,
+    public userId: string,
+    public login: string,
+    public likeStatus: string,
+    public addedAt: Date,
+  ) {}
 }
 
 export class LikeStatusModal {

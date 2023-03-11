@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
 import {
-  UsersModel_For_DB,
-  UserModel,
-  EmailConfirmation,
   BanInfo,
+  EmailConfirmation,
+  UserModel,
+  UsersModel_For_DB,
 } from '../schemas/users.schema';
 import { BanUserDto, UserDto } from '../dto/userDto';
 import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
@@ -19,9 +19,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
 import { AuthRepository } from '../../auth/repository/auth.repository';
 import { EmailService } from '../../email/email.service';
-import { loginOrEmailType } from '../../auth/constants';
-import { LoginOrEmailDto } from '../../auth/dto/auth.dto';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
+import { PostsRepository } from '../../posts/repository/posts.repository';
+import { CommentsRepository } from '../../comments/repository/comments.repository';
+import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 
 @Injectable()
 export class UsersService {
@@ -30,6 +31,9 @@ export class UsersService {
     private authRepository: AuthRepository,
     private emailService: EmailService,
     private deviceRepository: DevicesRepository,
+    private postsRepository: PostsRepository,
+    private commentsRepository: CommentsRepository,
+    private likesRepository: LikeStatusRepository,
   ) {}
 
   async findAllUsers(
@@ -81,6 +85,7 @@ export class UsersService {
     );
     return result;
   }
+
   async updateUserByEmailResending(
     email: string,
     user: UsersModel_For_DB,
@@ -108,12 +113,14 @@ export class UsersService {
     }
     return true;
   }
+
   async deleteUserById(id: string): Promise<boolean> {
     const findUserById = await this.usersRepository.findUserById(id);
     if (!findUserById)
       throw new NotFoundException(`User with ID ${id} not found`);
     return this.usersRepository.deleteUserById(id);
   }
+
   async checkUserCredentials(
     loginOrEmail: string,
     password: string,
@@ -129,6 +136,7 @@ export class UsersService {
     if (!passwordComparison) throw new UnauthorizedException();
     return user;
   }
+
   async banUserById(id: string, banUserModel: BanUserDto): Promise<boolean> {
     const user = await this.usersRepository.findUserById(id);
     if (!user) throw new NotFoundException(['User not found']);
@@ -137,7 +145,16 @@ export class UsersService {
       banReason: banUserModel.banReason,
       banDate: new Date(),
     };
-    await this.deviceRepository.deleteSessionsBanUserById(id);
-    return this.usersRepository.banUserById(id, updateUser);
+    try {
+      await this.postsRepository.updateBannedUserById(id),
+        await this.likesRepository.updateBannedUserById(id),
+        await this.deviceRepository.deleteSessionsBanUserById(id),
+        await this.commentsRepository.updateBannedUserById(id);
+      await this.usersRepository.banUserById(id, updateUser);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 }

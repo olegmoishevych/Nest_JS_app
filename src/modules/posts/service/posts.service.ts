@@ -16,8 +16,14 @@ import { ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { CommentsDto } from '../../comments/dto/comments.dto';
-import { CommentsViewModal } from '../../comments/schema/comments.schema';
-import { LikeStatusModal } from '../../comments/schema/likeStatus.schema';
+import {
+  CommentsViewModal,
+  CommentsViewModalFor_DB,
+} from '../../comments/schema/comments.schema';
+import {
+  LikeStatusModal,
+  LikeStatusModalFor_Db,
+} from '../../comments/schema/likeStatus.schema';
 import { UserModel } from '../../users/schemas/users.schema';
 import { LikeStatusRepository } from '../repository/likeStatus.repository';
 
@@ -36,38 +42,31 @@ export class PostsService {
     return this.postsRepository.findPosts(paginationDto, userId);
   }
 
-  async createPost(
-    createPost: CreatePostDto,
-    blogId: string,
-    userId: string,
-  ): Promise<PostsViewModal> {
-    const findBlogById = await this.blogsRepository.findBlogById(blogId);
-    if (!findBlogById) throw new BadRequestException([]);
-    const newPost: PostsViewModalFor_DB = {
-      id: new ObjectId().toString(),
-      title: createPost.title,
-      shortDescription: createPost.shortDescription,
-      content: createPost.content,
-      userId: userId,
-      blogId: blogId,
-      blogName: findBlogById.name,
-      createdAt: new Date().toISOString(),
-      extendedLikesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: 'None',
-        newestLikes: [],
-      },
-    };
-    return this.postsRepository.createPost(newPost);
-  }
-
-  // async deletePostById(id: string): Promise<boolean> {
-  //   const findPostById = await this.postsRepository.findPostById(id);
-  //   if (!findPostById) throw new NotFoundException([]);
-  //   return this.postsRepository.deletePostById(id);
+  // async createPost(
+  //   createPost: CreatePostDto,
+  //   blogId: string,
+  //   userId: string,
+  // ): Promise<PostsViewModal> {
+  //   const findBlogById = await this.blogsRepository.findBlogById(blogId);
+  //   if (!findBlogById) throw new BadRequestException([]);
+  //   const newPost: PostsViewModalFor_DB = {
+  //     id: new ObjectId().toString(),
+  //     title: createPost.title,
+  //     shortDescription: createPost.shortDescription,
+  //     content: createPost.content,
+  //     userId: userId,
+  //     blogId: blogId,
+  //     blogName: findBlogById.name,
+  //     createdAt: new Date().toISOString(),
+  //     extendedLikesInfo: {
+  //       likesCount: 0,
+  //       dislikesCount: 0,
+  //       myStatus: 'None',
+  //       newestLikes: [],
+  //     },
+  //   };
+  //   return this.postsRepository.createPost(newPost);
   // }
-
   async updatePostById(
     id: string,
     post: CreatePostDtoWithBlogId,
@@ -119,8 +118,9 @@ export class PostsService {
   ): Promise<CommentsViewModal> {
     const findPostById: any = await this.postsRepository.findPostById(postId);
     if (!findPostById) throw new NotFoundException([]);
-    const newComment: CommentsViewModal = {
+    const newComment: CommentsViewModalFor_DB = {
       id: new ObjectId().toString(),
+      isUserBanned: false,
       postId: findPostById.id,
       content: commentsDto.content,
       commentatorInfo: {
@@ -148,8 +148,9 @@ export class PostsService {
         { message: 'Post not found', field: 'post' },
       ]);
 
-    const updateLikeStatusByPostId = new LikeStatusModal(
+    const updateLikeStatusByPostId = new LikeStatusModalFor_Db(
       postId,
+      false,
       user.id,
       user.login,
       likeStatus,
