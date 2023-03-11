@@ -51,6 +51,7 @@ import { DevicesService } from '../devices/service/devices.service';
 import { DevicesController } from '../devices/controller/devices.controller';
 import { Devices, DevicesSchema } from '../devices/schemas/devices.schemas';
 import { BloggerController } from '../blogs/controller/blogger.controller';
+import { LocalStrategy } from '../auth/strategies/local.strategy';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -142,6 +143,7 @@ const throttlerGuard = {
     ...repositories,
     throttlerGuard,
     JwtStrategy,
+    LocalStrategy,
     BasicStrategy,
     BlogIsExistRule,
   ],

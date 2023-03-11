@@ -113,14 +113,15 @@ export class UsersService {
     return this.usersRepository.deleteUserById(id);
   }
   async checkUserCredentials(
-    loginOrEmail: LoginOrEmailDto,
+    loginOrEmail: string,
+    password: string,
   ): Promise<UserModel> {
     const user = await this.usersRepository.findUserByLoginOrEmail(
       loginOrEmail,
     );
     if (!user) throw new UnauthorizedException();
     const passwordComparison = await bcrypt.compare(
-      loginOrEmail.password,
+      password,
       user.passwordHash,
     );
     if (!passwordComparison) throw new UnauthorizedException();
@@ -128,15 +129,12 @@ export class UsersService {
   }
   async banUserById(id: string, banUserModel: BanUserDto) {
     const user = await this.usersRepository.findUserById(id);
-    console.log('user', user);
     if (!user) throw new NotFoundException(['User not found']);
     const updateUser: BanInfo = {
       isBanned: banUserModel.isBanned,
       banReason: banUserModel.banReason,
       banDate: new Date(),
     };
-    const res = await this.usersRepository.banUserById(id, updateUser);
-    console.log('res', res);
-    return res;
+    return this.usersRepository.banUserById(id, updateUser);
   }
 }

@@ -4,10 +4,11 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
-import { UserModel } from '../../users/schemas/users.schema';
+import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
 import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { JwtService } from '@nestjs/jwt';
@@ -62,19 +63,13 @@ export class AuthService {
   }
 
   async login(
-    loginOrEmail: LoginOrEmailDto,
     ip: string,
     title: string,
+    user: UsersModel_For_DB,
   ): Promise<JwtPairType> {
-    const findUserByLoginOrEmail = await this.usersService.checkUserCredentials(
-      loginOrEmail,
-    );
+    if (user.banInfo.isBanned) throw new UnauthorizedException([]);
     const deviceId = new ObjectId().toString();
-    const createJwt = await this.createJwtPair(
-      findUserByLoginOrEmail.id,
-      title,
-      deviceId,
-    );
+    const createJwt = await this.createJwtPair(user.id, title, deviceId);
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(
       createJwt.refreshToken,
     );
@@ -83,7 +78,7 @@ export class AuthService {
       title,
       lastActiveDate,
       deviceId,
-      findUserByLoginOrEmail.id,
+      user.id,
     );
     return createJwt;
   }

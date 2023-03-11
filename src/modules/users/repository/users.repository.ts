@@ -104,13 +104,10 @@ export class UsersRepository {
   }
 
   async findUserByLoginOrEmail(
-    loginOrEmail: LoginOrEmailDto,
+    loginOrEmail: string,
   ): Promise<UsersModel_For_DB> {
     return this.usersModel.findOne({
-      $or: [
-        { email: loginOrEmail.loginOrEmail },
-        { login: loginOrEmail.loginOrEmail },
-      ],
+      $or: [{ email: loginOrEmail }, { login: loginOrEmail }],
     });
   }
 

@@ -20,6 +20,7 @@ import {
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { BlogsService } from '../../blogs/service/blogs.service';
+import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
 
 @Controller('sa')
 export class UsersController {
@@ -58,7 +59,15 @@ export class UsersController {
   }
   @UseGuards(BasicAuthGuard)
   @Get('/blogs')
-  async getBlogs(@Param() paginationDto: BlogPaginationDto) {
+  async getBlogs(
+    @Param() paginationDto: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.blogsService.getBlogs(paginationDto, true);
   }
+  @UseGuards(BasicAuthGuard)
+  @Put('/blogs/:id/bind-with-user/:userId')
+  async bindBlogWithUser(
+    @Param('id') id: string,
+    @Param('userId') userId: string,
+  ) {}
 }

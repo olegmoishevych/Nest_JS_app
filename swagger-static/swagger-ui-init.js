@@ -321,6 +321,34 @@ window.onload = function() {
           }
         }
       },
+      "/api/sa/blogs/{id}/bind-with-user/{userId}": {
+        "put": {
+          "operationId": "UsersController_bindBlogWithUser",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAllData",
@@ -614,16 +642,6 @@ window.onload = function() {
         "post": {
           "operationId": "AuthController_userLogin",
           "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginOrEmailDto"
-                }
-              }
-            }
-          },
           "responses": {
             "200": {
               "description": ""
@@ -781,10 +799,6 @@ window.onload = function() {
           "properties": {}
         },
         "AuthDto": {
-          "type": "object",
-          "properties": {}
-        },
-        "LoginOrEmailDto": {
           "type": "object",
           "properties": {}
         },

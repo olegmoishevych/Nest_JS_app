@@ -133,4 +133,7 @@ export class BlogsService {
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.deletePostById(postId, userId);
   }
+  async bindWithUser(blogId: string, userId: string) {
+    const bindBLogWithUserById = {};
+  }
 }

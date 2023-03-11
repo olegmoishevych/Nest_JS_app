@@ -11,7 +11,11 @@ import {
 import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 import { Throttle } from '@nestjs/throttler';
-import { MeViewModel, UserModel } from '../../users/schemas/users.schema';
+import {
+  MeViewModel,
+  UserModel,
+  UsersModel_For_DB,
+} from '../../users/schemas/users.schema';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { Cookies } from '../decorator/cookies.decorator';
@@ -21,6 +25,7 @@ import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AccessTokenModal } from '../schemas/auth.schemas';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -51,22 +56,22 @@ export class AuthController {
     return this.authService.userRegistrationEmailResending(email);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Throttle(5, 10)
   @HttpCode(200)
   @Post('/login')
   async userLogin(
-    @Body() loginOrEmail: LoginOrEmailDto,
     @User()
-    user,
+    user: UsersModel_For_DB,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AccessTokenModal> {
     const ip = req.ip;
     const title = req.headers['user-agent'] || 'browser not found';
     const { accessToken, refreshToken } = await this.authService.login(
-      loginOrEmail,
       ip,
       title,
+      user,
     );
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,

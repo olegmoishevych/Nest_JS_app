@@ -22,9 +22,7 @@ export class BlogsRepository {
         $options: 'i',
       },
     };
-    const findParams = superAdmin
-      ? { _id: 0, __v: 0 }
-      : { _id: 0, __v: 0, blogOwnerInfo: 0 };
+    const findParams = superAdmin ? { _id: 0 } : { _id: 0, blogOwnerInfo: 0 };
     const findAndSortedBlogs = await this.blogsModel
       .find(filter, findParams)
       .sort({
