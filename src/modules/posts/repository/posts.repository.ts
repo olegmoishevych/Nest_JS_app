@@ -63,7 +63,7 @@ export class PostsRepository {
   async findPostById(id: string): Promise<PostsViewModal> {
     return this.postsModel.findOne(
       { id, isUserBanned: false },
-      { _id: 0, __v: 0, isUserBanned: 0 },
+      { _id: 0, __v: 0, isUserBanned: 0, userId: 0 },
     );
   }
 
