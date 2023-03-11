@@ -14,8 +14,8 @@ export class EmailConfirmation {
 export class BanInfo {
   @Prop({ type: Boolean })
   isBanned: boolean;
-  @Prop({ type: Date })
-  banDate: Date;
+  @Prop({ type: String })
+  banDate: string;
   @Prop({ type: String })
   banReason: string;
 }
@@ -53,7 +53,7 @@ export class UsersModel_For_DB {
     },
     public banInfo: {
       isBanned: boolean;
-      banDate: Date;
+      banDate: string;
       banReason: string;
     },
   ) {}

@@ -142,7 +142,7 @@ const throttlerGuard = {
   providers: [
     ...services,
     ...repositories,
-    throttlerGuard,
+    // throttlerGuard,
     JwtStrategy,
     LocalStrategy,
     BasicStrategy,
