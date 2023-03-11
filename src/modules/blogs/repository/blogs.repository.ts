@@ -52,13 +52,15 @@ export class BlogsRepository {
     return result.deletedCount === 1;
   }
 
+  async findBlogWithUserInfoById(id: string): Promise<BlogsModal_For_DB> {
+    return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
+  }
   async findBlogById(id: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne(
       { id },
       { _id: 0, __v: 0, blogOwnerInfo: 0 },
     );
   }
-
   async updateBlogById(
     id: string,
     user: BlogsDto,

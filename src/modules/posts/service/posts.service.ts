@@ -72,7 +72,9 @@ export class PostsService {
     post: CreatePostDtoWithBlogId,
     userId: string,
   ): Promise<boolean> {
-    const blog = await this.blogsRepository.findBlogById(post.blogId);
+    const blog = await this.blogsRepository.findBlogWithUserInfoById(
+      post.blogId,
+    );
     if (!blog) throw new BadRequestException([]);
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.updatePostById(id, post, userId);
@@ -89,7 +91,9 @@ export class PostsService {
     paginationDto: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    const findBlogById = await this.blogsRepository.findBlogById(blogId);
+    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
+      blogId,
+    );
     if (!findBlogById) throw new NotFoundException(`Post not found`);
     const findAndSortedPosts = await this.postsRepository.findPostsByBlogId(
       blogId,

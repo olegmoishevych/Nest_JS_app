@@ -1,34 +1,32 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 import {
   registerDecorator,
   ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
-  ValidatorConstraintInterface
-} from "class-validator";
-import { BlogsRepository } from "../repository/blogs.repository";
-
+  ValidatorConstraintInterface,
+} from 'class-validator';
+import { BlogsRepository } from '../repository/blogs.repository';
 
 export function BlogIsExist(validationOptions?: ValidationOptions) {
-  return function(object: any, propertyName: string) {
+  return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      validator: BlogIsExistRule
+      validator: BlogIsExistRule,
     });
   };
 }
 
-@ValidatorConstraint({ name: "BlogIsExist", async: false })
+@ValidatorConstraint({ name: 'BlogIsExist', async: false })
 @Injectable()
 export class BlogIsExistRule implements ValidatorConstraintInterface {
-  constructor(private blogRepository: BlogsRepository) {
-  }
+  constructor(private blogRepository: BlogsRepository) {}
 
   async validate(value: string) {
     try {
-      const blog = await this.blogRepository.findBlogById(value);
+      const blog = await this.blogRepository.findBlogWithUserInfoById(value);
       if (blog) {
         return true;
       } else return false;

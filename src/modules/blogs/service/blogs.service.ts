@@ -54,7 +54,9 @@ export class BlogsService {
   }
 
   async deleteBlogById(id: string, userId: string): Promise<boolean> {
-    const findBlogById = await this.blogsRepository.findBlogById(id);
+    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
+      id,
+    );
     if (!findBlogById)
       throw new NotFoundException(`User with ID ${id} not found`);
     if (findBlogById.blogOwnerInfo.userId !== userId)
@@ -74,7 +76,9 @@ export class BlogsService {
     user: BlogsDto,
     userId: string,
   ): Promise<boolean> {
-    const findBlogById = await this.blogsRepository.findBlogById(id);
+    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
+      id,
+    );
     if (!findBlogById) throw new NotFoundException(`Blog not found`);
     if (findBlogById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException(['It not your blog']);
@@ -86,7 +90,9 @@ export class BlogsService {
     newPostByBlogId: CreatePostDto,
     userId: string,
   ): Promise<PostsViewModal> {
-    const findBlogById = await this.blogsRepository.findBlogById(blogId);
+    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
+      blogId,
+    );
     console.log('findBlogById', findBlogById);
     if (!findBlogById) throw new NotFoundException([]);
     if (findBlogById.blogOwnerInfo.userId !== userId)
@@ -116,7 +122,7 @@ export class BlogsService {
     userId: string,
     updatePost: CreatePostDto,
   ): Promise<boolean> {
-    const blog = await this.blogsRepository.findBlogById(blogId);
+    const blog = await this.blogsRepository.findBlogWithUserInfoById(blogId);
     if (!blog) throw new NotFoundException([]);
     const post = await this.postsRepository.findPostById(postId);
     if (!post) throw new NotFoundException([]);
@@ -128,7 +134,7 @@ export class BlogsService {
     blogId: string,
     userId: string,
   ): Promise<boolean> {
-    const blog = await this.blogsRepository.findBlogById(blogId);
+    const blog = await this.blogsRepository.findBlogWithUserInfoById(blogId);
     if (!blog) throw new NotFoundException([]);
     const post = await this.postsRepository.findPostById(postId);
     if (!post) throw new NotFoundException([]);
