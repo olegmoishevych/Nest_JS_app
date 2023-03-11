@@ -68,15 +68,10 @@ export class LikeStatusRepository {
       )
       .lean();
     if (userId) {
-      const status = await this.likeStatusModel
-        .findOne(
-          { parentId: post.id, userId },
-          { _id: 0, likeStatus: 1, isUserBanned: 0 },
-        )
+      const myStatus = await this.likeStatusModel
+        .findOne({ parentId: post.id, userId }, { _id: 0, likeStatus: 1 })
         .lean();
-      if (status) {
-        post.extendedLikesInfo.myStatus = status.likeStatus;
-      }
+      post.extendedLikesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
     }
     return post;
   }
@@ -110,10 +105,7 @@ export class LikeStatusRepository {
     );
     if (userId) {
       const status = await this.likeStatusModel
-        .findOne(
-          { parentId: comment.id, userId },
-          { _id: 0, likeStatus: 1, isUserBanned: 0 },
-        )
+        .findOne({ parentId: comment.id, userId }, { _id: 0, likeStatus: 1 })
         .lean();
       if (status) {
         comment.likesInfo.myStatus = status.likeStatus;
