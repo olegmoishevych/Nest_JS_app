@@ -27,14 +27,7 @@ export class DevicesRepository {
     return result.deletedCount === 1;
   }
 
-  async updateUserSessionById(
-    // userId: string,
-    // deviceId: string,
-    // ip: string,
-    // title: string,
-    // date: string,
-    newSession: DevicesModal,
-  ): Promise<UpdateResult> {
+  async updateUserSessionById(newSession: DevicesModal): Promise<UpdateResult> {
     return this.devicesModel.updateOne(
       { userId: newSession.userId, deviceId: newSession.deviceId },
       { $set: { ...newSession } },
@@ -70,5 +63,8 @@ export class DevicesRepository {
   ): Promise<boolean> {
     const res = await this.devicesModel.deleteOne({ userId, deviceId });
     return res.deletedCount === 1;
+  }
+  async deleteSessionsBanUserById(userId: string): Promise<DeleteResult> {
+    return this.devicesModel.deleteMany({ userId });
   }
 }

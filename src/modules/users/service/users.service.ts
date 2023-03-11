@@ -21,6 +21,7 @@ import { AuthRepository } from '../../auth/repository/auth.repository';
 import { EmailService } from '../../email/email.service';
 import { loginOrEmailType } from '../../auth/constants';
 import { LoginOrEmailDto } from '../../auth/dto/auth.dto';
+import { DevicesRepository } from '../../devices/repository/devices.repository';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +29,7 @@ export class UsersService {
     private usersRepository: UsersRepository,
     private authRepository: AuthRepository,
     private emailService: EmailService,
+    private deviceRepository: DevicesRepository,
   ) {}
 
   async findAllUsers(
@@ -127,7 +129,7 @@ export class UsersService {
     if (!passwordComparison) throw new UnauthorizedException();
     return user;
   }
-  async banUserById(id: string, banUserModel: BanUserDto) {
+  async banUserById(id: string, banUserModel: BanUserDto): Promise<boolean> {
     const user = await this.usersRepository.findUserById(id);
     if (!user) throw new NotFoundException(['User not found']);
     const updateUser: BanInfo = {
@@ -135,6 +137,7 @@ export class UsersService {
       banReason: banUserModel.banReason,
       banDate: new Date(),
     };
+    await this.deviceRepository.deleteSessionsBanUserById(id);
     return this.usersRepository.banUserById(id, updateUser);
   }
 }
