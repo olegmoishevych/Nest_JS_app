@@ -52,6 +52,7 @@ import { DevicesController } from '../devices/controller/devices.controller';
 import { Devices, DevicesSchema } from '../devices/schemas/devices.schemas';
 import { BloggerController } from '../blogs/controller/blogger.controller';
 import { LocalStrategy } from '../auth/strategies/local.strategy';
+import { BlogsController } from '../blogs/controller/blogs.controller';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -146,6 +147,7 @@ const throttlerGuard = {
     LocalStrategy,
     BasicStrategy,
     BlogIsExistRule,
+    BlogsController,
   ],
 })
 export class AppModule {}
