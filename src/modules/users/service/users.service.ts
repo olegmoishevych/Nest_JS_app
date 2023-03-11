@@ -69,8 +69,8 @@ export class UsersService {
       },
       banInfo: {
         isBanned: false,
-        banDate: new Date().toISOString(),
-        banReason: '',
+        banDate: null,
+        banReason: null,
       },
     };
     const result = await this.usersRepository.createUser({ ...newUser });
@@ -143,7 +143,7 @@ export class UsersService {
     const updateUser: BanInfo = {
       isBanned: banUserModel.isBanned,
       banReason: banUserModel.banReason,
-      banDate: new Date().toISOString(),
+      banDate: new Date(),
     };
     try {
       await this.postsRepository.updateBannedUserById(id),
