@@ -31,4 +31,8 @@ export class BlogsController {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsService.findPostByBlogId(blogId, paginationDto, userId);
   }
+  @Get('/:id')
+  async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
+    return this.blogsService.findBlogById(id);
+  }
 }

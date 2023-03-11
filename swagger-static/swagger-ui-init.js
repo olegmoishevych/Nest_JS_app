@@ -98,24 +98,6 @@ window.onload = function() {
               "description": ""
             }
           }
-        },
-        "get": {
-          "operationId": "BloggerController_findBlogById",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
         }
       },
       "/api/blogger/blogs/{blogId}/posts": {
@@ -753,6 +735,26 @@ window.onload = function() {
           "parameters": [
             {
               "name": "blogId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/blogs/{id}": {
+        "get": {
+          "operationId": "BlogsController_findBlogById",
+          "parameters": [
+            {
+              "name": "id",
               "required": true,
               "in": "path",
               "schema": {
