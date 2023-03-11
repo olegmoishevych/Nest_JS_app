@@ -14,6 +14,7 @@ export class BlogsRepository {
 
   async getBlogs(
     paginationType: BlogPaginationDto,
+    superAdmin: boolean,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     const filter = {
       name: {
@@ -21,8 +22,11 @@ export class BlogsRepository {
         $options: 'i',
       },
     };
+    const findParams = superAdmin
+      ? { _id: 0, __v: 0 }
+      : { _id: 0, __v: 0, blogOwnerInfo: 0 };
     const findAndSortedBlogs = await this.blogsModel
-      .find(filter, { _id: 0, __v: 0, blogOwnerInfo: 0 })
+      .find(filter, findParams)
       .sort({
         [paginationType.sortBy]:
           paginationType.sortDirection === 'asc' ? 1 : -1,

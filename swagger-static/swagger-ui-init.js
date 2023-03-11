@@ -310,6 +310,17 @@ window.onload = function() {
           }
         }
       },
+      "/api/sa/blogs": {
+        "get": {
+          "operationId": "UsersController_getBlogs",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAllData",

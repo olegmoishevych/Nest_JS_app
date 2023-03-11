@@ -18,18 +18,13 @@ import {
 import { BlogsDto } from '../dto/blogsDto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../schemas/blogs.schema';
-import {
-  CreatePostDto,
-  CreatePostDtoWithBlogId,
-} from '../../posts/dto/createPostDto';
+import { CreatePostDto } from '../../posts/dto/createPostDto';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import { PostsService } from '../../posts/service/posts.service';
 import { Token } from '../../decorators/token.decorator';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
-import { DeleteResult } from 'mongodb';
 
 @Controller('blogger')
 export class BloggerController {
@@ -43,7 +38,7 @@ export class BloggerController {
   async findBlogs(
     @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsService.getBlogs(paginationDto);
+    return this.blogsService.getBlogs(paginationDto, false);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -108,6 +103,7 @@ export class BloggerController {
       updatePost,
     );
   }
+
   @UseGuards(JwtAuthGuard)
   @Delete('/blogs/:blogId/posts/:postId')
   async deletePostByBlogsAndPostsId(
@@ -121,6 +117,7 @@ export class BloggerController {
       user.id,
     );
   }
+
   @Get('/blogs/:blogId/posts')
   async findPostByBlogId(
     @Param('blogId') blogId: string,

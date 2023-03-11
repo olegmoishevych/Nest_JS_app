@@ -13,13 +13,20 @@ import {
 import { UsersService } from '../service/users.service';
 import { BanUserDto, UserDto } from '../dto/userDto';
 import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
-import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BlogPaginationDto,
+  UserPaginationDto,
+} from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { BlogsService } from '../../blogs/service/blogs.service';
 
 @Controller('sa')
 export class UsersController {
-  constructor(public usersService: UsersService) {}
+  constructor(
+    public usersService: UsersService,
+    public blogsService: BlogsService,
+  ) {}
 
   @UseGuards(BasicAuthGuard)
   @Get('/users')
@@ -48,5 +55,10 @@ export class UsersController {
     @Body() banUserModel: BanUserDto,
   ): Promise<boolean> {
     return this.usersService.banUserById(id, banUserModel);
+  }
+  @UseGuards(BasicAuthGuard)
+  @Get('/blogs')
+  async getBlogs(@Param() paginationDto: BlogPaginationDto) {
+    return this.blogsService.getBlogs(paginationDto, true);
   }
 }
