@@ -51,7 +51,7 @@ export class UsersRepository {
     const filter = {
       $and: [
         {
-          $and: [
+          $or: [
             {
               login: {
                 $regex: paginationDto.searchLoginTerm ?? '',
