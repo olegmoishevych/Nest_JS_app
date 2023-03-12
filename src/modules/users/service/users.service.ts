@@ -12,7 +12,10 @@ import {
   UsersModel_For_DB,
 } from '../schemas/users.schema';
 import { BanUserDto, UserDto } from '../dto/userDto';
-import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  UserPaginationDto,
+  UserPaginationDtoWithBanStatusDto,
+} from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,7 +40,7 @@ export class UsersService {
   ) {}
 
   async findAllUsers(
-    paginationDto: UserPaginationDto,
+    paginationDto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     return this.usersRepository.findAllUsers(paginationDto);
   }

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class getPagination {
   constructor(query: any) {
     return {
+      banStatus: query.banStatus ? query.banStatus : '',
       searchLoginTerm: query.searchLoginTerm ? query.searchLoginTerm : '',
       searchEmailTerm: query.searchEmailTerm ? query.searchEmailTerm : '',
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
@@ -14,3 +15,5 @@ export class getPagination {
     };
   }
 }
+
+console.log('getPagination', getPagination);

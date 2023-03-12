@@ -37,7 +37,6 @@ export class BlogsRepository {
       .limit(paginationType.pageSize)
       .lean();
     const getCountBlogs = await this.blogsModel.countDocuments(filter);
-    console.log('getCountBlogs', getCountBlogs);
     return new PaginationViewModel<BlogsViewModel[]>(
       getCountBlogs,
       paginationType.pageNumber,

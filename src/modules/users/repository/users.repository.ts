@@ -9,7 +9,11 @@ import {
   UsersModel_For_DB,
 } from '../schemas/users.schema';
 import { Model } from 'mongoose';
-import { UserPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BanStatusFilterEnum,
+  UserPaginationDto,
+  UserPaginationDtoWithBanStatusDto,
+} from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { LoginOrEmailDto } from '../../auth/dto/auth.dto';
 import {
@@ -26,22 +30,60 @@ export class UsersRepository {
     private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
   ) {}
 
+  private getBanStatusFilter(banStatus: BanStatusFilterEnum) {
+    switch (banStatus) {
+      case BanStatusFilterEnum.Banned:
+        return { 'banInfo.isBanned': true };
+      case BanStatusFilterEnum.NotBanned:
+        return { 'banInfo.isBanned': false };
+      default:
+        return {
+          $or: [{ 'banInfo.isBanned': true }, { 'banInfo.isBanned': false }],
+        };
+    }
+  }
+
   async findAllUsers(
-    paginationDto: UserPaginationDto,
+    paginationDto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
+    console.log('paginationDto', paginationDto);
+
     const filter = {
-      $or: [
+      $and: [
         {
-          login: { $regex: paginationDto.searchLoginTerm ?? '', $options: 'i' },
+          $and: [
+            {
+              login: {
+                $regex: paginationDto.searchLoginTerm ?? '',
+                $options: 'i',
+              },
+            },
+            {
+              email: {
+                $regex: paginationDto.searchEmailTerm ?? '',
+                $options: 'i',
+              },
+            },
+          ],
         },
-        {
-          email: {
-            $regex: paginationDto.searchEmailTerm ?? '',
-            $options: 'i',
-          },
-        },
+        this.getBanStatusFilter(paginationDto.banStatus),
       ],
     };
+    // const filter = {
+    //   [isBanned]: banStatus,
+    //   $or: [
+    //     {
+    //       login: { $regex: paginationDto.searchLoginTerm ?? '', $options: 'i' },
+    //     },
+    //     {
+    //       email: {
+    //         $regex: paginationDto.searchEmailTerm ?? '',
+    //         $options: 'i',
+    //       },
+    //     },
+    //   ],
+    // };
+    console.log(filter);
     const findAndSortedUsers = await this.usersModel
       .find(filter, { _id: 0, passwordHash: 0, emailConfirmation: 0 })
       .sort({
@@ -51,6 +93,7 @@ export class UsersRepository {
       .limit(paginationDto.pageSize)
       .lean();
     const getCountUsers = await this.usersModel.countDocuments(filter);
+    console.log('findAndSortedUsers', findAndSortedUsers);
     return new PaginationViewModel(
       getCountUsers,
       paginationDto.pageNumber,

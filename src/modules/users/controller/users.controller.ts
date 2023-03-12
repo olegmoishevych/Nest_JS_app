@@ -16,6 +16,7 @@ import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
 import {
   BlogPaginationDto,
   UserPaginationDto,
+  UserPaginationDtoWithBanStatusDto,
 } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
@@ -32,7 +33,7 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Get('/users')
   async findAllUsers(
-    @Query() paginationDto: UserPaginationDto,
+    @Query() paginationDto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     return this.usersService.findAllUsers(paginationDto);
   }
@@ -60,7 +61,7 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Get('/blogs')
   async getBlogs(
-    @Param() paginationDto: BlogPaginationDto,
+    @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.blogsService.getBlogs(paginationDto, true);
   }

@@ -45,3 +45,18 @@ export class UserPaginationDto extends PaginationDto {
   @IsOptional()
   searchEmailTerm: string | null = null;
 }
+
+export enum BanStatusFilterEnum {
+  All = 'all',
+  Banned = 'banned',
+  NotBanned = 'notBanned',
+}
+export class UserPaginationDtoWithBanStatusDto extends UserPaginationDto {
+  @IsOptional()
+  banStatus: BanStatusFilterEnum = BanStatusFilterEnum.All;
+}
+
+console.log(
+  'UserPaginationDtoWithBanStatus',
+  UserPaginationDtoWithBanStatusDto,
+);
