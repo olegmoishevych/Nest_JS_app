@@ -9,6 +9,7 @@ import {
 import { PostsViewModal } from '../schemas/posts.schema';
 import { CommentsViewModal } from '../../comments/schema/comments.schema';
 import { UsersModel_For_DB } from '../../users/schemas/users.schema';
+import { UpdateResult } from 'mongodb';
 
 @Injectable()
 export class LikeStatusRepository {
@@ -115,10 +116,10 @@ export class LikeStatusRepository {
   async updateBannedUserById(
     userId: string,
     user: UsersModel_For_DB,
-  ): Promise<boolean> {
+  ): Promise<UpdateResult> {
     const set = user.banInfo.isBanned
       ? { isUserBanned: false }
-      : { isUserBanned: false };
-    return this.likeStatusModel.findOneAndUpdate({ userId }, { $set: set });
+      : { isUserBanned: true };
+    return this.likeStatusModel.updateMany({ userId }, { $set: set });
   }
 }
