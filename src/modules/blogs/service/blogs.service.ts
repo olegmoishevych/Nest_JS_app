@@ -32,9 +32,10 @@ export class BlogsService {
 
   async getBlogs(
     paginationType: BlogPaginationDto,
-    user: boolean,
+    admin: boolean,
+    user?: UserModel,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogs(paginationType, user);
+    return this.blogsRepository.getBlogs(paginationType, admin, user);
   }
 
   async createBlog(blog: BlogsDto, user: UserModel): Promise<BlogsViewModel> {

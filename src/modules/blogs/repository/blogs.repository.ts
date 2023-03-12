@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
+import { UserModel } from '../../users/schemas/users.schema';
 
 @Injectable()
 export class BlogsRepository {
@@ -15,13 +16,16 @@ export class BlogsRepository {
   async getBlogs(
     paginationType: BlogPaginationDto,
     superAdmin: boolean,
+    user?: UserModel,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    const filter = {
-      name: {
-        $regex: paginationType.searchNameTerm ?? '',
-        $options: 'i',
-      },
-    };
+    const filter = user
+      ? {
+          name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
+          ['blogOwnerInfo.userId']: user.id,
+        }
+      : {
+          name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
+        };
     const findParams = superAdmin ? { _id: 0 } : { _id: 0, blogOwnerInfo: 0 };
     const findAndSortedBlogs = await this.blogsModel
       .find(filter, findParams)
@@ -33,6 +37,7 @@ export class BlogsRepository {
       .limit(paginationType.pageSize)
       .lean();
     const getCountBlogs = await this.blogsModel.countDocuments(filter);
+    console.log('getCountBlogs', getCountBlogs);
     return new PaginationViewModel<BlogsViewModel[]>(
       getCountBlogs,
       paginationType.pageNumber,

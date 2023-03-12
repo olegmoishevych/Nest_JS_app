@@ -29,8 +29,9 @@ export class BloggerController {
   @Get('/blogs')
   async findBlogs(
     @Query() paginationDto: BlogPaginationDto,
+    @User() user: UserModel,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsService.getBlogs(paginationDto, false);
+    return this.blogsService.getBlogs(paginationDto, false, user);
   }
 
   @UseGuards(JwtAuthGuard)
