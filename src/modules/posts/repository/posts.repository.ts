@@ -26,7 +26,7 @@ export class PostsRepository {
     paginationType: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    const projection = { _id: 0, __v: 0, isUserBanned: 0 };
+    const projection = { _id: 0, __v: 0, isUserBanned: 0, userId: 0 };
     const findAndSortedPosts = await this.postsModel
       .find({ isUserBanned: false }, projection)
       .sort({
@@ -36,7 +36,9 @@ export class PostsRepository {
       .skip(paginationType.getSkipSize())
       .limit(paginationType.pageSize)
       .lean();
-    const getCountPosts = await this.postsModel.countDocuments();
+    const getCountPosts = await this.postsModel.countDocuments({
+      isUserBanned: false,
+    });
     const postsWithLikes = await this.likeStatusRepository.postsWithLikeStatus(
       findAndSortedPosts,
       userId,
@@ -83,7 +85,10 @@ export class PostsRepository {
       .skip(paginationType.getSkipSize())
       .limit(paginationType.pageSize)
       .lean();
-    const getCountPosts = await this.postsModel.countDocuments({ blogId });
+    const getCountPosts = await this.postsModel.countDocuments({
+      blogId,
+      isUserBanned: false,
+    });
     return new PaginationViewModel<PostsViewModal[]>(
       getCountPosts,
       paginationType.pageNumber,

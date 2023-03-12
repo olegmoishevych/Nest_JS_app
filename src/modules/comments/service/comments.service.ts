@@ -48,6 +48,7 @@ export class CommentsService {
   async findCommentById(id: string, userId: string) {
     const findCommentById: CommentsViewModal =
       await this.commentsRepository.findCommentById(id);
+    console.log('findCommentById', findCommentById);
     if (!findCommentById) throw new NotFoundException(`Comment not found`);
     return this.likeStatusRepository.commentWithLikeStatus(
       findCommentById,

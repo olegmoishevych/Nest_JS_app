@@ -13,13 +13,19 @@ import {
   LikeStatusDocument,
   LikeStatusModal,
 } from '../schema/likeStatus.schema';
-import { UsersModel_For_DB } from '../../users/schemas/users.schema';
+import {
+  Users,
+  UsersDocument,
+  UsersModel_For_DB,
+} from '../../users/schemas/users.schema';
 
 @Injectable()
 export class CommentsRepository {
   constructor(
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,
+    @InjectModel(Users.name)
+    private readonly usersModel: Model<UsersDocument>,
     @InjectModel(LikeStatus.name)
     private readonly likeStatusModel: Model<LikeStatusDocument>,
   ) {}
@@ -51,6 +57,9 @@ export class CommentsRepository {
   }
 
   async findCommentById(id: string): Promise<CommentsViewModal> {
+    // const banned = await this.usersModel.distinct('id', {
+    //   isUserBanned: true,
+    // });
     return this.commentsModel.findOne(
       { id, isUserBanned: false },
       { _id: 0, __v: 0, postId: 0, isUserBanned: 0 },
