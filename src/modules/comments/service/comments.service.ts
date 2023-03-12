@@ -9,7 +9,10 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { CommentsViewModal } from '../schema/comments.schema';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
-import { LikeStatusModal } from '../schema/likeStatus.schema';
+import {
+  LikeStatusModal,
+  LikeStatusModalFor_Db,
+} from '../schema/likeStatus.schema';
 import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 
 @Injectable()
@@ -48,7 +51,6 @@ export class CommentsService {
   async findCommentById(id: string, userId: string) {
     const findCommentById: CommentsViewModal =
       await this.commentsRepository.findCommentById(id);
-    console.log('findCommentById', findCommentById);
     if (!findCommentById) throw new NotFoundException(`Comment not found`);
     return this.likeStatusRepository.commentWithLikeStatus(
       findCommentById,
@@ -108,8 +110,9 @@ export class CommentsService {
         message: 'Comment not found',
         field: 'comment',
       });
-    const newLikeStatus: LikeStatusModal = {
+    const newLikeStatus: LikeStatusModalFor_Db = {
       parentId: commentId,
+      isUserBanned: false,
       userId: user.id,
       login: user.login,
       likeStatus: likeStatus,

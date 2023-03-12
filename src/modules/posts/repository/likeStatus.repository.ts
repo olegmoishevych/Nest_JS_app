@@ -96,13 +96,13 @@ export class LikeStatusRepository {
     comment.likesInfo.likesCount = await this.likeStatusModel.countDocuments({
       parentId: comment.id,
       likeStatus: 'Like',
-      // isUserBanned: false,
+      isUserBanned: false,
     });
     comment.likesInfo.dislikesCount = await this.likeStatusModel.countDocuments(
       {
         parentId: comment.id,
         likeStatus: 'Dislike',
-        // isUserBanned: false,
+        isUserBanned: false,
       },
     );
     if (userId) {
