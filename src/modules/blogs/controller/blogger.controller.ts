@@ -20,6 +20,7 @@ import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
+import { BanUserForBloggerDto } from '../dto/bloggerDto';
 
 @Controller('blogger')
 export class BloggerController {
@@ -106,4 +107,12 @@ export class BloggerController {
       user.id,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/users/users/:id/ban')
+  @HttpCode(204)
+  async banUserById(
+    @Param('id') id: string,
+    @Body() banUserModal: BanUserForBloggerDto,
+  ) {}
 }

@@ -194,6 +194,36 @@ window.onload = function() {
           }
         }
       },
+      "/api/blogger/users/users/{id}/ban": {
+        "put": {
+          "operationId": "BloggerController_banUserById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BanUserForBloggerDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/sa/users": {
         "get": {
           "operationId": "UsersController_findAllUsers",
@@ -790,6 +820,10 @@ window.onload = function() {
           "properties": {}
         },
         "CreatePostDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "BanUserForBloggerDto": {
           "type": "object",
           "properties": {}
         },

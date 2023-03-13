@@ -20,6 +20,10 @@ import {
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
 import { PostsService } from '../../posts/service/posts.service';
+import { UsersService } from '../../users/service/users.service';
+import { UsersRepository } from '../../users/repository/users.repository';
+import { BanUserForBloggerDto } from '../dto/bloggerDto';
+import { BanUserDto } from '../../users/dto/userDto';
 
 @Injectable()
 export class BlogsService {
@@ -27,6 +31,7 @@ export class BlogsService {
     private blogsRepository: BlogsRepository,
     private postsRepository: PostsRepository,
     private postsService: PostsService,
+    private usersRepository: UsersRepository,
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
@@ -142,7 +147,26 @@ export class BlogsService {
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.deletePostById(postId, userId);
   }
-  async bindWithUser(blogId: string, userId: string) {
-    const bindBLogWithUserById = {};
+  async banUserById(userId: string, banUserModal: BanUserForBloggerDto) {
+    const findUserById = await this.usersRepository.findUserById(userId);
+    if (!findUserById)
+      throw new NotFoundException([
+        {
+          message: 'User not found',
+          field: 'userId',
+        },
+      ]);
+    const findBlogById = await this.blogsRepository.findBlogById(
+      banUserModal.blogId,
+    );
+    if (!findBlogById)
+      throw new NotFoundException([
+        {
+          message: 'Blog not found by this id',
+          field: 'blog',
+        },
+      ]);
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
   }
 }

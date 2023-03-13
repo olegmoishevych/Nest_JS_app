@@ -125,15 +125,11 @@ describe('AppController (e2e)', () => {
 
       expect.setState({ user: createdUser });
     });
-    it('should return errors because login and email already in DB', async () => {
+    it('should return error because email already in DB', async () => {
       const { user } = expect.getState();
 
       const errors = {
         errorsMessages: expect.arrayContaining([
-          {
-            message: expect.any(String),
-            field: 'login',
-          },
           {
             message: expect.any(String),
             field: 'email',

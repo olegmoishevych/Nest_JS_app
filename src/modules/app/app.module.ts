@@ -52,6 +52,10 @@ import { Devices, DevicesSchema } from '../devices/schemas/devices.schemas';
 import { BloggerController } from '../blogs/controller/blogger.controller';
 import { LocalStrategy } from '../auth/strategies/local.strategy';
 import { BlogsController } from '../blogs/controller/blogs.controller';
+import {
+  UserBanned,
+  UserBannedSchema,
+} from '../blogs/schemas/user-banned.schema';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -61,6 +65,7 @@ const mongooseModels = [
   { name: RecoveryCode.name, schema: RecoveryCodeSchema },
   { name: LikeStatus.name, schema: LikeStatusSchema },
   { name: Devices.name, schema: DevicesSchema },
+  { name: UserBanned.name, schema: UserBannedSchema },
 ];
 
 const controllers = [

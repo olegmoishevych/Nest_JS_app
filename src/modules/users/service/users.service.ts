@@ -44,12 +44,26 @@ export class UsersService {
   }
 
   async createUser(user: UserDto): Promise<UserModel> {
-    const findUser = await this.authRepository.findUserByLogin(user.login);
-    if (findUser) throw new BadRequestException([]);
     const findUserByEmail = await this.authRepository.findUserByEmail(
       user.email,
     );
-    if (findUserByEmail) throw new BadRequestException([]);
+    if (findUserByEmail)
+      throw new BadRequestException([
+        {
+          message: 'User with this email is registered',
+          field: 'email',
+        },
+      ]);
+    const findUserByLogin = await this.authRepository.findUserByLogin(
+      user.login,
+    );
+    if (findUserByLogin)
+      throw new BadRequestException([
+        {
+          message: 'User login is registered yet',
+          field: 'login',
+        },
+      ]);
     const password = user.password;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);

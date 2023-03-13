@@ -20,6 +20,10 @@ import {
   Devices,
   DevicesDocument,
 } from '../../devices/schemas/devices.schemas';
+import {
+  UserBanned,
+  UserBannedDocument,
+} from '../../blogs/schemas/user-banned.schema';
 
 @Injectable()
 export class TestingRepository {
@@ -33,6 +37,7 @@ export class TestingRepository {
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
     @InjectModel(RecoveryCode.name)
     private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
+    private readonly userBannedModel: Model<UserBannedDocument>,
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,
   ) {}
@@ -47,6 +52,7 @@ export class TestingRepository {
         this.recoveryCodeModel.deleteMany(),
         this.likeStatusModel.deleteMany(),
         this.devicesModel.deleteMany(),
+        this.userBannedModel.deleteMany(),
       ]);
       return true;
     } catch (e) {
