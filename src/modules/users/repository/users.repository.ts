@@ -46,8 +46,6 @@ export class UsersRepository {
   async findAllUsers(
     paginationDto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
-    console.log('paginationDto', paginationDto);
-
     const filter = {
       $and: [
         {
@@ -69,21 +67,7 @@ export class UsersRepository {
         this.getBanStatusFilter(paginationDto.banStatus),
       ],
     };
-    // const filter = {
-    //   [isBanned]: banStatus,
-    //   $or: [
-    //     {
-    //       login: { $regex: paginationDto.searchLoginTerm ?? '', $options: 'i' },
-    //     },
-    //     {
-    //       email: {
-    //         $regex: paginationDto.searchEmailTerm ?? '',
-    //         $options: 'i',
-    //       },
-    //     },
-    //   ],
-    // };
-    console.log(filter);
+
     const findAndSortedUsers = await this.usersModel
       .find(filter, { _id: 0, passwordHash: 0, emailConfirmation: 0 })
       .sort({
@@ -93,7 +77,6 @@ export class UsersRepository {
       .limit(paginationDto.pageSize)
       .lean();
     const getCountUsers = await this.usersModel.countDocuments(filter);
-    console.log('findAndSortedUsers', findAndSortedUsers);
     return new PaginationViewModel(
       getCountUsers,
       paginationDto.pageNumber,

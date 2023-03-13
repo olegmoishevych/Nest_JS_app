@@ -8,46 +8,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
 import { useContainer } from 'class-validator';
+import { createApp } from './commons/createApp';
 
 const serverUrl = 'http://localhost:3000';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const rawApp = await NestFactory.create(AppModule);
+  const app = createApp(rawApp);
   const configService = app.get(ConfigService);
   const PORT = parseInt(configService.get<string>('PORT'), 10) || 3000;
-  app.setGlobalPrefix('api');
-  app.enableCors();
-  app.use(cookieParser());
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidUnknownValues: false,
-      stopAtFirstError: true,
-      exceptionFactory: (errors) => {
-        const errorsForResponse = [];
-        errors.forEach((e) => {
-          const constraintsKeys = Object.keys(e.constraints);
-          constraintsKeys.forEach((ckey) => {
-            errorsForResponse.push({
-              message: e.constraints[ckey],
-              field: e.property,
-            });
-          });
-        });
-        throw new BadRequestException(errorsForResponse);
-      },
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  const config = new DocumentBuilder()
-    .setTitle('Bloggers example')
-    .setDescription('The Bloggers API description')
-    .setVersion('1.0')
-    .addTag('Bloggers')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
 
   await app.listen(PORT, () => {
     console.log(`Server started on ${PORT} port`);

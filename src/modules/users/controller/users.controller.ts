@@ -25,6 +25,7 @@ import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
 
 @Controller('sa')
 export class UsersController {
+  [x: string]: any;
   constructor(
     public usersService: UsersService,
     public blogsService: BlogsService,
