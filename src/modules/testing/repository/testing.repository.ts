@@ -37,6 +37,7 @@ export class TestingRepository {
     @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
     @InjectModel(RecoveryCode.name)
     private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
+    @InjectModel(UserBanned.name)
     private readonly userBannedModel: Model<UserBannedDocument>,
     @InjectModel(Comments.name)
     private readonly commentsModel: Model<CommentsDocument>,

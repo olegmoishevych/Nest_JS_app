@@ -194,7 +194,7 @@ window.onload = function() {
           }
         }
       },
-      "/api/blogger/users/users/{id}/ban": {
+      "/api/blogger/users/{id}/ban": {
         "put": {
           "operationId": "BloggerController_banUserById",
           "parameters": [
@@ -219,6 +219,26 @@ window.onload = function() {
           },
           "responses": {
             "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/blogger/users/blog/{id}": {
+        "get": {
+          "operationId": "BloggerController_getBannedUser",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
               "description": ""
             }
           }

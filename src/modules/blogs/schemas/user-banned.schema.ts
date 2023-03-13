@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Blogs } from './blogs.schema';
 import { HydratedDocument } from 'mongoose';
 
 export type UserBannedDocument = HydratedDocument<UserBanned>;
@@ -7,8 +6,8 @@ export type UserBannedDocument = HydratedDocument<UserBanned>;
 export class banInfo {
   @Prop({ type: Boolean })
   isBanned: boolean;
-  @Prop({ type: Date })
-  banDate: Date;
+  @Prop({ type: String })
+  banDate: string;
   @Prop({ type: String })
   banReason: string;
 }
@@ -21,8 +20,29 @@ export class UserBanned {
   login: string;
   @Prop({ type: String, required: true })
   blogId: string;
-  @Prop({ type: String, required: true })
+  @Prop()
   banInfo: banInfo;
+}
+
+export class BlogsUserViewModel {
+  constructor(
+    public id: string,
+    public login: string,
+    public banInfo: banInfo,
+  ) {}
+}
+
+export class BlogsUserViewModelFor_DB {
+  constructor(
+    public id: string,
+    public login: string,
+    public blogId: string,
+    public banInfo: {
+      isBanned: boolean;
+      banDate: string;
+      banReason: string;
+    },
+  ) {}
 }
 
 export const UserBannedSchema = SchemaFactory.createForClass(UserBanned);

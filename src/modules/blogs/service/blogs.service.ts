@@ -24,6 +24,10 @@ import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
 import { BanUserDto } from '../../users/dto/userDto';
+import {
+  BlogsUserViewModel,
+  BlogsUserViewModelFor_DB,
+} from '../schemas/user-banned.schema';
 
 @Injectable()
 export class BlogsService {
@@ -147,26 +151,29 @@ export class BlogsService {
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.deletePostById(postId, userId);
   }
-  async banUserById(userId: string, banUserModal: BanUserForBloggerDto) {
-    const findUserById = await this.usersRepository.findUserById(userId);
-    if (!findUserById)
-      throw new NotFoundException([
-        {
-          message: 'User not found',
-          field: 'userId',
-        },
-      ]);
-    const findBlogById = await this.blogsRepository.findBlogById(
-      banUserModal.blogId,
-    );
-    if (!findBlogById)
-      throw new NotFoundException([
-        {
-          message: 'Blog not found by this id',
-          field: 'blog',
-        },
-      ]);
-    if (findBlogById.blogOwnerInfo.userId !== userId)
+  async banUserById(
+    ownerId: string,
+    banUserModal: BanUserForBloggerDto,
+    userId: string,
+  ): Promise<BlogsUserViewModel> {
+    const findUserById = await this.usersRepository.findUserById(ownerId);
+    if (!findUserById) throw new NotFoundException(['User not found']);
+    const findBlogWithOwnerById =
+      await this.blogsRepository.findBlogWithOwnerId(banUserModal.blogId);
+    if (!findBlogWithOwnerById) throw new NotFoundException(['Blog not found']);
+    if (findBlogWithOwnerById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);
+    const bannedUser: BlogsUserViewModelFor_DB = {
+      id: ownerId,
+      login: findUserById.login,
+      blogId: banUserModal.blogId,
+      banInfo: {
+        isBanned: banUserModal.isBanned,
+        banDate: new Date().toISOString(),
+        banReason: banUserModal.banReason,
+      },
+    };
+    return this.blogsRepository.banUserById(bannedUser);
   }
+  async getBannedUsers() {}
 }

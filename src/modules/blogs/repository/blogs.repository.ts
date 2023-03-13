@@ -6,11 +6,19 @@ import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { UserModel } from '../../users/schemas/users.schema';
+import {
+  BlogsUserViewModel,
+  BlogsUserViewModelFor_DB,
+  UserBanned,
+  UserBannedDocument,
+} from '../schemas/user-banned.schema';
 
 @Injectable()
 export class BlogsRepository {
   constructor(
     @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
+    @InjectModel(UserBanned.name)
+    private readonly userBannedModel: Model<UserBannedDocument>,
   ) {}
 
   async getBlogs(
@@ -59,11 +67,15 @@ export class BlogsRepository {
   async findBlogWithUserInfoById(id: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne({ id }, { _id: 0, __v: 0 });
   }
+
   async findBlogById(id: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne(
       { id },
       { _id: 0, __v: 0, blogOwnerInfo: 0 },
     );
+  }
+  async findBlogWithOwnerId(ownerId: string): Promise<BlogsModal_For_DB> {
+    return this.blogsModel.findOne({ id: ownerId }, { _id: 0, __v: 0 });
   }
   async updateBlogById(
     id: string,
@@ -80,5 +92,11 @@ export class BlogsRepository {
         },
       },
     );
+  }
+
+  async banUserById(
+    bannedUser: BlogsUserViewModelFor_DB,
+  ): Promise<BlogsUserViewModel> {
+    return this.userBannedModel.create({ ...bannedUser });
   }
 }

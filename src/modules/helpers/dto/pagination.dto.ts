@@ -33,6 +33,10 @@ export class PaginationDto {
     return (this.pageNumber - 1) * this.pageSize;
   }
 }
+export class BannedUserDto extends PaginationDto {
+  @IsOptional()
+  searchLoginTerm: string | null = null;
+}
 
 export class BlogPaginationDto extends PaginationDto {
   @IsOptional()

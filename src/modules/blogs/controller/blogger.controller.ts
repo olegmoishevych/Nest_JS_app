@@ -11,7 +11,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from '../service/blogs.service';
-import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BannedUserDto,
+  BlogPaginationDto,
+} from '../../helpers/dto/pagination.dto';
 import { BlogsDto } from '../dto/blogsDto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../schemas/blogs.schema';
@@ -21,6 +24,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
+import { BlogsUserViewModel } from '../schemas/user-banned.schema';
 
 @Controller('blogger')
 export class BloggerController {
@@ -109,10 +113,21 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('/users/users/:id/ban')
+  @Put('/users/:id/ban')
   @HttpCode(204)
   async banUserById(
     @Param('id') id: string,
     @Body() banUserModal: BanUserForBloggerDto,
-  ) {}
+    @User() user: UserModel,
+  ): Promise<BlogsUserViewModel> {
+    return this.blogsService.banUserById(id, banUserModal, user.id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('/users/blog/:id')
+  async getBannedUser(
+    @Param('id') id: string,
+    @Query() pagination: BannedUserDto,
+  ) {
+    return this.blogsService.getBannedUsers();
+  }
 }
