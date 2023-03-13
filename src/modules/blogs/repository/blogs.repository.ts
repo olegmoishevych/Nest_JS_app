@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
-import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BannedUserDto,
+  BanStatusFilterEnum,
+  BlogPaginationDto,
+} from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { UserModel } from '../../users/schemas/users.schema';
@@ -52,7 +56,33 @@ export class BlogsRepository {
       findAndSortedBlogs,
     );
   }
-
+  async getBannedUsersForBlog(
+    blogId: string,
+    pagination: BannedUserDto,
+  ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
+    const filter = {
+      login: { $regex: pagination.searchLoginTerm ?? '', $options: 'i' },
+      blogId: blogId,
+      'banInfo.isBanned': true,
+    };
+    const findAndSortedUsers = await this.userBannedModel
+      .find(filter, { _id: 0, blogId: 0 })
+      .sort({
+        [pagination.sortBy]: pagination.sortDirection === 'asc' ? 1 : -1,
+      })
+      .skip(pagination.getSkipSize())
+      .limit(pagination.pageSize)
+      .lean();
+    const getCountBannedUsers = await this.userBannedModel.countDocuments(
+      filter,
+    );
+    return new PaginationViewModel<BlogsUserViewModel[]>(
+      getCountBannedUsers,
+      pagination.pageNumber,
+      pagination.pageSize,
+      findAndSortedUsers,
+    );
+  }
   async createBlog(blog: BlogsModal_For_DB): Promise<BlogsViewModel> {
     await this.blogsModel.create({ ...blog });
     const { blogOwnerInfo, ...blogCopy } = blog;

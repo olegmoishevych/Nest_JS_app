@@ -6,7 +6,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
 import { BlogsRepository } from '../repository/blogs.repository';
-import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BannedUserDto,
+  BlogPaginationDto,
+} from '../../helpers/dto/pagination.dto';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { Model } from 'mongoose';
 import { DeleteResult, ObjectId } from 'mongodb';
@@ -175,5 +178,15 @@ export class BlogsService {
     };
     return this.blogsRepository.banUserById(bannedUser);
   }
-  async getBannedUsers() {}
+  async getBannedUsers(
+    blogId: string,
+    pagination: BannedUserDto,
+    userId: string,
+  ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
+    const blogById = await this.blogsRepository.findBlogWithOwnerId(blogId);
+    if (!blogId) throw new NotFoundException(['Blog not found']);
+    if (blogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
+    return this.blogsRepository.getBannedUsersForBlog(blogId, pagination);
+  }
 }

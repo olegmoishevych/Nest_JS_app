@@ -127,7 +127,8 @@ export class BloggerController {
   async getBannedUser(
     @Param('id') id: string,
     @Query() pagination: BannedUserDto,
-  ) {
-    return this.blogsService.getBannedUsers();
+    @User() user: UserModel,
+  ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
+    return this.blogsService.getBannedUsers(id, pagination, user.id);
   }
 }
