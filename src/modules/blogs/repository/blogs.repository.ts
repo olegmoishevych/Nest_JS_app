@@ -6,7 +6,7 @@ import {
   BlogsDocument,
   BlogsViewModel,
 } from '../schemas/blogs.schema';
-import { Model } from 'mongoose';
+import { Model, FilterQuery, ProjectionFields } from 'mongoose';
 import {
   BannedUserDto,
   BanStatusFilterEnum,
@@ -31,26 +31,56 @@ export class BlogsRepository {
     private readonly userBannedModel: Model<UserBannedDocument>,
   ) {}
 
-  async getBlogs(
+  async getBlogsForPublic(
     paginationType: BlogPaginationDto,
-    superAdmin: boolean,
-    user?: UserModel,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    const filter = user
-      ? {
-          name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
-          ['blogOwnerInfo.userId']: user.id,
-          'banInfo.isBanned': false,
-        }
-      : {
-          name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
-          'banInfo.isBanned': false,
-        };
-    const findParams = superAdmin
-      ? { _id: 0 }
-      : { _id: 0, blogOwnerInfo: 0, banInfo: 0 };
+    const filter: FilterQuery<BlogsModal_For_DB> = {
+      name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
+      'banInfo.isBanned': false,
+    };
+    const projection: ProjectionFields<BlogsModal_For_DB> = {
+      _id: 0,
+      banInfo: 0,
+      blogOwnerInfo: 0,
+    };
+    return this.getBlogs(paginationType, filter, projection);
+  }
+
+  async getBlogsForOwner(
+    paginationType: BlogPaginationDto,
+    user: UserModel,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    const filter: FilterQuery<BlogsModal_For_DB> = {
+      name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
+      'blogOwnerInfo.userId': user.id,
+      'banInfo.isBanned': false,
+    };
+    const projection: ProjectionFields<BlogsModal_For_DB> = {
+      _id: 0,
+      banInfo: 0,
+      blogOwnerInfo: 0,
+    };
+    return this.getBlogs(paginationType, filter, projection);
+  }
+
+  async getBlogsForSA(
+    paginationType: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    const filter: FilterQuery<BlogsModal_For_DB> = {
+      name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
+    };
+    const projection: ProjectionFields<BlogsModal_For_DB> = {
+      _id: 0,
+    };
+    return this.getBlogs(paginationType, filter, projection);
+  }
+  private async getBlogs(
+    paginationType: BlogPaginationDto,
+    filter: FilterQuery<BlogsModal_For_DB>,
+    projection: ProjectionFields<BlogsModal_For_DB>,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     const findAndSortedBlogs = await this.blogsModel
-      .find(filter, findParams)
+      .find(filter, projection)
       .sort({
         [paginationType.sortBy]:
           paginationType.sortDirection === 'asc' ? 1 : -1,

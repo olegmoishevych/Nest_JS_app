@@ -77,7 +77,7 @@ export class UsersController {
   async getBlogs(
     @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogs(paginationDto, true);
+    return this.blogsRepository.getBlogsForSA(paginationDto);
   }
 
   @UseGuards(BasicAuthGuard)

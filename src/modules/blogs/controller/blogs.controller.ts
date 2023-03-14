@@ -23,7 +23,7 @@ export class BlogsController {
   async findAllBlogsForUsers(
     @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogs(paginationDto, false);
+    return this.blogsRepository.getBlogsForPublic(paginationDto);
   }
   @Get('/:blogId/posts')
   async findPostByBlogId(

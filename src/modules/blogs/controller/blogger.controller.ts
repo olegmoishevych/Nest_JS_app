@@ -53,7 +53,7 @@ export class BloggerController {
     @Query() paginationDto: BlogPaginationDto,
     @User() user: UserModel,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogs(paginationDto, false, user);
+    return this.blogsRepository.getBlogsForOwner(paginationDto, user);
   }
 
   @UseGuards(JwtAuthGuard)
