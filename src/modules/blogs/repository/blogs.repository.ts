@@ -125,8 +125,10 @@ export class BlogsRepository {
     );
   }
 
-  async findBlogWithOwnerId(ownerId: string): Promise<BlogsModal_For_DB> {
-    return this.blogsModel.findOne({ id: ownerId }, { _id: 0, __v: 0 });
+  async findBlogWithOwnerId(blogId: string): Promise<BlogsModal_For_DB> {
+    return this.blogsModel
+      .find({ blogId, 'banInfo.isBanned': true }, { _id: 0, __v: 0 })
+      .lean();
   }
   async updateBlogById(
     id: string,

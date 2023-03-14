@@ -116,7 +116,7 @@ export class PostsService {
     const findPostById: any = await this.postsRepository.findPostById(postId);
     if (!findPostById) throw new NotFoundException([]);
     const findUserInBanList =
-      await this.userBannedRepository.findBannedUserById(user.id);
+      await this.userBannedRepository.findBannedUserByUserId(user.id);
     if (findUserInBanList) throw new ForbiddenException([]);
     const newComment: CommentsViewModalFor_DB = {
       id: new ObjectId().toString(),

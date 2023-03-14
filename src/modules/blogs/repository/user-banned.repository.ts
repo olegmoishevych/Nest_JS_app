@@ -48,9 +48,15 @@ export class UserBannedRepository {
   ): Promise<BlogsUserViewModel> {
     return this.userBannedModel.create({ ...bannedUser });
   }
-  async findBannedUserById(userId: string): Promise<BlogsUserViewModel> {
+  async findBannedUserByUserId(userId: string): Promise<BlogsUserViewModel> {
     return this.userBannedModel.findOne({
       id: userId,
+      'banInfo.isBanned': true,
+    });
+  }
+  async findBannedUserByBlogId(blogId: string): Promise<BlogsUserViewModel> {
+    return this.userBannedModel.findOne({
+      blogId,
       'banInfo.isBanned': true,
     });
   }
