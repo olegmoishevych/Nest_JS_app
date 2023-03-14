@@ -15,5 +15,3 @@ export class getPagination {
     };
   }
 }
-
-console.log('getPagination', getPagination);

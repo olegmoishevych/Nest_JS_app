@@ -59,8 +59,3 @@ export class UserPaginationDtoWithBanStatusDto extends UserPaginationDto {
   @IsOptional()
   banStatus: BanStatusFilterEnum = BanStatusFilterEnum.All;
 }
-
-console.log(
-  'UserPaginationDtoWithBanStatus',
-  UserPaginationDtoWithBanStatusDto,
-);

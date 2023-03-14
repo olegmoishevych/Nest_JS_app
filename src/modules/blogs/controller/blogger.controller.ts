@@ -14,6 +14,7 @@ import { BlogsService } from '../service/blogs.service';
 import {
   BannedUserDto,
   BlogPaginationDto,
+  PaginationDto,
 } from '../../helpers/dto/pagination.dto';
 import { BlogsDto } from '../dto/blogsDto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
@@ -29,7 +30,12 @@ import { BlogsUserViewModel } from '../schemas/user-banned.schema';
 @Controller('blogger')
 export class BloggerController {
   constructor(public blogsService: BlogsService) {}
-
+  @UseGuards(JwtAuthGuard)
+  @Get('/blogs/comments')
+  async getCommentsForAllPosts(
+    @Query() pagination: PaginationDto,
+    @User() user: UserModel,
+  ) {}
   @UseGuards(JwtAuthGuard)
   @Get('/blogs')
   async findBlogs(
@@ -67,7 +73,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/blogs/:blogId/posts')
+  @Post('/blogs/:blogId/posts') // 1
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
@@ -81,7 +87,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('/blogs/:blogId/posts/:postId')
+  @Put('/blogs/:blogId/posts/:postId') // 6
   @HttpCode(204)
   async updatePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,
@@ -98,7 +104,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/blogs/:blogId/posts/:postId')
+  @Delete('/blogs/:blogId/posts/:postId') // 7
   @HttpCode(204)
   async deletePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,
