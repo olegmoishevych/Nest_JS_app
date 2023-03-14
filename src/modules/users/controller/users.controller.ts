@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-import { BanUserDto, UserDto } from '../dto/userDto';
+import { BanBlogUserDto, BanUserDto, UserDto } from '../dto/userDto';
 import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
 import {
   BlogPaginationDto,
@@ -58,9 +58,9 @@ export class UsersController {
   @HttpCode(204)
   async banBlogById(
     @Param('id') id: string,
-    @Body() isBanned: boolean,
+    @Body() isBanned: BanBlogUserDto,
   ): Promise<boolean> {
-    return this.blogsService.banBlogById(id, isBanned);
+    return this.blogsService.banBlogById(id, isBanned.isBanned);
   }
 
   @UseGuards(BasicAuthGuard)

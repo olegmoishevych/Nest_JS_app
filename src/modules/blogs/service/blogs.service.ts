@@ -31,7 +31,7 @@ import { PostsService } from '../../posts/service/posts.service';
 import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
-import { BanUserDto } from '../../users/dto/userDto';
+import { BanBlogUserDto, BanUserDto } from '../../users/dto/userDto';
 import {
   BlogsUserViewModel,
   BlogsUserViewModelFor_DB,
@@ -116,7 +116,7 @@ export class BlogsService {
     const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
       blogId,
     );
-    console.log('findBlogById', findBlogById);
+    // console.log('findBlogById', findBlogById);
     if (!findBlogById) throw new NotFoundException([]);
     if (findBlogById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);
@@ -124,6 +124,7 @@ export class BlogsService {
       id: new ObjectId().toString(),
       userId: userId,
       isUserBanned: false,
+      isBlogBanned: false,
       title: newPostByBlogId.title,
       shortDescription: newPostByBlogId.shortDescription,
       content: newPostByBlogId.content,
@@ -203,12 +204,15 @@ export class BlogsService {
     const findBlogById = await this.blogsRepository.findBlogByIdForBannedUser(
       blogId,
     );
-    console.log('findBlogById', findBlogById);
     if (!findBlogById) throw new NotFoundException([]);
     const updateBlog: BanInfo = findBlogById.banInfo.isBanned
-      ? { isBanned, banDate: null }
-      : { isBanned, banDate: new Date() };
+      ? { isBanned: false, banDate: null }
+      : { isBanned: true, banDate: new Date() };
     try {
+      await this.postsRepository.findUsersPostByIdAndChangeBlockStatus(
+        blogId,
+        isBanned,
+      );
       await this.blogsRepository.banBlogById(blogId, updateBlog);
       return true;
     } catch (e) {

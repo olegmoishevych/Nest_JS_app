@@ -22,12 +22,14 @@ import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { Token } from '../../decorators/token.decorator';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { PostsRepository } from '../repository/posts.repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     public commentsService: CommentsService,
     public postsService: PostsService,
+    public postsRepository: PostsRepository,
   ) {}
 
   @Get('/')
@@ -35,7 +37,7 @@ export class PostsController {
     @Token() userId: string | null,
     @Query() paginationDto: PaginationDto,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPosts(paginationDto, userId);
+    return this.postsRepository.findPosts(paginationDto, userId);
   }
 
   // @UseGuards(BasicAuthGuard)

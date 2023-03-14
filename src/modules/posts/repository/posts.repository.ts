@@ -12,6 +12,9 @@ import {
 } from '../../comments/schema/comments.schema';
 import { LikeStatusRepository } from './likeStatus.repository';
 import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
+import { BanUserForBloggerDto } from '../../blogs/dto/bloggerDto';
+import { BanBlogUserDto } from '../../users/dto/userDto';
+import { UpdateResult } from 'mongodb';
 
 @Injectable()
 export class PostsRepository {
@@ -53,7 +56,7 @@ export class PostsRepository {
 
   async createPost(newPost: PostsViewModalFor_DB): Promise<PostsViewModal> {
     await this.postsModel.create({ ...newPost });
-    const { userId, isUserBanned, ...postCopy } = newPost;
+    const { userId, isUserBanned, isBlogBanned, ...postCopy } = newPost;
     return postCopy;
   }
 
@@ -130,6 +133,15 @@ export class PostsRepository {
           content: post.content,
         },
       },
+    );
+  }
+  async findUsersPostByIdAndChangeBlockStatus(
+    blogId: string,
+    isBanned: boolean,
+  ): Promise<UpdateResult> {
+    return this.postsModel.updateMany(
+      { blogId },
+      { $set: { isBlogBanned: isBanned } },
     );
   }
 }

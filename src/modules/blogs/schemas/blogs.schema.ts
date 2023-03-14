@@ -4,9 +4,9 @@ import { HydratedDocument } from 'mongoose';
 export type BlogsDocument = HydratedDocument<Blogs>;
 
 export class BanInfo {
-  @Prop({ type: Boolean })
+  @Prop()
   isBanned: boolean;
-  @Prop({ type: Date })
+  @Prop()
   banDate: Date;
 }
 

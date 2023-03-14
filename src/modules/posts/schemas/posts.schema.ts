@@ -23,6 +23,8 @@ export class Posts {
   @Prop()
   isUserBanned: boolean;
   @Prop()
+  isBlogBanned: boolean;
+  @Prop()
   title: string;
   @Prop()
   shortDescription: string;

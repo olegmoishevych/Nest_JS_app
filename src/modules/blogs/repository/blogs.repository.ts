@@ -46,7 +46,9 @@ export class BlogsRepository {
           name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
           // 'banInfo.isBanned.isBanned': false,
         };
-    const findParams = superAdmin ? { _id: 0 } : { _id: 0, blogOwnerInfo: 0 };
+    const findParams = superAdmin
+      ? { _id: 0 }
+      : { _id: 0, blogOwnerInfo: 0, banInfo: 0 };
     const findAndSortedBlogs = await this.blogsModel
       .find(filter, findParams)
       .sort({
@@ -81,8 +83,8 @@ export class BlogsRepository {
 
   async findBlogById(id: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne(
-      { id, 'banInfo.isBanned.isBanned': false },
-      { _id: 0, __v: 0, blogOwnerInfo: 0 },
+      { id, 'banInfo.isBanned': false },
+      { _id: 0, __v: 0, blogOwnerInfo: 0, banInfo: 0 },
     );
   }
 

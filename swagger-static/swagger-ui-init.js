@@ -323,7 +323,7 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/BanBlogUserDto"
                 }
               }
             }
@@ -889,6 +889,10 @@ window.onload = function() {
           "properties": {}
         },
         "UserDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "BanBlogUserDto": {
           "type": "object",
           "properties": {}
         },

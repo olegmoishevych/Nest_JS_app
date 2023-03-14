@@ -30,6 +30,7 @@ export class PostsViewModalFor_DB {
     public id: string,
     public userId: string,
     public isUserBanned: boolean,
+    public isBlogBanned: boolean,
     public title: string,
     public shortDescription: string,
     public content: string,

@@ -19,3 +19,8 @@ export class BanUserDto {
   @Length(20, 1000)
   banReason: string;
 }
+
+export class BanBlogUserDto {
+  @IsBoolean()
+  isBanned: boolean;
+}
