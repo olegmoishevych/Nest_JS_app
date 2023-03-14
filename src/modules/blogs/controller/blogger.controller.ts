@@ -26,16 +26,18 @@ import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
 import { BlogsUserViewModel } from '../schemas/user-banned.schema';
-import { PostsService } from '../../posts/service/posts.service';
 import { CommentsRepository } from '../../comments/repository/comments.repository';
 import { CommentsForPostsViewModal } from '../../comments/schema/comments.schema';
+import { BlogsRepository } from '../repository/blogs.repository';
 
 @Controller('blogger')
 export class BloggerController {
   constructor(
     public blogsService: BlogsService,
+    public blogsRepository: BlogsRepository,
     public commentsRepository: CommentsRepository,
   ) {}
+
   @UseGuards(JwtAuthGuard)
   @Get('/blogs/comments')
   async getCommentsForAllPosts(
@@ -44,13 +46,14 @@ export class BloggerController {
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
     return this.commentsRepository.getCommentsByUserId(pagination, user.id);
   }
+
   @UseGuards(JwtAuthGuard)
   @Get('/blogs')
   async findBlogs(
     @Query() paginationDto: BlogPaginationDto,
     @User() user: UserModel,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsService.getBlogs(paginationDto, false, user);
+    return this.blogsRepository.getBlogs(paginationDto, false, user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -136,6 +139,7 @@ export class BloggerController {
   ): Promise<BlogsUserViewModel> {
     return this.blogsService.banUserById(id, banUserModal, user.id);
   }
+
   @UseGuards(JwtAuthGuard)
   @Get('/users/blog/:id')
   async getBannedUser(

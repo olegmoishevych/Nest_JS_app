@@ -9,11 +9,13 @@ import { BlogsViewModel } from '../schemas/blogs.schema';
 import { Token } from '../../decorators/token.decorator';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import { PostsService } from '../../posts/service/posts.service';
+import { BlogsRepository } from '../repository/blogs.repository';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private blogsService: BlogsService,
+    private blogsRepository: BlogsRepository,
     private postsService: PostsService,
   ) {}
 
@@ -21,7 +23,7 @@ export class BlogsController {
   async findAllBlogsForUsers(
     @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsService.getBlogs(paginationDto, false);
+    return this.blogsRepository.getBlogs(paginationDto, false);
   }
   @Get('/:blogId/posts')
   async findPostByBlogId(

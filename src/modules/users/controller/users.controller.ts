@@ -22,6 +22,7 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { BlogsService } from '../../blogs/service/blogs.service';
 import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
+import { BlogsRepository } from '../../blogs/repository/blogs.repository';
 
 @Controller('sa')
 export class UsersController {
@@ -29,6 +30,7 @@ export class UsersController {
   constructor(
     public usersService: UsersService,
     public blogsService: BlogsService,
+    public blogsRepository: BlogsRepository,
   ) {}
 
   @UseGuards(BasicAuthGuard)
@@ -64,7 +66,7 @@ export class UsersController {
   async getBlogs(
     @Query() paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsService.getBlogs(paginationDto, true);
+    return this.blogsRepository.getBlogs(paginationDto, true);
   }
   @UseGuards(BasicAuthGuard)
   @Put('/blogs/:id/bind-with-user/:userId')

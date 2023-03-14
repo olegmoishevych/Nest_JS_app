@@ -44,13 +44,13 @@ export class BlogsService {
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
-  async getBlogs(
-    paginationType: BlogPaginationDto,
-    admin: boolean,
-    user?: UserModel,
-  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogs(paginationType, admin, user);
-  }
+  // async getBlogs(
+  //   paginationType: BlogPaginationDto,
+  //   admin: boolean,
+  //   user?: UserModel,
+  // ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+  //   return this.blogsRepository.getBlogs(paginationType, admin, user);
+  // }
   async createBlog(blog: BlogsDto, user: UserModel): Promise<BlogsViewModel> {
     const newBlog: BlogsModal_For_DB = {
       id: new ObjectId().toString(),
