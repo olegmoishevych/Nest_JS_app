@@ -40,11 +40,11 @@ export class BlogsRepository {
       ? {
           name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
           ['blogOwnerInfo.userId']: user.id,
-          // 'banInfo.isBanned.isBanned': false,
+          'banInfo.isBanned': false,
         }
       : {
           name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
-          // 'banInfo.isBanned.isBanned': false,
+          'banInfo.isBanned': false,
         };
     const findParams = superAdmin
       ? { _id: 0 }
