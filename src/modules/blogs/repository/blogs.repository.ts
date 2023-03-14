@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
+import {
+  BanInfo,
+  Blogs,
+  BlogsDocument,
+  BlogsViewModel,
+} from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
 import {
   BannedUserDto,
@@ -16,6 +21,7 @@ import {
   UserBanned,
   UserBannedDocument,
 } from '../schemas/user-banned.schema';
+import { UpdateResult } from 'mongodb';
 
 @Injectable()
 export class BlogsRepository {
@@ -34,9 +40,11 @@ export class BlogsRepository {
       ? {
           name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
           ['blogOwnerInfo.userId']: user.id,
+          // 'banInfo.isBanned.isBanned': false,
         }
       : {
           name: { $regex: paginationType.searchNameTerm ?? '', $options: 'i' },
+          // 'banInfo.isBanned.isBanned': false,
         };
     const findParams = superAdmin ? { _id: 0 } : { _id: 0, blogOwnerInfo: 0 };
     const findAndSortedBlogs = await this.blogsModel
@@ -58,7 +66,7 @@ export class BlogsRepository {
   }
   async createBlog(blog: BlogsModal_For_DB): Promise<BlogsViewModel> {
     await this.blogsModel.create({ ...blog });
-    const { blogOwnerInfo, ...blogCopy } = blog;
+    const { blogOwnerInfo, banInfo, ...blogCopy } = blog;
     return blogCopy;
   }
 
@@ -73,10 +81,18 @@ export class BlogsRepository {
 
   async findBlogById(id: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne(
+      { id, 'banInfo.isBanned.isBanned': false },
+      { _id: 0, __v: 0, blogOwnerInfo: 0 },
+    );
+  }
+
+  async findBlogByIdForBannedUser(id: string): Promise<BlogsModal_For_DB> {
+    return this.blogsModel.findOne(
       { id },
       { _id: 0, __v: 0, blogOwnerInfo: 0 },
     );
   }
+
   async findBlogWithOwnerId(ownerId: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne({ id: ownerId }, { _id: 0, __v: 0 });
   }
@@ -93,6 +109,17 @@ export class BlogsRepository {
           description: user.description,
           websiteUrl: user.websiteUrl,
         },
+      },
+    );
+  }
+  async banBlogById(
+    blogId: string,
+    updateBlog: BanInfo,
+  ): Promise<UpdateResult> {
+    return this.blogsModel.updateOne(
+      { id: blogId },
+      {
+        $set: { banInfo: updateBlog },
       },
     );
   }

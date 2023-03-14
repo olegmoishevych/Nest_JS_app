@@ -86,10 +86,8 @@ export class PostsService {
     paginationDto: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
-      blogId,
-    );
-    if (!findBlogById) throw new NotFoundException(`Post not found`);
+    const findBlogById = await this.blogsRepository.findBlogById(blogId);
+    if (!findBlogById) throw new NotFoundException(`Blog not found`);
     const findAndSortedPosts = await this.postsRepository.findPostsByBlogId(
       blogId,
       paginationDto,

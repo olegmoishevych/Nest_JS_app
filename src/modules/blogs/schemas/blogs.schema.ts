@@ -3,6 +3,13 @@ import { HydratedDocument } from 'mongoose';
 
 export type BlogsDocument = HydratedDocument<Blogs>;
 
+export class BanInfo {
+  @Prop({ type: Boolean })
+  isBanned: boolean;
+  @Prop({ type: Date })
+  banDate: Date;
+}
+
 export class BlogOwnerInfo {
   @Prop({ type: String })
   userId: string;
@@ -26,6 +33,8 @@ export class Blogs {
   isMembership: boolean;
   @Prop({ type: BlogOwnerInfo })
   blogOwnerInfo: BlogOwnerInfo;
+  @Prop({ type: BanInfo })
+  banInfo: BanInfo;
 }
 
 export const BlogsSchema = SchemaFactory.createForClass(Blogs);
@@ -38,5 +47,20 @@ export class BlogsViewModel {
     public websiteUrl: string,
     public createdAt: string,
     public isMembership: boolean,
+  ) {}
+}
+
+export class BlogsModelFor_DB {
+  constructor(
+    public id: string,
+    public name: string,
+    public description: string,
+    public websiteUrl: string,
+    public createdAt: string,
+    public isMembership: boolean,
+    public banInfo: {
+      isBanned: boolean;
+      banDate: Date;
+    },
   ) {}
 }

@@ -23,5 +23,9 @@ export class BlogsModal_For_DB {
     public createdAt: string,
     public isMembership: boolean,
     public blogOwnerInfo: BlogOwnerInfo,
+    public banInfo: {
+      isBanned: boolean;
+      banDate: Date;
+    },
   ) {}
 }

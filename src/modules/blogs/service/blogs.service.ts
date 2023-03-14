@@ -4,7 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Blogs, BlogsDocument, BlogsViewModel } from '../schemas/blogs.schema';
+import {
+  BanInfo,
+  Blogs,
+  BlogsDocument,
+  BlogsViewModel,
+} from '../schemas/blogs.schema';
 import { BlogsRepository } from '../repository/blogs.repository';
 import {
   BannedUserDto,
@@ -12,7 +17,7 @@ import {
 } from '../../helpers/dto/pagination.dto';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { Model } from 'mongoose';
-import { DeleteResult, ObjectId } from 'mongodb';
+import { DeleteResult, ObjectId, UpdateResult } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import {
@@ -62,6 +67,10 @@ export class BlogsService {
       blogOwnerInfo: {
         userId: user.id,
         userLogin: user.login,
+      },
+      banInfo: {
+        isBanned: false,
+        banDate: null,
       },
     };
     return this.blogsRepository.createBlog({ ...newBlog });
@@ -189,5 +198,22 @@ export class BlogsService {
     if (blogById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);
     return this.userBannedRepository.getBannedUsersForBlog(blogId, pagination);
+  }
+  async banBlogById(blogId: string, isBanned: boolean): Promise<boolean> {
+    const findBlogById = await this.blogsRepository.findBlogByIdForBannedUser(
+      blogId,
+    );
+    console.log('findBlogById', findBlogById);
+    if (!findBlogById) throw new NotFoundException([]);
+    const updateBlog: BanInfo = findBlogById.banInfo.isBanned
+      ? { isBanned, banDate: null }
+      : { isBanned, banDate: new Date() };
+    try {
+      await this.blogsRepository.banBlogById(blogId, updateBlog);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 }

@@ -305,6 +305,36 @@ window.onload = function() {
           }
         }
       },
+      "/api/sa/blogs/{id}/ban": {
+        "put": {
+          "operationId": "UsersController_banBlogById",
+          "parameters": [
+            {
+              "name": "id",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/sa/users/{id}/ban": {
         "put": {
           "operationId": "UsersController_banUserById",
