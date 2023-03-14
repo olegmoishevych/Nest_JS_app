@@ -6,11 +6,7 @@ import {
 } from '@nestjs/common';
 import { PostsRepository } from '../repository/posts.repository';
 import { BlogsRepository } from '../../blogs/repository/blogs.repository';
-import {
-  CreatePostDto,
-  CreatePostDtoWithBlogId,
-  PostsViewModalFor_DB,
-} from '../dto/createPostDto';
+import { CreatePostDtoWithBlogId } from '../dto/createPostDto';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
@@ -20,13 +16,10 @@ import {
   CommentsViewModal,
   CommentsViewModalFor_DB,
 } from '../../comments/schema/comments.schema';
-import {
-  LikeStatusModal,
-  LikeStatusModalFor_Db,
-} from '../../comments/schema/likeStatus.schema';
+import { LikeStatusModalFor_Db } from '../../comments/schema/likeStatus.schema';
 import { UserModel } from '../../users/schemas/users.schema';
 import { LikeStatusRepository } from '../repository/likeStatus.repository';
-import { CommentsRepository } from '../../comments/repository/comments.repository';
+import { UserBannedRepository } from '../../blogs/repository/user-banned.repository';
 
 @Injectable()
 export class PostsService {
@@ -34,7 +27,7 @@ export class PostsService {
     public blogsRepository: BlogsRepository,
     public postsRepository: PostsRepository,
     public likeStatusRepository: LikeStatusRepository,
-    public commentsRepository: CommentsRepository,
+    public userBannedRepository: UserBannedRepository,
   ) {}
 
   async findPosts(
@@ -43,9 +36,7 @@ export class PostsService {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsRepository.findPosts(paginationDto, userId);
   }
-  async getCommentsForAllPosts(pagination: PaginationDto, user: UserModel) {
-    return this.commentsRepository.getCommentsByUserId(pagination, user.id);
-  }
+
   // async createPost(
   //   createPost: CreatePostDto,
   //   blogId: string,
@@ -126,6 +117,9 @@ export class PostsService {
   ): Promise<CommentsViewModal> {
     const findPostById: any = await this.postsRepository.findPostById(postId);
     if (!findPostById) throw new NotFoundException([]);
+    const findUserInBanList =
+      await this.userBannedRepository.findBannedUserById(user.id);
+    if (findUserInBanList) throw new ForbiddenException([]);
     const newComment: CommentsViewModalFor_DB = {
       id: new ObjectId().toString(),
       isUserBanned: false,

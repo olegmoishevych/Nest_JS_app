@@ -31,6 +31,7 @@ import {
   BlogsUserViewModel,
   BlogsUserViewModelFor_DB,
 } from '../schemas/user-banned.schema';
+import { UserBannedRepository } from '../repository/user-banned.repository';
 
 @Injectable()
 export class BlogsService {
@@ -39,6 +40,7 @@ export class BlogsService {
     private postsRepository: PostsRepository,
     private postsService: PostsService,
     private usersRepository: UsersRepository,
+    private userBannedRepository: UserBannedRepository,
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
@@ -175,7 +177,7 @@ export class BlogsService {
         banReason: banUserModal.banReason,
       },
     };
-    return this.blogsRepository.banUserById(bannedUser);
+    return this.userBannedRepository.banUserById(bannedUser);
   }
   async getBannedUsers(
     blogId: string,
@@ -186,6 +188,6 @@ export class BlogsService {
     if (!blogId) throw new NotFoundException(['Blog not found']);
     if (blogById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);
-    return this.blogsRepository.getBannedUsersForBlog(blogId, pagination);
+    return this.userBannedRepository.getBannedUsersForBlog(blogId, pagination);
   }
 }

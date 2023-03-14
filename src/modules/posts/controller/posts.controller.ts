@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   Param,
@@ -72,6 +71,7 @@ export class PostsController {
   ): Promise<PostsViewModal> {
     return this.postsService.findPostById(id, userId);
   }
+
   @Get('/:postId/comments')
   async findCommentsByPostId(
     @Param('postId') postId: string,
@@ -84,6 +84,7 @@ export class PostsController {
       userId,
     );
   }
+
   @UseGuards(JwtAuthGuard)
   @Post('/:postId/comments')
   async createCommentByPostId(
@@ -93,6 +94,7 @@ export class PostsController {
   ): Promise<CommentsViewModal> {
     return this.postsService.createCommentByPostId(postId, commentsDto, user);
   }
+
   @UseGuards(JwtAuthGuard)
   @Put('/:postId/like-status')
   @HttpCode(204)

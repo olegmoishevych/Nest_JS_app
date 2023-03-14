@@ -56,6 +56,7 @@ import {
   UserBanned,
   UserBannedSchema,
 } from '../blogs/schemas/user-banned.schema';
+import { UserBannedRepository } from '../blogs/repository/user-banned.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -102,6 +103,7 @@ const repositories = [
   AuthRepository,
   LikeStatusRepository,
   DevicesRepository,
+  UserBannedRepository,
 ];
 
 const throttlerGuard = {
