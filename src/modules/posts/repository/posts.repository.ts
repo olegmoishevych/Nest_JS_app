@@ -103,7 +103,7 @@ export class PostsRepository {
 
   async createCommentByPostId(newComment: any): Promise<CommentsViewModal> {
     const result = await this.commentsModel.create({ ...newComment });
-    const { postId, isUserBanned, ...commentCopy } = newComment;
+    const { postId, isUserBanned, postInfo, ...commentCopy } = newComment;
     return commentCopy;
   }
 

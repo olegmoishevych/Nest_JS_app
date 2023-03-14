@@ -26,16 +26,22 @@ import { User } from '../../auth/decorator/request.decorator';
 import { UserModel } from '../../users/schemas/users.schema';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
 import { BlogsUserViewModel } from '../schemas/user-banned.schema';
+import { PostsService } from '../../posts/service/posts.service';
 
 @Controller('blogger')
 export class BloggerController {
-  constructor(public blogsService: BlogsService) {}
+  constructor(
+    public blogsService: BlogsService,
+    public postsService: PostsService,
+  ) {}
   @UseGuards(JwtAuthGuard)
   @Get('/blogs/comments')
   async getCommentsForAllPosts(
     @Query() pagination: PaginationDto,
     @User() user: UserModel,
-  ) {}
+  ) {
+    return this.postsService.getCommentsForAllPosts(pagination, user);
+  }
   @UseGuards(JwtAuthGuard)
   @Get('/blogs')
   async findBlogs(

@@ -26,6 +26,7 @@ import {
 } from '../../comments/schema/likeStatus.schema';
 import { UserModel } from '../../users/schemas/users.schema';
 import { LikeStatusRepository } from '../repository/likeStatus.repository';
+import { CommentsRepository } from '../../comments/repository/comments.repository';
 
 @Injectable()
 export class PostsService {
@@ -33,6 +34,7 @@ export class PostsService {
     public blogsRepository: BlogsRepository,
     public postsRepository: PostsRepository,
     public likeStatusRepository: LikeStatusRepository,
+    public commentsRepository: CommentsRepository,
   ) {}
 
   async findPosts(
@@ -41,7 +43,9 @@ export class PostsService {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsRepository.findPosts(paginationDto, userId);
   }
-
+  async getCommentsForAllPosts(pagination: PaginationDto, user: UserModel) {
+    return this.commentsRepository.getCommentsByUserId(pagination, user.id);
+  }
   // async createPost(
   //   createPost: CreatePostDto,
   //   blogId: string,
@@ -136,6 +140,12 @@ export class PostsService {
         likesCount: 0,
         dislikesCount: 0,
         myStatus: 'None',
+      },
+      postInfo: {
+        id: findPostById.id,
+        title: findPostById.title,
+        blogId: findPostById.blogId,
+        blogName: findPostById.blogName,
       },
     };
     return this.postsRepository.createCommentByPostId(newComment);

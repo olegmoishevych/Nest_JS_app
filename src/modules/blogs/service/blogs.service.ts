@@ -49,7 +49,6 @@ export class BlogsService {
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.blogsRepository.getBlogs(paginationType, admin, user);
   }
-
   async createBlog(blog: BlogsDto, user: UserModel): Promise<BlogsViewModel> {
     const newBlog: BlogsModal_For_DB = {
       id: new ObjectId().toString(),

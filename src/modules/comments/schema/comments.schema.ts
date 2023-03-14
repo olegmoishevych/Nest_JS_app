@@ -3,6 +3,17 @@ import { HydratedDocument } from 'mongoose';
 
 export type CommentsDocument = HydratedDocument<Comments>;
 
+class PostInfo {
+  @Prop()
+  id: string;
+  @Prop()
+  title: string;
+  @Prop()
+  blogId: string;
+  @Prop()
+  blogName: string;
+}
+
 class LikesInfo {
   @Prop()
   likesCount: number;
@@ -35,6 +46,8 @@ export class Comments {
   createdAt: string;
   @Prop()
   likesInfo: LikesInfo;
+  @Prop()
+  postInfo: PostInfo;
 }
 
 export const CommentsSchema = SchemaFactory.createForClass(Comments);
@@ -55,6 +68,12 @@ export class CommentsViewModalFor_DB {
       dislikesCount: number;
       myStatus: string;
     },
+    public postInfo: {
+      id: string;
+      title: string;
+      blogId: string;
+      blogName: string;
+    },
   ) {}
 }
 
@@ -72,6 +91,24 @@ export class CommentsViewModal {
       likesCount: number;
       dislikesCount: number;
       myStatus: string;
+    },
+  ) {}
+}
+
+export class CommentsForPostsViewModal {
+  constructor(
+    public id: string,
+    public content: string,
+    public commentatorInfo: {
+      userId: string;
+      userLogin: string;
+    },
+    public createdAt: string,
+    public postInfo: {
+      id: string;
+      title: string;
+      blogId: string;
+      blogName: string;
     },
   ) {}
 }

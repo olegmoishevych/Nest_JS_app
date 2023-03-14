@@ -22,6 +22,17 @@ window.onload = function() {
           }
         }
       },
+      "/api/blogger/blogs/comments": {
+        "get": {
+          "operationId": "BloggerController_getCommentsForAllPosts",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/blogger/blogs": {
         "get": {
           "operationId": "BloggerController_findBlogs",
