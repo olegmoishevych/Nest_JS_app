@@ -57,7 +57,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/blogs') // 2
+  @Post('/blogs')
   async createBlog(@Body() createBlogType: BlogsDto, @User() user: UserModel) {
     return this.blogsService.createBlog(createBlogType, user);
   }
