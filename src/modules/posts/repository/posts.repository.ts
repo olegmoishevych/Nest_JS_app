@@ -29,9 +29,15 @@ export class PostsRepository {
     paginationType: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    const projection = { _id: 0, __v: 0, isUserBanned: 0, userId: 0 };
+    const projection = {
+      _id: 0,
+      __v: 0,
+      isUserBanned: 0,
+      userId: 0,
+      isBlogBanned: 0,
+    };
     const findAndSortedPosts = await this.postsModel
-      .find({ isUserBanned: false }, projection)
+      .find({ isUserBanned: false, isBlogBanned: false }, projection)
       .sort({
         [paginationType.sortBy]:
           paginationType.sortDirection === 'asc' ? 1 : -1,
@@ -41,6 +47,7 @@ export class PostsRepository {
       .lean();
     const getCountPosts = await this.postsModel.countDocuments({
       isUserBanned: false,
+      isBlogBanned: false,
     });
     const postsWithLikes = await this.likeStatusRepository.postsWithLikeStatus(
       findAndSortedPosts,
@@ -67,8 +74,8 @@ export class PostsRepository {
 
   async findPostById(id: string): Promise<PostsViewModal> {
     return this.postsModel.findOne(
-      { id, isUserBanned: false },
-      { _id: 0, __v: 0, isUserBanned: 0, userId: 0 },
+      { id, isUserBanned: false, isBlogBanned: false },
+      { _id: 0, __v: 0, isUserBanned: 0, userId: 0, isBlogBanned: 0 },
     );
   }
 
@@ -78,8 +85,8 @@ export class PostsRepository {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const findAndSortedPosts = await this.postsModel
       .find(
-        { blogId, isUserBanned: false },
-        { _id: 0, __v: 0, isUserBanned: 0, userId: 0 },
+        { blogId, isUserBanned: false, isBlogBanned: false },
+        { _id: 0, __v: 0, isUserBanned: 0, userId: 0, isBlogBanned: 0 },
       )
       .sort({
         [paginationType.sortBy]:
