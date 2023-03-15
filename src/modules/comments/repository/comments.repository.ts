@@ -62,7 +62,7 @@ export class CommentsRepository {
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
     const find = {
       'commentatorInfo.userId': userId,
-      isUserBanned: false,
+      // isUserBanned: false,
     };
     const projection = { _id: 0, isUserBanned: 0, likesInfo: 0, postId: 0 };
     const findAndSortedComments = await this.commentsModel
@@ -75,7 +75,7 @@ export class CommentsRepository {
       .lean();
     const findCountComments = await this.commentsModel.countDocuments({
       'commentatorInfo.userId': userId,
-      isUserBanned: false,
+      // isUserBanned: false,
     });
     // const commentsWithInfo = [];
     // for (const comment of findAndSortedComments) {
