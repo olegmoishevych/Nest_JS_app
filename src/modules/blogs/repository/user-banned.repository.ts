@@ -9,6 +9,8 @@ import {
 import { Model } from 'mongoose';
 import { BannedUserDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { DeleteResult } from 'mongodb';
+import { BanUserForBloggerDto } from '../dto/bloggerDto';
 
 @Injectable()
 export class UserBannedRepository {
@@ -45,8 +47,13 @@ export class UserBannedRepository {
   }
   async banUserById(
     bannedUser: BlogsUserViewModelFor_DB,
+    id,
   ): Promise<BlogsUserViewModel> {
-    return this.userBannedModel.create({ ...bannedUser });
+    return this.userBannedModel.findOneAndUpdate(
+      { id },
+      { $set: bannedUser },
+      { upsert: true },
+    );
   }
   async findBannedUserByUserId(userId: string): Promise<BlogsUserViewModel> {
     return this.userBannedModel.findOne({
@@ -59,5 +66,10 @@ export class UserBannedRepository {
       blogId,
       'banInfo.isBanned': true,
     });
+  }
+  async deleteBannedUserById(userId: string, blogId): Promise<DeleteResult> {
+    const res = await this.userBannedModel.deleteOne({ id: userId, blogId });
+    console.log(res);
+    return res;
   }
 }

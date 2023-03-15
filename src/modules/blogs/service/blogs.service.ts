@@ -166,11 +166,11 @@ export class BlogsService {
     return this.postsRepository.deletePostById(postId, userId);
   }
   async banUserById(
-    ownerId: string,
+    id: string,
     banUserModal: BanUserForBloggerDto,
     userId: string,
   ): Promise<BlogsUserViewModel> {
-    const findUserById = await this.usersRepository.findUserById(ownerId);
+    const findUserById = await this.usersRepository.findUserById(id);
     if (!findUserById) throw new NotFoundException(['User not found']);
     const findBlogWithOwnerById =
       await this.blogsRepository.findBlogWithOwnerId(banUserModal.blogId);
@@ -178,7 +178,7 @@ export class BlogsService {
     if (findBlogWithOwnerById.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException([]);
     const bannedUser: BlogsUserViewModelFor_DB = {
-      id: ownerId,
+      id: id,
       login: findUserById.login,
       blogId: banUserModal.blogId,
       banInfo: {
@@ -187,7 +187,7 @@ export class BlogsService {
         banReason: banUserModal.banReason,
       },
     };
-    return this.userBannedRepository.banUserById(bannedUser);
+    return this.userBannedRepository.banUserById(bannedUser, id);
   }
   async getBannedUsers(
     blogId: string,
