@@ -39,11 +39,11 @@ export class Comments {
   @Prop()
   content: string;
   @Prop()
-  createdAt: string;
-  @Prop()
   postId: string;
   @Prop()
   commentatorInfo: CommentatorInfo;
+  @Prop()
+  createdAt: string;
   @Prop()
   likesInfo: LikesInfo;
   @Prop()
@@ -57,12 +57,12 @@ export class CommentsViewModalFor_DB {
     public id: string,
     public isUserBanned: boolean,
     public content: string,
-    public createdAt: string,
     public postId: string,
     public commentatorInfo: {
       userId: string;
       userLogin: string;
     },
+    public createdAt: string,
     public likesInfo: {
       likesCount: number;
       dislikesCount: number;
@@ -81,13 +81,12 @@ export class CommentsViewModal {
   constructor(
     public id: string,
     public content: string,
-    public createdAt: string,
     public postId: string,
     public commentatorInfo: {
       userId: string;
       userLogin: string;
     },
-
+    public createdAt: string,
     public likesInfo: {
       likesCount: number;
       dislikesCount: number;
@@ -100,11 +99,11 @@ export class CommentsForPostsViewModal {
   constructor(
     public id: string,
     public content: string,
-    public createdAt: string,
     public commentatorInfo: {
       userId: string;
       userLogin: string;
     },
+    public createdAt: string,
     public postInfo: {
       id: string;
       title: string;

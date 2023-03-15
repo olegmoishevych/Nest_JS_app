@@ -21,6 +21,7 @@ import {
 } from '../../users/schemas/users.schema';
 import { Blogs, BlogsDocument } from '../../blogs/schemas/blogs.schema';
 import { Posts, PostsDocument } from '../../posts/schemas/posts.schema';
+import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 
 @Injectable()
 export class CommentsRepository {
@@ -35,6 +36,7 @@ export class CommentsRepository {
     private readonly blogsModel: Model<BlogsDocument>,
     @InjectModel(Posts.name)
     private readonly postsModel: Model<PostsDocument>,
+    private likeStatusRepository: LikeStatusRepository,
   ) {}
 
   async findCommentsByPostId(
@@ -73,7 +75,7 @@ export class CommentsRepository {
       blogId: blog,
     });
     const find = { postId: postByBlogId };
-    const projection = { _id: 0, isUserBanned: 0, likesInfo: 0, postId: 0 };
+    const projection = { _id: 0, isUserBanned: 0, postId: 0 };
     const findAndSortedComments = await this.commentsModel
       .find(find, projection)
       .sort({
@@ -87,6 +89,11 @@ export class CommentsRepository {
       // 'commentatorInfo.userId': userId,
       // isUserBanned: false,
     });
+    // const commentsWithLikes =
+    //   await this.likeStatusRepository.commentsWithLikeStatus(
+    //     findAndSortedComments,
+    //     userId,
+    //   );
     // const commentsWithInfo = [];
     // for (const comment of findAndSortedComments) {
     //   const commentInfo = {

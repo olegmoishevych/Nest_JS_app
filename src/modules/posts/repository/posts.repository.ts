@@ -11,9 +11,7 @@ import {
   CommentsViewModal,
 } from '../../comments/schema/comments.schema';
 import { LikeStatusRepository } from './likeStatus.repository';
-import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
-import { BanUserForBloggerDto } from '../../blogs/dto/bloggerDto';
-import { BanBlogUserDto } from '../../users/dto/userDto';
+import { UsersModel_For_DB } from '../../users/schemas/users.schema';
 import { UpdateResult } from 'mongodb';
 
 @Injectable()
@@ -126,6 +124,7 @@ export class PostsRepository {
       : { isUserBanned: true };
     return this.postsModel.findOneAndUpdate({ userId }, { $set: set });
   }
+
   async updatePostById(
     id: string,
     post: CreatePostDto,
@@ -142,6 +141,7 @@ export class PostsRepository {
       },
     );
   }
+
   async findUsersPostByIdAndChangeBlockStatus(
     blogId: string,
     isBanned: boolean,
