@@ -21,7 +21,6 @@ import {
 } from '../../users/schemas/users.schema';
 import { Blogs, BlogsDocument } from '../../blogs/schemas/blogs.schema';
 import { Posts, PostsDocument } from '../../posts/schemas/posts.schema';
-import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 
 @Injectable()
 export class CommentsRepository {
@@ -36,7 +35,6 @@ export class CommentsRepository {
     private readonly blogsModel: Model<BlogsDocument>,
     @InjectModel(Posts.name)
     private readonly postsModel: Model<PostsDocument>,
-    private likeStatusRepository: LikeStatusRepository,
   ) {}
 
   async findCommentsByPostId(
@@ -57,13 +55,14 @@ export class CommentsRepository {
     const getCountComments = await this.commentsModel.countDocuments({
       postId,
     });
-    return new PaginationViewModel<any>(
+    return new PaginationViewModel<CommentsViewModal[]>(
       getCountComments,
       paginationDto.pageNumber,
       paginationDto.pageSize,
       findAndSortedComments,
     );
   }
+
   async getCommentsByUserId(
     pagination: PaginationDto,
     userId: string,
@@ -86,34 +85,7 @@ export class CommentsRepository {
       .lean();
     const findCountComments = await this.commentsModel.countDocuments({
       postId: postByBlogId,
-      // 'commentatorInfo.userId': userId,
-      // isUserBanned: false,
     });
-    // const commentsWithLikes =
-    //   await this.likeStatusRepository.commentsWithLikeStatus(
-    //     findAndSortedComments,
-    //     userId,
-    //   );
-    // const commentsWithInfo = [];
-    // for (const comment of findAndSortedComments) {
-    //   const commentInfo = {
-    //     id: comment.id,
-    //     content: comment.content,
-    //     createdAt: comment.createdAt,
-    //     likesInfo: comment.likesInfo,
-    //     commentatorInfo: {
-    //       userId: comment.commentatorInfo.userId,
-    //       userLogin: comment.commentatorInfo.userLogin,
-    //     },
-    //     postInfo: {
-    //       id: comment.id,
-    //       title: comment.,
-    //       blogId: comment.,
-    //       blogName: comment.postInfo.blogName,
-    //     },
-    //   };
-    //   commentsWithInfo.push(commentInfo);
-    // }
     return new PaginationViewModel<CommentsForPostsViewModal[]>(
       findCountComments,
       pagination.pageNumber,
@@ -121,12 +93,14 @@ export class CommentsRepository {
       findAndSortedComments,
     );
   }
+
   async findCommentById(id: string): Promise<CommentsViewModal> {
     return this.commentsModel.findOne(
       { id, isUserBanned: false },
       { _id: 0, __v: 0, postId: 0, isUserBanned: 0 },
     );
   }
+
   async deleteCommentById(
     commentId: string,
     userId: string,
@@ -159,9 +133,11 @@ export class CommentsRepository {
       { upsert: true },
     );
   }
+
   async getCountCollection(postId: string): Promise<number> {
     return this.commentsModel.countDocuments({ postId });
   }
+
   async updateBannedUserById(
     id: string,
     user: UsersModel_For_DB,

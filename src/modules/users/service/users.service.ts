@@ -24,6 +24,7 @@ import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { CommentsRepository } from '../../comments/repository/comments.repository';
 import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
+import { AuthDto } from '../../auth/dto/auth.dto';
 
 @Injectable()
 export class UsersService {
@@ -43,9 +44,9 @@ export class UsersService {
     return this.usersRepository.findAllUsers(paginationDto);
   }
 
-  async createUser(user: UserDto): Promise<UserModel> {
+  async createUser(registrationDto: AuthDto): Promise<UsersModel_For_DB> {
     const findUserByEmail = await this.authRepository.findUserByEmail(
-      user.email,
+      registrationDto.email,
     );
     if (findUserByEmail)
       throw new BadRequestException([
@@ -55,7 +56,7 @@ export class UsersService {
         },
       ]);
     const findUserByLogin = await this.authRepository.findUserByLogin(
-      user.login,
+      registrationDto.login,
     );
     if (findUserByLogin)
       throw new BadRequestException([
@@ -64,14 +65,14 @@ export class UsersService {
           field: 'login',
         },
       ]);
-    const password = user.password;
+    const password = registrationDto.password;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     const code = uuidv4();
     const newUser: UsersModel_For_DB = {
       id: uuidv4(),
-      login: user.login,
-      email: user.email,
+      login: registrationDto.login,
+      email: registrationDto.email,
       passwordHash: hash,
       createdAt: new Date().toISOString(),
       emailConfirmation: {
@@ -88,17 +89,8 @@ export class UsersService {
         banReason: null,
       },
     };
-    const result = await this.usersRepository.createUser({ ...newUser });
-    const bodyTextMessage = `<h1>Thank for your registration</h1>
-       <p>To finish registration please follow the link below:
-          <a href="https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}">complete registration</a>
-      </p>`;
-    await this.emailService.sentEmail(
-      user.email,
-      'confirm code',
-      bodyTextMessage,
-    );
-    return result;
+    await this.usersRepository.createUser({ ...newUser });
+    return newUser;
   }
 
   async updateUserByEmailResending(

@@ -8,7 +8,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
+import { AuthDto, NewPasswordDto } from '../dto/auth.dto';
 import { AuthService } from '../service/auth.service';
 import { Throttle } from '@nestjs/throttler';
 import {
@@ -26,16 +26,22 @@ import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AccessTokenModal } from '../schemas/auth.schemas';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { CommandBus } from '@nestjs/cqrs';
+import { RegistrationCommand } from '../use-cases/registration.use-case';
 
 @Controller('auth')
 export class AuthController {
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private commandBus: CommandBus,
+  ) {}
 
   @Throttle(5, 10)
   @Post('/registration')
   @HttpCode(204)
   async userRegistration(@Body() registrationDto: AuthDto): Promise<UserModel> {
-    return this.authService.userRegistration(registrationDto);
+    return this.commandBus.execute(new RegistrationCommand(registrationDto));
+    // return this.authService.userRegistration(registrationDto);
   }
 
   @Throttle(5, 10)

@@ -273,7 +273,7 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/AuthDto"
                 }
               }
             }
@@ -369,34 +369,6 @@ window.onload = function() {
         "get": {
           "operationId": "UsersController_getBlogs",
           "parameters": [],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/api/sa/blogs/{id}/bind-with-user/{userId}": {
-        "put": {
-          "operationId": "UsersController_bindBlogWithUser",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            },
-            {
-              "name": "userId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
           "responses": {
             "200": {
               "description": ""
@@ -888,7 +860,7 @@ window.onload = function() {
           "type": "object",
           "properties": {}
         },
-        "UserDto": {
+        "AuthDto": {
           "type": "object",
           "properties": {}
         },
@@ -909,10 +881,6 @@ window.onload = function() {
           "properties": {}
         },
         "LikeStatusDto": {
-          "type": "object",
-          "properties": {}
-        },
-        "AuthDto": {
           "type": "object",
           "properties": {}
         },

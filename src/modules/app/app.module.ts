@@ -57,6 +57,9 @@ import {
   UserBannedSchema,
 } from '../blogs/schemas/user-banned.schema';
 import { UserBannedRepository } from '../blogs/repository/user-banned.repository';
+import { CqrsModule } from '@nestjs/cqrs';
+import { RegistrationUseCase } from '../auth/use-cases/registration.use-case';
+import { CreateUserUseCase } from '../users/use-cases/create-user.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -80,6 +83,8 @@ const controllers = [
   DevicesController,
   BlogsController,
 ];
+
+const useCases = [RegistrationUseCase, CreateUserUseCase];
 
 const services = [
   AppService,
@@ -113,6 +118,7 @@ const throttlerGuard = {
 
 @Module({
   imports: [
+    CqrsModule,
     PassportModule,
     ThrottlerModule.forRoot({
       ttl: 1,
@@ -147,6 +153,7 @@ const throttlerGuard = {
   ],
   controllers,
   providers: [
+    ...useCases,
     ...services,
     ...repositories,
     // throttlerGuard,

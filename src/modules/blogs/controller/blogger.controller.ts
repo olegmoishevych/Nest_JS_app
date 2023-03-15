@@ -63,7 +63,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/blogs/:id') // 3
+  @Delete('/blogs/:id')
   @HttpCode(204)
   async deleteBlogById(
     @User() user: UserModel,
@@ -73,7 +73,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('/blogs/:id') // 4
+  @Put('/blogs/:id')
   @HttpCode(204)
   async updateBlogById(
     @Param('id') id: string,
@@ -84,7 +84,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/blogs/:blogId/posts') // 1
+  @Post('/blogs/:blogId/posts')
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
@@ -98,7 +98,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('/blogs/:blogId/posts/:postId') // 6
+  @Put('/blogs/:blogId/posts/:postId')
   @HttpCode(204)
   async updatePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,
@@ -115,7 +115,7 @@ export class BloggerController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/blogs/:blogId/posts/:postId') // 7
+  @Delete('/blogs/:blogId/posts/:postId')
   @HttpCode(204)
   async deletePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,

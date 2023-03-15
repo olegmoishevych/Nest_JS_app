@@ -85,10 +85,8 @@ export class UsersRepository {
     );
   }
 
-  async createUser(user: Users): Promise<UserModel> {
-    const result = await this.usersModel.create({ ...user });
-    const { passwordHash, emailConfirmation, ...userCopy } = user;
-    return userCopy;
+  async createUser(user: UsersModel_For_DB): Promise<UsersModel_For_DB> {
+    return this.usersModel.create({ ...user });
   }
 
   async deleteUserById(id: string): Promise<boolean> {
@@ -156,5 +154,9 @@ export class UsersRepository {
       { id },
       { $set: { banInfo: updateUser } },
     );
+  }
+
+  async findUserByLogin(login: string) {
+    return this.usersModel.findOne({ login });
   }
 }

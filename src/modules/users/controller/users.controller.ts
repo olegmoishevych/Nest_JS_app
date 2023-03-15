@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-import { BanBlogUserDto, BanUserDto, UserDto } from '../dto/userDto';
+import { BanBlogUserDto, BanUserDto } from '../dto/userDto';
 import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
 import {
   BlogPaginationDto,
@@ -22,13 +22,16 @@ import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
 import { BlogsRepository } from '../../blogs/repository/blogs.repository';
 import { BlogsService } from '../../blogs/service/blogs.service';
-import { UpdateResult } from 'mongodb';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateUserCommand } from '../use-cases/create-user.use-case';
+import { AuthDto } from '../../auth/dto/auth.dto';
 
 @Controller('sa')
 export class UsersController {
   constructor(
     public usersService: UsersService,
     public blogsRepository: BlogsRepository,
+    private commandBus: CommandBus,
     public blogsService: BlogsService,
   ) {}
 
@@ -42,8 +45,9 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Post('/users')
-  async createUser(@Body() createdUserType: UserDto): Promise<UserModel> {
-    return this.usersService.createUser(createdUserType);
+  async createUser(@Body() registrationDto: AuthDto): Promise<UserModel> {
+    // return this.usersService.createUser(createdUserType);
+    return this.commandBus.execute(new CreateUserCommand(registrationDto));
   }
 
   @UseGuards(BasicAuthGuard)
@@ -72,6 +76,7 @@ export class UsersController {
   ): Promise<boolean> {
     return this.usersService.banUserById(id, banUserModel);
   }
+
   @UseGuards(BasicAuthGuard)
   @Get('/blogs')
   async getBlogs(
@@ -79,11 +84,4 @@ export class UsersController {
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.blogsRepository.getBlogsForSA(paginationDto);
   }
-
-  @UseGuards(BasicAuthGuard)
-  @Put('/blogs/:id/bind-with-user/:userId')
-  async bindBlogWithUser(
-    @Param('id') id: string,
-    @Param('userId') userId: string,
-  ) {}
 }
