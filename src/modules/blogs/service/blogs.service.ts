@@ -170,16 +170,17 @@ export class BlogsService {
     banUserModal: BanUserForBloggerDto,
     userId: string,
   ): Promise<BlogsUserViewModel> {
-    const findUserById = await this.usersRepository.findUserById(id);
-    if (!findUserById) throw new NotFoundException(['User not found']);
-    const findBlogWithOwnerById =
-      await this.blogsRepository.findBlogWithOwnerId(banUserModal.blogId);
-    if (!findBlogWithOwnerById) throw new NotFoundException(['Blog not found']);
-    if (findBlogWithOwnerById.blogOwnerInfo.userId !== userId)
-      throw new ForbiddenException([]);
+    const user = await this.usersRepository.findUserById(id); // we find user in db
+    if (!user) throw new NotFoundException(['User not found']);
+    const blogWithOwner = await this.blogsRepository.findBlogWithOwnerId(
+      banUserModal.blogId,
+    );
+    if (!blogWithOwner) throw new NotFoundException(['Blog not found']);
+    if (blogWithOwner.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]); // 403 error
     const bannedUser: BlogsUserViewModelFor_DB = {
       id: id,
-      login: findUserById.login,
+      login: user.login,
       blogId: banUserModal.blogId,
       banInfo: {
         isBanned: banUserModal.isBanned,
@@ -192,15 +193,15 @@ export class BlogsService {
   async getBannedUsers(
     blogId: string,
     pagination: BannedUserDto,
+    userId: string,
   ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
-    const blogById = await this.blogsRepository.findBlogWithOwnerId(blogId);
-    if (!blogById) throw new NotFoundException(['Blog not found']);
+    const blog = await this.blogsRepository.findBlogWithOwnerId(blogId);
+    if (!blog) throw new NotFoundException(['Blog not found']);
     // const bannedUser = await this.userBannedRepository.findBannedUserByBlogId(
     //   blogId,
     // );
     // if (!bannedUser) throw new NotFoundException(['User by id not found']);
-    // if (blogById.blogOwnerInfo.userId !== userId)
-    //   throw new ForbiddenException([]);
+    if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.userBannedRepository.getBannedUsersForBlog(blogId, pagination);
   }
   async banBlogById(blogId: string, isBanned: boolean): Promise<boolean> {
