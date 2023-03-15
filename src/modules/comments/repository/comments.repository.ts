@@ -19,6 +19,8 @@ import {
   UsersDocument,
   UsersModel_For_DB,
 } from '../../users/schemas/users.schema';
+import { Blogs, BlogsDocument } from '../../blogs/schemas/blogs.schema';
+import { Posts, PostsDocument } from '../../posts/schemas/posts.schema';
 
 @Injectable()
 export class CommentsRepository {
@@ -29,6 +31,10 @@ export class CommentsRepository {
     private readonly usersModel: Model<UsersDocument>,
     @InjectModel(LikeStatus.name)
     private readonly likeStatusModel: Model<LikeStatusDocument>,
+    @InjectModel(Blogs.name)
+    private readonly blogsModel: Model<BlogsDocument>,
+    @InjectModel(Posts.name)
+    private readonly postsModel: Model<PostsDocument>,
   ) {}
 
   async findCommentsByPostId(
@@ -60,10 +66,13 @@ export class CommentsRepository {
     pagination: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
-    const find = {
-      'commentatorInfo.userId': userId,
-      // isUserBanned: false,
-    };
+    const blog = await this.blogsModel.distinct('id', {
+      'blogOwnerInfo.userId': userId,
+    });
+    const postByBlogId = await this.postsModel.distinct('id', {
+      blogId: blog,
+    });
+    const find = { postId: postByBlogId };
     const projection = { _id: 0, isUserBanned: 0, likesInfo: 0, postId: 0 };
     const findAndSortedComments = await this.commentsModel
       .find(find, projection)
@@ -74,7 +83,8 @@ export class CommentsRepository {
       .limit(pagination.pageSize)
       .lean();
     const findCountComments = await this.commentsModel.countDocuments({
-      'commentatorInfo.userId': userId,
+      postId: postByBlogId,
+      // 'commentatorInfo.userId': userId,
       // isUserBanned: false,
     });
     // const commentsWithInfo = [];
