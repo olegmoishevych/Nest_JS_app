@@ -192,14 +192,13 @@ export class BlogsService {
   async getBannedUsers(
     blogId: string,
     pagination: BannedUserDto,
-    userId: string,
   ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
     const blogById = await this.blogsRepository.findBlogWithOwnerId(blogId);
     if (!blogById) throw new NotFoundException(['Blog not found']);
-    const bannedUser = await this.userBannedRepository.findBannedUserByBlogId(
-      blogId,
-    );
-    if (!bannedUser) throw new NotFoundException(['User by id not found']);
+    // const bannedUser = await this.userBannedRepository.findBannedUserByBlogId(
+    //   blogId,
+    // );
+    // if (!bannedUser) throw new NotFoundException(['User by id not found']);
     // if (blogById.blogOwnerInfo.userId !== userId)
     //   throw new ForbiddenException([]);
     return this.userBannedRepository.getBannedUsersForBlog(blogId, pagination);
