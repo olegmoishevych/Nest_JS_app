@@ -92,6 +92,8 @@ export class AuthService {
   }
 
   async logout(refreshToken: string): Promise<boolean> {
+    if (!refreshToken)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
     if (!lastActiveDate)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
