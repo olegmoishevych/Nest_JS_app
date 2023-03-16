@@ -39,6 +39,7 @@ export class DevicesService {
   }
 
   async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
+    if (!refreshToken) throw new UnauthorizedException([]);
     const findUserByToken = await this.tokenVerify(refreshToken);
     if (!findUserByToken) throw new UnauthorizedException([]);
     const userId = findUserByToken.userId;
@@ -55,6 +56,7 @@ export class DevicesService {
   }
 
   async deleteAllDevices(refreshToken: string): Promise<DeleteResult> {
+    if (!refreshToken) throw new UnauthorizedException([]);
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
     if (!lastActiveDate) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
@@ -67,6 +69,7 @@ export class DevicesService {
     refreshToken: string,
     deviceId: string,
   ): Promise<boolean> {
+    if (!refreshToken) throw new UnauthorizedException([]);
     const getUserDataByToken = await this.tokenVerify(refreshToken);
     if (!getUserDataByToken)
       throw new UnauthorizedException(['User by token not found']);
