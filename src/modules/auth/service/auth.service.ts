@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { AuthDto, LoginOrEmailDto, NewPasswordDto } from '../dto/auth.dto';
+import { AuthDto, NewPasswordDto } from '../dto/auth.dto';
 import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
 import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
@@ -46,18 +46,13 @@ export class AuthService {
     const user = await this.usersRepository.findUserByCode(code);
     if (!user)
       throw new BadRequestException([
-        {
-          errorsMessages: [
-            { message: 'User by code not found', field: 'code' },
-          ],
-        },
+        { message: 'User by code not found', field: 'code' },
       ]);
     if (user.emailConfirmation.isConfirmed)
       throw new BadRequestException([
         {
-          errorsMessages: [
-            { message: 'Code already confirmed', field: 'code' },
-          ],
+          message: 'Code is confirmed',
+          field: 'code',
         },
       ]);
     return this.usersRepository.updateConfirmationCode(user);
