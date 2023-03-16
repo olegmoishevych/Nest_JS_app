@@ -97,12 +97,20 @@ export class AuthService {
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
     if (!lastActiveDate)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    const tokenVerify = await this.tokenVerify(refreshToken);
-    if (!tokenVerify)
+    const topicalToken = await this.tokenVerify(refreshToken);
+    if (!topicalToken)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    const isDeviceActive =
+      await this.deviceRepository.findDeviceByUserIdDeviceIdAndLastActiveDate(
+        topicalToken.userId,
+        topicalToken.deviceId,
+        new Date(topicalToken.iat * 1000).toISOString(),
+      );
+    if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     return this.deviceService.deleteSessionByUserId(
-      tokenVerify.userId,
-      tokenVerify.deviceId,
+      topicalToken.userId,
+      topicalToken.deviceId,
     );
   }
 
@@ -129,6 +137,7 @@ export class AuthService {
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(
       createJwtTokenPair.refreshToken,
     );
+    if (!lastActiveDate) throw new UnauthorizedException([]);
     const newSession = new DevicesModal(
       ip.ip,
       ip.title,
@@ -162,11 +171,11 @@ export class AuthService {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '10s',
+        expiresIn: '1000s',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '20s',
+        expiresIn: '2000s',
         secret: JWT.jwt_secret,
       }),
     };
