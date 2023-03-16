@@ -40,9 +40,9 @@ export class DevicesService {
 
   async getAllDevices(refreshToken: string): Promise<DevicesModal[]> {
     if (!refreshToken) throw new UnauthorizedException([]);
-    const findUserByToken = await this.tokenVerify(refreshToken);
-    if (!findUserByToken) throw new UnauthorizedException([]);
-    const userId = findUserByToken.userId;
+    const user = await this.tokenVerify(refreshToken);
+    if (!user) throw new UnauthorizedException([]);
+    const userId = user.userId;
     return this.devicesRepository.findAllUserDevicesByUserId(userId);
   }
 
@@ -57,11 +57,11 @@ export class DevicesService {
 
   async deleteAllDevices(refreshToken: string): Promise<DeleteResult> {
     if (!refreshToken) throw new UnauthorizedException([]);
-    const lastActiveDate = this.getLastActiveDateFromRefreshToken(refreshToken);
-    if (!lastActiveDate) throw new UnauthorizedException([]);
-    const getUserDataByToken = await this.tokenVerify(refreshToken);
-    if (!getUserDataByToken) throw new UnauthorizedException([]);
-    const { userId, deviceId } = getUserDataByToken;
+    const lastActive = this.getLastActiveDateFromRefreshToken(refreshToken);
+    if (!lastActive) throw new UnauthorizedException([]);
+    const user = await this.tokenVerify(refreshToken);
+    if (!user) throw new UnauthorizedException([]);
+    const { userId, deviceId } = user;
     return this.devicesRepository.deleteAllDevicesById(userId, deviceId);
   }
 
@@ -70,16 +70,14 @@ export class DevicesService {
     deviceId: string,
   ): Promise<boolean> {
     if (!refreshToken) throw new UnauthorizedException([]);
-    const getUserDataByToken = await this.tokenVerify(refreshToken);
-    if (!getUserDataByToken)
-      throw new UnauthorizedException(['User by token not found']);
-    const findDeviceByDeviceId =
-      await this.devicesRepository.findDeviceByDeviceId(deviceId);
-    if (!findDeviceByDeviceId) throw new NotFoundException(['User not found']);
-    if (getUserDataByToken.userId !== findDeviceByDeviceId.userId)
+    const user = await this.tokenVerify(refreshToken);
+    if (!user) throw new UnauthorizedException(['User by token not found']);
+    const device = await this.devicesRepository.findDeviceByDeviceId(deviceId);
+    if (!device) throw new NotFoundException(['User not found']);
+    if (user.userId !== device.userId)
       throw new ForbiddenException(['Its not your device']);
     return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
-      getUserDataByToken.userId,
+      user.userId,
       deviceId,
     );
   }
