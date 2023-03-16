@@ -9,10 +9,7 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { CommentsViewModal } from '../schema/comments.schema';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
-import {
-  LikeStatusModal,
-  LikeStatusModalFor_Db,
-} from '../schema/likeStatus.schema';
+import { LikeStatusModalFor_Db } from '../schema/likeStatus.schema';
 import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 
 @Injectable()
@@ -49,28 +46,23 @@ export class CommentsService {
   }
 
   async findCommentById(id: string, userId: string) {
-    const findCommentById: CommentsViewModal =
+    const comment: CommentsViewModal =
       await this.commentsRepository.findCommentById(id);
-    if (!findCommentById) throw new NotFoundException(`Comment not found`);
-    return this.likeStatusRepository.commentWithLikeStatus(
-      findCommentById,
-      userId,
-    );
+    if (!comment) throw new NotFoundException(`Comment not found`);
+    return this.likeStatusRepository.commentWithLikeStatus(comment, userId);
   }
 
   async findCommentByIdAndDelete(
     commentId: string,
     userId: string,
   ): Promise<CommentsViewModal> {
-    const findCommentById = await this.commentsRepository.findCommentById(
-      commentId,
-    );
-    if (!findCommentById)
+    const comment = await this.commentsRepository.findCommentById(commentId);
+    if (!comment)
       throw new NotFoundException({
         message: 'Comment not found',
         field: 'comment',
       });
-    if (findCommentById.commentatorInfo.userId !== userId)
+    if (comment.commentatorInfo.userId !== userId)
       throw new ForbiddenException([]);
     return this.commentsRepository.deleteCommentById(commentId, userId);
   }
@@ -80,15 +72,13 @@ export class CommentsService {
     userId: string,
     content: string,
   ): Promise<CommentsViewModal> {
-    const findCommentById = await this.commentsRepository.findCommentById(
-      commentId,
-    );
-    if (!findCommentById)
+    const comment = await this.commentsRepository.findCommentById(commentId);
+    if (!comment)
       throw new NotFoundException({
         message: 'Comment not found',
         field: 'comment',
       });
-    if (findCommentById.commentatorInfo.userId !== userId)
+    if (comment.commentatorInfo.userId !== userId)
       throw new ForbiddenException([]);
     return this.commentsRepository.updateCommentById(
       commentId,
@@ -102,10 +92,8 @@ export class CommentsService {
     likeStatus: string,
     user: UserModel,
   ): Promise<CommentsViewModal> {
-    const findCommentById = await this.commentsRepository.findCommentById(
-      commentId,
-    );
-    if (!findCommentById)
+    const comment = await this.commentsRepository.findCommentById(commentId);
+    if (!comment)
       throw new NotFoundException({
         message: 'Comment not found',
         field: 'comment',
