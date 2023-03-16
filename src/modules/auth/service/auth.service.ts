@@ -52,7 +52,14 @@ export class AuthService {
           ],
         },
       ]);
-    if (user.emailConfirmation.isConfirmed) throw new BadRequestException(['']);
+    if (user.emailConfirmation.isConfirmed)
+      throw new BadRequestException([
+        {
+          errorsMessages: [
+            { message: 'Code already confirmed', field: 'code' },
+          ],
+        },
+      ]);
     return this.usersRepository.updateConfirmationCode(user);
   }
 
