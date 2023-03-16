@@ -1,13 +1,13 @@
-import { TestingService } from '../service/testing.service';
 import { Controller, Delete, HttpCode } from '@nestjs/common';
+import { TestingRepository } from '../repository/testing.repository';
 
 @Controller('testing')
 export class TestingController {
-  constructor(private testingService: TestingService) {}
+  constructor(private testingRepository: TestingRepository) {}
 
   @Delete('/all-data')
   @HttpCode(204)
   async deleteAllData() {
-    return this.testingService.deleteAllData();
+    return this.testingRepository.deleteAllData();
   }
 }

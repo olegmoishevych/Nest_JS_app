@@ -11,7 +11,6 @@ import { UsersService } from '../users/service/users.service';
 import { UsersRepository } from '../users/repository/users.repository';
 import { Users, UsersSchema } from '../users/schemas/users.schema';
 import { TestingRepository } from '../testing/repository/testing.repository';
-import { TestingService } from '../testing/service/testing.service';
 import { TestingController } from '../testing/controller/testing.controller';
 import { Posts, PostsSchema } from '../posts/schemas/posts.schema';
 import { PostsService } from '../posts/service/posts.service';
@@ -90,7 +89,6 @@ const services = [
   AppService,
   BlogsService,
   UsersService,
-  TestingService,
   PostsService,
   CommentsService,
   AuthService,
