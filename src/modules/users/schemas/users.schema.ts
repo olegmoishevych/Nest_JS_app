@@ -65,6 +65,11 @@ export class UserModel {
     public login: string,
     public email: string,
     public createdAt: string,
+    public banInfo: {
+      isBanned: boolean;
+      banDate: Date;
+      banReason: string;
+    },
   ) {}
 }
 

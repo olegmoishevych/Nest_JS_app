@@ -19,6 +19,11 @@ export class CreateUserUseCase implements ICommandHandler {
       email: user.email,
       createdAt: user.createdAt,
       id: user.id,
+      banInfo: {
+        isBanned: false,
+        banDate: null,
+        banReason: null,
+      },
     };
   }
 }
