@@ -25,12 +25,14 @@ import { BlogsService } from '../../blogs/service/blogs.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../use-cases/create-user.use-case';
 import { AuthDto } from '../../auth/dto/auth.dto';
+import { UsersRepository } from '../repository/users.repository';
 
 @Controller('sa')
 export class UsersController {
   constructor(
     public usersService: UsersService,
     public blogsRepository: BlogsRepository,
+    public usersRepository: UsersRepository,
     private commandBus: CommandBus,
     public blogsService: BlogsService,
   ) {}
@@ -40,13 +42,12 @@ export class UsersController {
   async findAllUsers(
     @Query() paginationDto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
-    return this.usersService.findAllUsers(paginationDto);
+    return this.usersRepository.findAllUsers(paginationDto);
   }
 
   @UseGuards(BasicAuthGuard)
   @Post('/users')
   async createUser(@Body() registrationDto: AuthDto): Promise<UserModel> {
-    // return this.usersService.createUser(createdUserType);
     return this.commandBus.execute(new CreateUserCommand(registrationDto));
   }
 

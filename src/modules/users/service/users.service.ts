@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -12,9 +11,7 @@ import {
   UserModel,
   UsersModel_For_DB,
 } from '../schemas/users.schema';
-import { BanUserDto, UserDto } from '../dto/userDto';
-import { UserPaginationDtoWithBanStatusDto } from '../../helpers/dto/pagination.dto';
-import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { BanUserDto } from '../dto/userDto';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
@@ -37,12 +34,6 @@ export class UsersService {
     private commentsRepository: CommentsRepository,
     private likesRepository: LikeStatusRepository,
   ) {}
-
-  async findAllUsers(
-    paginationDto: UserPaginationDtoWithBanStatusDto,
-  ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
-    return this.usersRepository.findAllUsers(paginationDto);
-  }
 
   async createUser(registrationDto: AuthDto): Promise<UsersModel_For_DB> {
     const findUserByEmail = await this.authRepository.findUserByEmail(
@@ -122,9 +113,8 @@ export class UsersService {
   }
 
   async deleteUserById(id: string): Promise<boolean> {
-    const findUserById = await this.usersRepository.findUserById(id);
-    if (!findUserById)
-      throw new NotFoundException(`User with ID ${id} not found`);
+    const user = await this.usersRepository.findUserById(id);
+    if (!user) throw new NotFoundException(`User not found`);
     return this.usersRepository.deleteUserById(id);
   }
 
