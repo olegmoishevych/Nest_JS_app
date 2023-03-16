@@ -43,11 +43,17 @@ export class AuthService {
   }
 
   async userRegistrationConfirmation(code: string): Promise<UserModel> {
-    const findUserByCode = await this.usersRepository.findUserByCode(code);
-    if (!findUserByCode) throw new BadRequestException([]);
-    if (findUserByCode.emailConfirmation.isConfirmed)
-      throw new BadRequestException([]);
-    return this.usersRepository.updateConfirmationCode(findUserByCode);
+    const user = await this.usersRepository.findUserByCode(code);
+    if (!user)
+      throw new BadRequestException([
+        {
+          errorsMessages: [
+            { message: 'User by code not found', field: 'code' },
+          ],
+        },
+      ]);
+    if (user.emailConfirmation.isConfirmed) throw new BadRequestException(['']);
+    return this.usersRepository.updateConfirmationCode(user);
   }
 
   async userRegistrationEmailResending(email: string): Promise<boolean> {
