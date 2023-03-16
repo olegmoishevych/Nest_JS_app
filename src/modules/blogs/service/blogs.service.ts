@@ -11,27 +11,21 @@ import {
   BlogsViewModel,
 } from '../schemas/blogs.schema';
 import { BlogsRepository } from '../repository/blogs.repository';
-import {
-  BannedUserDto,
-  BlogPaginationDto,
-} from '../../helpers/dto/pagination.dto';
+import { BannedUserDto } from '../../helpers/dto/pagination.dto';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { Model } from 'mongoose';
-import { DeleteResult, ObjectId, UpdateResult } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { PostsViewModal } from '../../posts/schemas/posts.schema';
 import {
   CreatePostDto,
-  CreatePostDtoWithBlogId,
   PostsViewModalFor_DB,
 } from '../../posts/dto/createPostDto';
 import { PostsRepository } from '../../posts/repository/posts.repository';
 import { UserModel } from '../../users/schemas/users.schema';
 import { PostsService } from '../../posts/service/posts.service';
-import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
-import { BanBlogUserDto, BanUserDto } from '../../users/dto/userDto';
 import {
   BlogsUserViewModel,
   BlogsUserViewModelFor_DB,
@@ -49,13 +43,6 @@ export class BlogsService {
     @InjectModel(Blogs.name) private blogsModel: Model<BlogsDocument>,
   ) {}
 
-  // async getBlogs(
-  //   paginationType: BlogPaginationDto,
-  //   admin: boolean,
-  //   user?: UserModel,
-  // ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-  //   return this.blogsRepository.getBlogs(paginationType, admin, user);
-  // }
   async createBlog(blog: BlogsDto, user: UserModel): Promise<BlogsViewModel> {
     const newBlog: BlogsModal_For_DB = {
       id: new ObjectId().toString(),
@@ -88,10 +75,9 @@ export class BlogsService {
   }
 
   async findBlogById(id: string): Promise<BlogsViewModel> {
-    const findBlogById = await this.blogsRepository.findBlogById(id);
-    if (!findBlogById)
-      throw new NotFoundException(`User with ID ${id} not found`);
-    return findBlogById;
+    const blog = await this.blogsRepository.findBlogById(id);
+    if (!blog) throw new NotFoundException(`Blog not found`);
+    return blog;
   }
 
   async updateBlogById(
@@ -99,11 +85,9 @@ export class BlogsService {
     user: BlogsDto,
     userId: string,
   ): Promise<boolean> {
-    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
-      id,
-    );
-    if (!findBlogById) throw new NotFoundException(`Blog not found`);
-    if (findBlogById.blogOwnerInfo.userId !== userId)
+    const blog = await this.blogsRepository.findBlogWithUserInfoById(id);
+    if (!blog) throw new NotFoundException(`Blog not found`);
+    if (blog.blogOwnerInfo.userId !== userId)
       throw new ForbiddenException(['It not your blog']);
     return this.blogsRepository.updateBlogById(id, user, userId);
   }
@@ -113,13 +97,9 @@ export class BlogsService {
     newPostByBlogId: CreatePostDto,
     userId: string,
   ): Promise<PostsViewModal> {
-    const findBlogById = await this.blogsRepository.findBlogWithUserInfoById(
-      blogId,
-    );
-    // console.log('findBlogById', findBlogById);
-    if (!findBlogById) throw new NotFoundException([]);
-    if (findBlogById.blogOwnerInfo.userId !== userId)
-      throw new ForbiddenException([]);
+    const blog = await this.blogsRepository.findBlogWithUserInfoById(blogId);
+    if (!blog) throw new NotFoundException([]);
+    if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     const newPost: PostsViewModalFor_DB = {
       id: new ObjectId().toString(),
       userId: userId,
@@ -129,7 +109,7 @@ export class BlogsService {
       shortDescription: newPostByBlogId.shortDescription,
       content: newPostByBlogId.content,
       blogId: blogId,
-      blogName: findBlogById.name,
+      blogName: blog.name,
       createdAt: new Date().toISOString(),
       extendedLikesInfo: {
         likesCount: 0,
@@ -140,6 +120,7 @@ export class BlogsService {
     };
     return this.postsRepository.createPost(newPost);
   }
+
   async updatePostByBlogsAndPostsId(
     postId: string,
     blogId: string,
@@ -153,6 +134,7 @@ export class BlogsService {
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.updatePostById(postId, updatePost, userId);
   }
+
   async deletePostByBlogsAndPostsId(
     postId: string,
     blogId: string,
@@ -165,6 +147,7 @@ export class BlogsService {
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.deletePostById(postId, userId);
   }
+
   async banUserById(
     id: string,
     banUserModal: BanUserForBloggerDto,
@@ -190,6 +173,7 @@ export class BlogsService {
     };
     return this.userBannedRepository.banUserById(bannedUser, id);
   }
+
   async getBannedUsers(
     blogId: string,
     pagination: BannedUserDto,
@@ -197,13 +181,10 @@ export class BlogsService {
   ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
     const blog = await this.blogsRepository.findBlogWithOwnerId(blogId);
     if (!blog) throw new NotFoundException(['Blog not found']);
-    // const bannedUser = await this.userBannedRepository.findBannedUserByBlogId(
-    //   blogId,
-    // );
-    // if (!bannedUser) throw new NotFoundException(['User by id not found']);
     if (blog.blogOwnerInfo.userId !== userId) throw new ForbiddenException([]);
     return this.userBannedRepository.getBannedUsersForBlog(blogId, pagination);
   }
+
   async banBlogById(blogId: string, isBanned: boolean): Promise<boolean> {
     const findBlogById = await this.blogsRepository.findBlogByIdForBannedUser(
       blogId,

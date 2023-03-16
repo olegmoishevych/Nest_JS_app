@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { AuthDto, NewPasswordDto } from '../dto/auth.dto';
+import { NewPasswordDto } from '../dto/auth.dto';
 import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
 import { UsersService } from '../../users/service/users.service';
 import { UsersRepository } from '../../users/repository/users.repository';
@@ -37,10 +37,6 @@ export class AuthService {
     public deviceService: DevicesService,
     public deviceRepository: DevicesRepository,
   ) {}
-
-  async userRegistration(registrationDto: AuthDto): Promise<UserModel> {
-    return this.usersService.createUser(registrationDto);
-  }
 
   async userRegistrationConfirmation(code: string): Promise<UserModel> {
     const user = await this.usersRepository.findUserByCode(code);
