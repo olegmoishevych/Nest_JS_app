@@ -37,31 +37,6 @@ export class PostsService {
     return this.postsRepository.findPosts(paginationDto, userId);
   }
 
-  // async createPost(
-  //   createPost: CreatePostDto,
-  //   blogId: string,
-  //   userId: string,
-  // ): Promise<PostsViewModal> {
-  //   const findBlogById = await this.blogsRepository.findBlogById(blogId);
-  //   if (!findBlogById) throw new BadRequestException([]);
-  //   const newPost: PostsViewModalFor_DB = {
-  //     id: new ObjectId().toString(),
-  //     title: createPost.title,
-  //     shortDescription: createPost.shortDescription,
-  //     content: createPost.content,
-  //     userId: userId,
-  //     blogId: blogId,
-  //     blogName: findBlogById.name,
-  //     createdAt: new Date().toISOString(),
-  //     extendedLikesInfo: {
-  //       likesCount: 0,
-  //       dislikesCount: 0,
-  //       myStatus: 'None',
-  //       newestLikes: [],
-  //     },
-  //   };
-  //   return this.postsRepository.createPost(newPost);
-  // }
   async updatePostById(
     id: string,
     post: CreatePostDtoWithBlogId,
@@ -76,9 +51,9 @@ export class PostsService {
   }
 
   async findPostById(id: string, userId: string): Promise<PostsViewModal> {
-    const findPostById = await this.postsRepository.findPostById(id);
-    if (!findPostById) throw new NotFoundException(`Post not found`);
-    return this.likeStatusRepository.postWithLikeStatus(findPostById, userId);
+    const post = await this.postsRepository.findPostById(id);
+    if (!post) throw new NotFoundException(`Post not found`);
+    return this.likeStatusRepository.postWithLikeStatus(post, userId);
   }
 
   async findPostByBlogId(
@@ -86,8 +61,8 @@ export class PostsService {
     paginationDto: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    const findBlogById = await this.blogsRepository.findBlogById(blogId);
-    if (!findBlogById) throw new NotFoundException(`Blog not found`);
+    const blog = await this.blogsRepository.findBlogById(blogId);
+    if (!blog) throw new NotFoundException(`Blog not found`);
     const findAndSortedPosts = await this.postsRepository.findPostsByBlogId(
       blogId,
       paginationDto,
@@ -113,15 +88,15 @@ export class PostsService {
     commentsDto: CommentsDto,
     user: UserModel,
   ): Promise<CommentsViewModal> {
-    const findPostById: any = await this.postsRepository.findPostById(postId);
-    if (!findPostById) throw new NotFoundException([]);
-    const findUserInBanList =
+    const post: any = await this.postsRepository.findPostById(postId);
+    if (!post) throw new NotFoundException([]);
+    const userInBanList =
       await this.userBannedRepository.findBannedUserByUserId(user.id);
-    if (findUserInBanList) throw new ForbiddenException([]);
+    if (userInBanList) throw new ForbiddenException([]);
     const newComment: CommentsViewModalFor_DB = {
       id: new ObjectId().toString(),
       isUserBanned: false,
-      postId: findPostById.id,
+      postId: post.id,
       content: commentsDto.content,
       commentatorInfo: {
         userId: user.id,
@@ -134,10 +109,10 @@ export class PostsService {
         myStatus: 'None',
       },
       postInfo: {
-        id: findPostById.id,
-        title: findPostById.title,
-        blogId: findPostById.blogId,
-        blogName: findPostById.blogName,
+        id: post.id,
+        title: post.title,
+        blogId: post.blogId,
+        blogName: post.blogName,
       },
     };
     return this.postsRepository.createCommentByPostId(newComment);
@@ -148,12 +123,11 @@ export class PostsService {
     likeStatus: string,
     user: UserModel,
   ): Promise<boolean> {
-    const findPostById = await this.postsRepository.findPostById(postId);
-    if (!findPostById)
+    const post = await this.postsRepository.findPostById(postId);
+    if (!post)
       throw new NotFoundException([
         { message: 'Post not found', field: 'post' },
       ]);
-
     const updateLikeStatusByPostId = new LikeStatusModalFor_Db(
       postId,
       false,
@@ -162,7 +136,6 @@ export class PostsService {
       likeStatus,
       new Date(),
     );
-
     try {
       await this.likeStatusRepository.updateLikeStatusByPostId(
         updateLikeStatusByPostId,
