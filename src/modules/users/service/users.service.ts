@@ -36,10 +36,10 @@ export class UsersService {
   ) {}
 
   async createUser(registrationDto: AuthDto): Promise<UsersModel_For_DB> {
-    const findUserByEmail = await this.authRepository.findUserByEmail(
+    const user = await this.authRepository.findUserByEmail(
       registrationDto.email,
     );
-    if (findUserByEmail)
+    if (user)
       throw new BadRequestException([
         {
           message: 'User with this email is registered',

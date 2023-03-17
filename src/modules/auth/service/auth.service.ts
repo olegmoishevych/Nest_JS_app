@@ -216,8 +216,8 @@ export class AuthService {
           field: 'recoveryCode',
         },
       ]);
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(newPassword.newPassword, salt);
+    // const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(newPassword.newPassword, 10);
     return this.usersRepository.updateUserHash(user.email, hash);
   }
 }
