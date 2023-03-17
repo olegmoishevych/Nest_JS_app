@@ -179,8 +179,8 @@ export class AuthService {
   }
 
   async passwordRecovery(email: string): Promise<RecoveryCodeModal> {
-    const findUserByEmail = await this.usersRepository.findUserByEmail(email);
-    if (!findUserByEmail)
+    const user = await this.usersRepository.findUserByEmail(email);
+    if (!user)
       throw new NotFoundException([
         {
           message: 'user not found',
@@ -206,9 +206,10 @@ export class AuthService {
   async findUserByRecoveryCodeAndChangeNewPassword(
     newPassword: NewPasswordDto,
   ): Promise<UserModel> {
-    const findUserByRecoveryCode =
-      await this.usersRepository.findRecoveryUserCode(newPassword.recoveryCode);
-    if (!findUserByRecoveryCode)
+    const user = await this.usersRepository.findRecoveryUserCode(
+      newPassword.recoveryCode,
+    );
+    if (!user)
       throw new NotFoundException([
         {
           message: 'RecoveryCode not found',
@@ -217,9 +218,6 @@ export class AuthService {
       ]);
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(newPassword.newPassword, salt);
-    return this.usersRepository.updateUserHash(
-      findUserByRecoveryCode.email,
-      hash,
-    );
+    return this.usersRepository.updateUserHash(user.email, hash);
   }
 }

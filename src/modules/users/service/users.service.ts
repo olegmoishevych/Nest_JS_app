@@ -57,8 +57,8 @@ export class UsersService {
         },
       ]);
     const password = registrationDto.password;
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, 10);
     const code = uuidv4();
     const newUser: UsersModel_For_DB = {
       id: uuidv4(),
