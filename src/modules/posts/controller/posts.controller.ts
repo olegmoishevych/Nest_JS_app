@@ -40,21 +40,6 @@ export class PostsController {
     return this.postsRepository.findPosts(paginationDto, userId);
   }
 
-  // @UseGuards(BasicAuthGuard)
-  // @Post('/')
-  // async createPost(
-  //   @Body() createPost: CreatePostDtoWithBlogId,
-  // ): Promise<PostsViewModal> {
-  //   // return this.postsService.createPost(createPost);
-  // }
-
-  // @UseGuards(BasicAuthGuard)
-  // @Delete('/:id')
-  // @HttpCode(204)
-  // async deletePostById(@Param('id') id: string): Promise<boolean> {
-  //   return this.postsService.deletePostById(id);
-  // }
-
   @UseGuards(BasicAuthGuard)
   @Put('/:id')
   @HttpCode(204)
