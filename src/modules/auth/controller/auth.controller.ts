@@ -43,7 +43,6 @@ export class AuthController {
   @HttpCode(204)
   async userRegistration(@Body() registrationDto: AuthDto): Promise<UserModel> {
     return this.commandBus.execute(new RegistrationCommand(registrationDto));
-    // return this.authService.userRegistration(registrationDto);
   }
 
   @Throttle(5, 10)
