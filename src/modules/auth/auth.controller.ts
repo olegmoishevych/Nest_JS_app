@@ -29,6 +29,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { RegistrationCommand } from './use-cases/registration.use-case';
 import { ConfirmationCommand } from './use-cases/confirmation-use-case';
+import { EmailResendingCommand } from './use-cases/registration-email-resending.use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -59,7 +60,7 @@ export class AuthController {
   async userRegistrationEmailResending(
     @Body('email') email: string,
   ): Promise<boolean> {
-    return this.authService.userRegistrationEmailResending(email);
+    return this.commandBus.execute(new EmailResendingCommand(email));
   }
 
   @UseGuards(LocalAuthGuard)
