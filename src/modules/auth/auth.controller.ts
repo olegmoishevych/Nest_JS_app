@@ -11,11 +11,7 @@ import {
 import { AuthDto, NewPasswordDto } from './dto/auth.dto';
 import { AuthService } from './service/auth.service';
 import { Throttle } from '@nestjs/throttler';
-import {
-  MeViewModel,
-  UserModel,
-  UsersModel_For_DB,
-} from '../users/schemas/users.schema';
+import { MeViewModel, UserModel } from '../users/schemas/users.schema';
 import { User } from './decorator/request.decorator';
 import { Request, Response } from 'express';
 import { Cookies } from './decorator/cookies.decorator';
@@ -24,12 +20,13 @@ import { Ip } from './decorator/ip.decorator';
 import { IpDto } from './dto/api.dto';
 import { RecoveryCodeModal } from './schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { AccessTokenModal } from './schemas/auth.schemas';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { RegistrationCommand } from './use-cases/registration.use-case';
 import { ConfirmationCommand } from './use-cases/confirmation-use-case';
 import { EmailResendingCommand } from './use-cases/registration-email-resending.use-case';
+import { LoginCommand } from './use-cases/login.use-case';
+import { UserEntity } from './domain/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -69,16 +66,14 @@ export class AuthController {
   @Post('/login')
   async userLogin(
     @User()
-    user: UsersModel_For_DB,
+    user: UserEntity,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AccessTokenModal> {
+  ): Promise<{ accessToken: string }> {
     const ip = req.ip;
     const title = req.headers['user-agent'] || 'browser not found';
-    const { accessToken, refreshToken } = await this.authService.login(
-      ip,
-      title,
-      user,
+    const { accessToken, refreshToken } = await this.commandBus.execute(
+      new LoginCommand(ip, title, user),
     );
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
