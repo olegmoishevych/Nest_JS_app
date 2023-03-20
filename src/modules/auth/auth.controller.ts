@@ -15,10 +15,8 @@ import { MeViewModel, UserModel } from '../users/schemas/users.schema';
 import { User } from './decorator/request.decorator';
 import { Request, Response } from 'express';
 import { Cookies } from './decorator/cookies.decorator';
-import { JwtTokenPairViewModel } from './schemas/tokens.schemas';
 import { Ip } from './decorator/ip.decorator';
 import { IpDto } from './dto/api.dto';
-import { RecoveryCodeModal } from './schemas/recoveryCode.schemas';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
@@ -103,8 +101,8 @@ export class AuthController {
       new RefreshTokenCommand(ip, cookies.refreshToken),
     );
     res.cookie('refreshToken', updateToken.refreshToken, {
-      httpOnly: true,
-      secure: true,
+      httpOnly: false,
+      secure: false,
     });
     return updateToken;
   }
@@ -122,15 +120,14 @@ export class AuthController {
   async userNewPassword(
     @Body() newPassword: NewPasswordDto,
   ): Promise<UserEntity> {
-    // return this.authService.findUserByRecoveryCodeAndChangeNewPassword(
-    //   newPassword,
-    // );
     return this.commandBus.execute(new NewPasswordCommand(newPassword));
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/me')
-  async getUser(@User() user): Promise<MeViewModel> {
+  async getUser(
+    @User() user,
+  ): Promise<{ email: string; login: string; userId: string }> {
     return { email: user.email, login: user.login, userId: user.id };
   }
 }

@@ -25,8 +25,6 @@ export class LoginUseCase {
     command: LoginCommand,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const { user, title, ip } = command;
-    if (user.banInfo.isBanned)
-      throw new UnauthorizedException(['User is banned']);
     const deviceId = new ObjectId().toString();
     const jwtTokens = await this.authService.createJwtPair(
       user.id,

@@ -1,4 +1,11 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserEntity } from './user.entity';
 
 @Entity('passwordRecovery')
@@ -9,6 +16,8 @@ export class PasswordRecoveryEntity {
   email: string;
   @Column()
   recoveryCode: string;
-  @OneToOne(() => UserEntity, (user) => user.passwordRecovery)
+  @OneToOne(() => UserEntity, (user) => user.passwordRecovery, {
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
 }

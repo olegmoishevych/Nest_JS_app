@@ -29,6 +29,9 @@ export class UsersSqlRepository {
   async deleteUserById(id: string): Promise<DeleteResult> {
     return this.userTable.delete(id);
   }
+  async findUserById(id: string): Promise<UserEntity> {
+    return this.userTable.findOneBy({ id });
+  }
 
   async findUserByCode(code: string): Promise<UserEntity> {
     return this.userTable
@@ -37,6 +40,7 @@ export class UsersSqlRepository {
       .where('UserEmailConfirmation.confirmationCode = :code', { code })
       .getOne();
   }
+
   async findUserByRecoveryCode(recoveryCode: string): Promise<UserEntity> {
     return this.userTable
       .createQueryBuilder('user')
@@ -44,6 +48,14 @@ export class UsersSqlRepository {
       .where('passwordRecovery.recoveryCode = :recoveryCode', { recoveryCode })
       .getOne();
   }
+
+  async findUserByloginOrEmail(loginOrEmail: string): Promise<UserEntity> {
+    return this.userTable.findOneBy([
+      { email: loginOrEmail },
+      { login: loginOrEmail },
+    ]);
+  }
+
   async saveUser(user: UserEntity): Promise<UserEntity> {
     return this.userTable.save(user);
   }

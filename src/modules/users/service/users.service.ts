@@ -22,6 +22,8 @@ import { PostsRepository } from '../../posts/repository/posts.repository';
 import { CommentsRepository } from '../../comments/repository/comments.repository';
 import { LikeStatusRepository } from '../../posts/repository/likeStatus.repository';
 import { AuthDto } from '../../auth/dto/auth.dto';
+import { UsersSqlRepository } from '../repository/users.sql.repository';
+import { UserEntity } from '../../auth/domain/entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +35,7 @@ export class UsersService {
     private postsRepository: PostsRepository,
     private commentsRepository: CommentsRepository,
     private likesRepository: LikeStatusRepository,
+    private usersSqlRepository: UsersSqlRepository,
   ) {}
 
   async createUser(registrationDto: AuthDto): Promise<UsersModel_For_DB> {
@@ -120,8 +123,8 @@ export class UsersService {
   async checkUserCredentials(
     loginOrEmail: string,
     password: string,
-  ): Promise<UserModel> {
-    const user = await this.usersRepository.findUserByLoginOrEmail(
+  ): Promise<UserEntity> {
+    const user = await this.usersSqlRepository.findUserByloginOrEmail(
       loginOrEmail,
     );
     if (!user) throw new UnauthorizedException();

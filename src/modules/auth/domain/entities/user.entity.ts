@@ -24,23 +24,23 @@ export class UserEntity {
   @Column()
   createdAt: string;
   @OneToOne(() => EmailConfirmationEntity, (e) => e.user, {
-    cascade: true,
     eager: true,
-    onDelete: 'CASCADE',
+    cascade: true,
+    // onDelete: 'CASCADE',
   })
   @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
   @OneToOne(() => PasswordRecoveryEntity, (r) => r.user, {
-    cascade: true,
     eager: true,
-    onDelete: 'CASCADE',
+    cascade: true,
+    // onDelete: 'CASCADE',
   })
   @JoinColumn()
   passwordRecovery: PasswordRecoveryEntity;
   @OneToOne(() => BanInfoEntity, (b) => b.user, {
-    cascade: true,
     eager: true,
-    onDelete: 'CASCADE',
+    cascade: true,
+    // onDelete: 'CASCADE',
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
