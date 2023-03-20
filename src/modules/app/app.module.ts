@@ -70,6 +70,7 @@ import { ConfirmationUseCase } from '../auth/use-cases/confirmation-use-case';
 import { EmailResendingUseCase } from '../auth/use-cases/registration-email-resending.use-case';
 import { LoginUseCase } from '../auth/use-cases/login.use-case';
 import { LogoutUseCase } from '../auth/use-cases/logout.user-case';
+import { RefreshTokenUseCase } from '../auth/use-cases/refreshToken.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -101,6 +102,7 @@ const useCases = [
   EmailResendingUseCase,
   LoginUseCase,
   LogoutUseCase,
+  RefreshTokenUseCase,
 ];
 
 const services = [

@@ -28,6 +28,7 @@ import { EmailResendingCommand } from './use-cases/registration-email-resending.
 import { LoginCommand } from './use-cases/login.use-case';
 import { UserEntity } from './domain/entities/user.entity';
 import { LogoutCommand } from './use-cases/logout.user-case';
+import { RefreshTokenCommand } from './use-cases/refreshToken.use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -95,10 +96,9 @@ export class AuthController {
     @Cookies() cookies,
     @Ip() ip: IpDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<JwtTokenPairViewModel> {
-    const updateToken = await this.authService.refreshToken(
-      cookies.refreshToken,
-      ip,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const updateToken = await this.commandBus.execute(
+      new RefreshTokenCommand(ip, cookies.refreshToken),
     );
     res.cookie('refreshToken', updateToken.refreshToken, {
       httpOnly: true,
