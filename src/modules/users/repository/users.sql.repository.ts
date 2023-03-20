@@ -25,7 +25,16 @@ export class UsersSqlRepository {
   async findUserByEmail(email: string): Promise<UserEntity> {
     return this.userTable.findOneBy({ email });
   }
+
   async deleteUserById(id: string): Promise<DeleteResult> {
     return this.userTable.delete(id);
+  }
+
+  async findUserByCode(code: string): Promise<UserEntity> {
+    return this.userTable
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.emailConfirmation', 'UserEmailConfirmation')
+      .where('UserEmailConfirmation.confirmationCode = :code', { code })
+      .getOne();
   }
 }

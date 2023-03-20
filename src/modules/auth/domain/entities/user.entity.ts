@@ -35,6 +35,18 @@ export class UserEntity {
   @JoinColumn()
   banInfo: BanInfoEntity;
 
+  confirmedCode(code: string) {
+    if (this.emailConfirmation.isConfirmed) return false;
+    if (this.emailConfirmation.confirmationCode !== code) return false;
+    if (this.emailConfirmation.expirationDate < new Date()) return false;
+    return true;
+  }
+
+  confirmEmail(code: string) {
+    if (!this.confirmedCode(code)) throw new Error('Cant be confirmed');
+    this.emailConfirmation.isConfirmed = true;
+  }
+
   static create(login: string, email: string, passwordHash: string) {
     const banInfo = new BanInfoEntity();
     banInfo.isBanned = false;
