@@ -24,12 +24,12 @@ export class PasswordRecoveryUseCase {
           field: 'email',
         },
       ]);
-    const recoveryCode = user.createPasswordRecovery();
+    const recoveryCode = user.createPasswordRecovery(command.email);
     try {
       await this.usersRepository.saveUser(user);
       await this.emailService.sendPasswordRecoveryCode(
         user.email,
-        recoveryCode.recoveryCode,
+        recoveryCode,
       );
       return true;
     } catch (e) {

@@ -37,6 +37,13 @@ export class UsersSqlRepository {
       .where('UserEmailConfirmation.confirmationCode = :code', { code })
       .getOne();
   }
+  async findUserByRecoveryCode(recoveryCode: string): Promise<UserEntity> {
+    return this.userTable
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.passwordRecovery', 'passwordRecovery')
+      .where('passwordRecovery.recoveryCode = :recoveryCode', { recoveryCode })
+      .getOne();
+  }
   async saveUser(user: UserEntity): Promise<UserEntity> {
     return this.userTable.save(user);
   }

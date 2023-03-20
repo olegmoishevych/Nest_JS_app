@@ -30,6 +30,7 @@ import { UserEntity } from './domain/entities/user.entity';
 import { LogoutCommand } from './use-cases/logout.user-case';
 import { RefreshTokenCommand } from './use-cases/refreshToken.use-case';
 import { PasswordRecoveryCommand } from './use-cases/password-recovery.use-case';
+import { NewPasswordCommand } from './use-cases/new-password.use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -120,10 +121,11 @@ export class AuthController {
   @HttpCode(204)
   async userNewPassword(
     @Body() newPassword: NewPasswordDto,
-  ): Promise<UserModel> {
-    return this.authService.findUserByRecoveryCodeAndChangeNewPassword(
-      newPassword,
-    );
+  ): Promise<UserEntity> {
+    // return this.authService.findUserByRecoveryCodeAndChangeNewPassword(
+    //   newPassword,
+    // );
+    return this.commandBus.execute(new NewPasswordCommand(newPassword));
   }
 
   @UseGuards(JwtAuthGuard)
