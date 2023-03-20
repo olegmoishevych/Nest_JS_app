@@ -9,7 +9,6 @@ import { AuthService } from '../service/auth.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { IpDto } from '../dto/api.dto';
 import { DevicesModal } from '../../devices/schemas/devices.schemas';
-import { JwtPairType } from '../constants';
 
 @Injectable()
 export class RefreshTokenCommand {
