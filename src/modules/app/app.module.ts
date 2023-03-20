@@ -65,6 +65,7 @@ import {
   UserBanned,
   UserBannedSchema,
 } from '../blogs/schemas/user-banned.schema';
+import { EmailRepository } from '../email/email.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -114,6 +115,7 @@ const repositories = [
   DevicesRepository,
   UserBannedRepository,
   UsersSqlRepository,
+  EmailRepository,
 ];
 
 const entities = [UserEntity, BanInfoEntity, EmailConfirmationEntity];

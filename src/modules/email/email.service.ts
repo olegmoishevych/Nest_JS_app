@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nest-modules/mailer';
+import { EmailRepository } from './email.repository';
 
 @Injectable()
 export class EmailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(private emailRepository: EmailRepository) {}
 
-  async sentEmail(email: string, subject: string, text: string) {
-    return this.mailerService.sendMail({
-      from: 'Oleg <olegmoishevych@gmail.com>',
-      to: email,
-      subject,
-      text,
-    });
+  async sendConfirmationCodeByEmail(
+    email: string,
+    confirmationCode: string,
+  ): Promise<boolean> {
+    const text = `<h1>Thank for your registration</h1>
+       <p>To finish registration please follow the link below:
+          <a href="https://somesite.com/confirm-email?code=${confirmationCode}">complete registration</a>
+      </p>`;
+    return this.emailRepository.sentEmail(email, 'email confirmation', text);
   }
 }

@@ -102,7 +102,7 @@ export class UsersService {
         newEmailConfirmation,
       );
       const message = `https://somesite.com/confirm-email?code=${newEmailConfirmation.confirmationCode}`;
-      await this.emailService.sentEmail(email, 'confirm code', message);
+      // await this.emailService.sentEmail(email, 'confirm code', message);
       return;
     } catch (e) {
       console.log(e);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersSqlRepository {
@@ -18,11 +18,14 @@ export class UsersSqlRepository {
     return this.userTable.save(newUser);
   }
 
-  async findUserByLogin(login: string) {
+  async findUserByLogin(login: string): Promise<UserEntity> {
     return this.userTable.findOneBy({ login });
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<UserEntity> {
     return this.userTable.findOneBy({ email });
+  }
+  async deleteUserById(id: string): Promise<DeleteResult> {
+    return this.userTable.delete(id);
   }
 }

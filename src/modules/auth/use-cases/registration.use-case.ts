@@ -22,18 +22,10 @@ export class RegistrationUseCase implements ICommandHandler {
     private usersRepository: UsersSqlRepository,
   ) {}
 
-  private getBodyTextMessage(code: string) {
-    return `<h1>Thank for your registration</h1>
-       <p>To finish registration please follow the link below:
-          <a href="https://somesite.com/confirm-email?code=${code}">complete registration</a>
-      </p>`;
-  }
-
-  async execute(command: CreateUserCommand) {
+  async execute(command: CreateUserCommand): Promise<boolean> {
     const { email, login, password } = command.registrationDto;
-    const user = await this.usersRepository.findUserByEmail(email);
-    console.log('user', user);
-    if (user)
+    const userByEmail = await this.usersRepository.findUserByEmail(email);
+    if (userByEmail)
       throw new BadRequestException([
         {
           message: 'User with this email is registered',
@@ -49,20 +41,20 @@ export class RegistrationUseCase implements ICommandHandler {
         },
       ]);
     const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = await this.usersRepository.createUser(
+    const user = await this.usersRepository.createUser(
       login,
       email,
       passwordHash,
     );
     try {
-      await this.emailService.sentEmail(
-        email,
-        'confirm code',
-        this.getBodyTextMessage(newUser.emailConfirmation.confirmationCode),
+      await this.emailService.sendConfirmationCodeByEmail(
+        user.email,
+        user.emailConfirmation.confirmationCode,
       );
       return true;
     } catch (e) {
       console.log(e);
+      await this.usersRepository.deleteUserById(user.id);
       throw new InternalServerErrorException('Something went wrong');
     }
   }

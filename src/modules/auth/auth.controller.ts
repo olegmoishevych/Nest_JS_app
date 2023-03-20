@@ -3,8 +3,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
-  HttpStatus,
   Post,
   Req,
   Res,
@@ -41,7 +39,7 @@ export class AuthController {
   @Throttle(5, 10)
   @Post('/registration')
   @HttpCode(204)
-  async userRegistration(@Body() registrationDto: AuthDto): Promise<UserModel> {
+  async userRegistration(@Body() registrationDto: AuthDto): Promise<boolean> {
     return this.commandBus.execute(new RegistrationCommand(registrationDto));
   }
 

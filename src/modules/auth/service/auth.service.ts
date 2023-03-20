@@ -195,7 +195,7 @@ export class AuthService {
       await this.usersRepository.addRecoveryUserCode(recoveryCode);
     try {
       const message = `https://somesite.com/password-recovery?recoveryCode=${recoveryCode.recoveryCode}`;
-      await this.emailService.sentEmail(email, 'recovery code', message);
+      // await this.emailService.sentEmail(email, 'recovery code', message);
     } catch (error) {
       console.log(error);
       return null;
