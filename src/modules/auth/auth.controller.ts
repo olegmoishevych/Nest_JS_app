@@ -111,10 +111,7 @@ export class AuthController {
   @Throttle(5, 10)
   @Post('/password-recovery')
   @HttpCode(204)
-  async userPasswordRecovery(
-    @Body('email') email: string,
-  ): Promise<RecoveryCodeModal> {
-    // return this.authService.passwordRecovery(email);
+  async userPasswordRecovery(@Body('email') email: string): Promise<boolean> {
     return this.commandBus.execute(new PasswordRecoveryCommand(email));
   }
 

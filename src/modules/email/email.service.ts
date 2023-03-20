@@ -15,4 +15,11 @@ export class EmailService {
       </p>`;
     return this.emailRepository.sentEmail(email, 'email confirmation', text);
   }
+  async sendPasswordRecoveryCode(
+    email: string,
+    recoveryCode: string,
+  ): Promise<boolean> {
+    const text = `https://somesite.com/password-recovery?recoveryCode=${recoveryCode}`;
+    return this.emailRepository.sentEmail(email, 'Recovery code', text);
+  }
 }

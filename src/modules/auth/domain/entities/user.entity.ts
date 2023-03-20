@@ -28,17 +28,20 @@ export class UserEntity {
     eager: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
   @OneToOne(() => PasswordRecoveryEntity, (r) => r.user, {
     cascade: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   passwordRecovery: PasswordRecoveryEntity;
   @OneToOne(() => BanInfoEntity, (b) => b.user, {
     cascade: true,
     eager: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   banInfo: BanInfoEntity;
 
   confirmedCode(code: string) {
@@ -51,6 +54,12 @@ export class UserEntity {
   updateConfirmationDate() {
     this.emailConfirmation.confirmationCode = randomUUID();
     this.emailConfirmation.expirationDate = add(new Date(), { hours: 1 });
+  }
+
+  createPasswordRecovery() {
+    const passwordRecovery = new PasswordRecoveryEntity();
+    passwordRecovery.recoveryCode = randomUUID();
+    return passwordRecovery;
   }
 
   static create(login: string, email: string, passwordHash: string) {
