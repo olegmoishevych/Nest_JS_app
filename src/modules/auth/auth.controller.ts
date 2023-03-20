@@ -27,6 +27,7 @@ import { ConfirmationCommand } from './use-cases/confirmation-use-case';
 import { EmailResendingCommand } from './use-cases/registration-email-resending.use-case';
 import { LoginCommand } from './use-cases/login.use-case';
 import { UserEntity } from './domain/entities/user.entity';
+import { LogoutCommand } from './use-cases/logout.user-case';
 
 @Controller('auth')
 export class AuthController {
@@ -85,7 +86,7 @@ export class AuthController {
   @Post('/logout')
   @HttpCode(204)
   async userLogout(@Cookies() cookies): Promise<boolean> {
-    return this.authService.logout(cookies.refreshToken);
+    return this.commandBus.execute(new LogoutCommand(cookies.refreshToken));
   }
 
   @Post('/refresh-token')
