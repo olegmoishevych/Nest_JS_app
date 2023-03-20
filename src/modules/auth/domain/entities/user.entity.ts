@@ -39,13 +39,13 @@ export class UserEntity {
     if (this.emailConfirmation.isConfirmed) return false;
     if (this.emailConfirmation.confirmationCode !== code) return false;
     if (this.emailConfirmation.expirationDate < new Date()) return false;
-    return true;
+    return (this.emailConfirmation.isConfirmed = true);
   }
 
-  confirmEmail(code: string) {
-    if (!this.confirmedCode(code)) throw new Error('Cant be confirmed');
-    this.emailConfirmation.isConfirmed = true;
-  }
+  // confirmEmail(code: string) {
+  //   if (!this.confirmedCode(code)) throw new Error('Cant be confirmed');
+  //   this.emailConfirmation.isConfirmed = true;
+  // }
 
   static create(login: string, email: string, passwordHash: string) {
     const banInfo = new BanInfoEntity();

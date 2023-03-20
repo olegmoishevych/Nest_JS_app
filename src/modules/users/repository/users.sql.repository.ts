@@ -37,4 +37,7 @@ export class UsersSqlRepository {
       .where('UserEmailConfirmation.confirmationCode = :code', { code })
       .getOne();
   }
+  async saveUser(user: UserEntity): Promise<UserEntity> {
+    return this.userTable.save(user);
+  }
 }

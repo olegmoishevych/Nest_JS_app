@@ -28,6 +28,7 @@ import { AccessTokenModal } from './schemas/auth.schemas';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { RegistrationCommand } from './use-cases/registration.use-case';
+import { ConfirmationCommand } from './use-cases/confirmation-use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -48,8 +49,8 @@ export class AuthController {
   @HttpCode(204)
   async userRegistrationConfirmation(
     @Body('code') code: string,
-  ): Promise<UserModel> {
-    return this.authService.userRegistrationConfirmation(code);
+  ): Promise<boolean> {
+    return this.commandBus.execute(new ConfirmationCommand(code));
   }
 
   @Throttle(5, 10)

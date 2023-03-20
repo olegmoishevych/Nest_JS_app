@@ -40,7 +40,7 @@ export class RegistrationUseCase implements ICommandHandler {
           field: 'login',
         },
       ]);
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 5);
     const user = await this.usersRepository.createUser(
       login,
       email,
