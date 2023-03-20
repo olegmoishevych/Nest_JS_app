@@ -67,6 +67,7 @@ import {
 } from '../blogs/schemas/user-banned.schema';
 import { EmailRepository } from '../email/email.repository';
 import { ConfirmationUseCase } from '../auth/use-cases/confirmation-use-case';
+import { EmailResendingUseCase } from '../auth/use-cases/registration-email-resending.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -91,7 +92,12 @@ const controllers = [
   BlogsController,
 ];
 
-const useCases = [RegistrationUseCase, CreateUserUseCase, ConfirmationUseCase];
+const useCases = [
+  RegistrationUseCase,
+  CreateUserUseCase,
+  ConfirmationUseCase,
+  EmailResendingUseCase,
+];
 
 const services = [
   AppService,
