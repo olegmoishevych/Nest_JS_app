@@ -27,33 +27,19 @@ import {
 
 @Injectable()
 export class TestingRepository {
-  constructor(
-    @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
-    @InjectModel(Devices.name)
-    private readonly devicesModel: Model<DevicesDocument>,
-    @InjectModel(LikeStatus.name)
-    private readonly likeStatusModel: Model<LikeStatusDocument>,
-    @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>,
-    @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>,
-    @InjectModel(RecoveryCode.name)
-    private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
-    @InjectModel(UserBanned.name)
-    private readonly userBannedModel: Model<UserBannedDocument>,
-    @InjectModel(Comments.name)
-    private readonly commentsModel: Model<CommentsDocument>,
-  ) {}
+  constructor() {} // private readonly commentsModel: Model<CommentsDocument>, // @InjectModel(Comments.name) // private readonly userBannedModel: Model<UserBannedDocument>, // @InjectModel(UserBanned.name) // private readonly recoveryCodeModel: Model<RecoveryCodeDocument>, // @InjectModel(RecoveryCode.name) // @InjectModel(Users.name) private readonly usersModel: Model<UsersDocument>, // @InjectModel(Posts.name) private readonly postsModel: Model<PostsDocument>, // private readonly likeStatusModel: Model<LikeStatusDocument>, // @InjectModel(LikeStatus.name) // private readonly devicesModel: Model<DevicesDocument>, // @InjectModel(Devices.name) // @InjectModel(Blogs.name) private readonly blogsModel: Model<BlogsDocument>,
 
   async deleteAllData(): Promise<boolean> {
     try {
       await Promise.all([
-        this.usersModel.deleteMany(),
-        this.blogsModel.deleteMany(),
-        this.postsModel.deleteMany(),
-        this.commentsModel.deleteMany(),
-        this.recoveryCodeModel.deleteMany(),
-        this.likeStatusModel.deleteMany(),
-        this.devicesModel.deleteMany(),
-        this.userBannedModel.deleteMany(),
+        // this.usersModel.deleteMany(),
+        // this.blogsModel.deleteMany(),
+        // this.postsModel.deleteMany(),
+        // this.commentsModel.deleteMany(),
+        // this.recoveryCodeModel.deleteMany(),
+        // this.likeStatusModel.deleteMany(),
+        // this.devicesModel.deleteMany(),
+        // this.userBannedModel.deleteMany(),
       ]);
       return true;
     } catch (e) {

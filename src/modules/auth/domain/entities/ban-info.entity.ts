@@ -7,10 +7,10 @@ export class BanInfoEntity {
   id: string;
   @Column()
   isBanned: boolean;
-  @Column()
-  banDate: Date;
-  @Column()
-  banReason: string;
+  @Column({ nullable: true })
+  banDate: string | null;
+  @Column({ nullable: true })
+  banReason: string | null;
   @OneToOne(() => UserEntity, (user) => user.banInfo)
   user: UserEntity;
 }

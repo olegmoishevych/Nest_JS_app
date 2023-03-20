@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BlogsRepository } from '../blogs/repository/blogs.repository';
 import { BlogsService } from '../blogs/service/blogs.service';
 import { UsersController } from '../users/controller/users.controller';
@@ -46,17 +46,36 @@ import process from 'process';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { BanInfoEntity } from '../auth/domain/entities/ban-info.entity';
 import { EmailConfirmationEntity } from '../auth/domain/entities/email.Confirmation.entity';
+import { UsersSqlRepository } from '../users/repository/users.sql.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Blogs, BlogsSchema } from '../blogs/schemas/blogs.schema';
+import { Posts, PostsSchema } from '../posts/schemas/posts.schema';
+import { Users, UsersSchema } from '../users/schemas/users.schema';
+import { Comments, CommentsSchema } from '../comments/schema/comments.schema';
+import {
+  RecoveryCode,
+  RecoveryCodeSchema,
+} from '../auth/schemas/recoveryCode.schemas';
+import {
+  LikeStatus,
+  LikeStatusSchema,
+} from '../comments/schema/likeStatus.schema';
+import { Devices, DevicesSchema } from '../devices/schemas/devices.schemas';
+import {
+  UserBanned,
+  UserBannedSchema,
+} from '../blogs/schemas/user-banned.schema';
 
-// const mongooseModels = [
-//   { name: Blogs.name, schema: BlogsSchema },
-//   { name: Posts.name, schema: PostsSchema },
-//   { name: Users.name, schema: UsersSchema },
-//   { name: Comments.name, schema: CommentsSchema },
-//   { name: RecoveryCode.name, schema: RecoveryCodeSchema },
-//   { name: LikeStatus.name, schema: LikeStatusSchema },
-//   { name: Devices.name, schema: DevicesSchema },
-//   { name: UserBanned.name, schema: UserBannedSchema },
-// ];
+const mongooseModels = [
+  { name: Blogs.name, schema: BlogsSchema },
+  { name: Posts.name, schema: PostsSchema },
+  { name: Users.name, schema: UsersSchema },
+  { name: Comments.name, schema: CommentsSchema },
+  { name: RecoveryCode.name, schema: RecoveryCodeSchema },
+  { name: LikeStatus.name, schema: LikeStatusSchema },
+  { name: Devices.name, schema: DevicesSchema },
+  { name: UserBanned.name, schema: UserBannedSchema },
+];
 
 const controllers = [
   AppController,
@@ -94,6 +113,7 @@ const repositories = [
   LikeStatusRepository,
   DevicesRepository,
   UserBannedRepository,
+  UsersSqlRepository,
 ];
 
 const entities = [UserEntity, BanInfoEntity, EmailConfirmationEntity];
@@ -120,13 +140,13 @@ const throttlerGuard = {
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    // MongooseModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     uri: configService.get<string>('MONGO_URL'),
-    //   }),
-    //   inject: [ConfigService],
-    // }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URL'),
+      }),
+      inject: [ConfigService],
+    }),
     MailerModule.forRoot({
       transport: {
         service: 'gmail',
@@ -136,12 +156,12 @@ const throttlerGuard = {
         },
       },
     }),
-    // MongooseModule.forFeature(mongooseModels),
+    MongooseModule.forFeature(mongooseModels),
     TypeOrmModule.forFeature([...entities]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
-      port: Number(process.env.PORT),
+      port: Number(process.env.POSTGRES_PORT),
       username: 'postgres',
       password: 'sa',
       database: 'Bloggers',

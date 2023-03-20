@@ -7,6 +7,8 @@ import {
 } from 'typeorm';
 import { EmailConfirmationEntity } from './email.Confirmation.entity';
 import { BanInfoEntity } from './ban-info.entity';
+import { add } from 'date-fns';
+import { randomUUID } from 'crypto';
 
 @Entity('User')
 export class UserEntity {
@@ -32,4 +34,24 @@ export class UserEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
+
+  static create(login: string, email: string, passwordHash: string) {
+    const banInfo = new BanInfoEntity();
+    banInfo.isBanned = false;
+    (banInfo.banDate = null), (banInfo.banReason = null);
+
+    const emailConfirmation = new EmailConfirmationEntity();
+    emailConfirmation.confirmationCode = randomUUID();
+    emailConfirmation.expirationDate = add(new Date(), { hours: 1 });
+    emailConfirmation.isConfirmed = false;
+
+    const userForDb = new UserEntity();
+    userForDb.login = login;
+    userForDb.email = email;
+    userForDb.passwordHash = passwordHash;
+    userForDb.createdAt = new Date().toISOString();
+    userForDb.emailConfirmation = emailConfirmation;
+    userForDb.banInfo = banInfo;
+    return userForDb;
+  }
 }

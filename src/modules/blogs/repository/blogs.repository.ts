@@ -6,21 +6,12 @@ import {
   BlogsDocument,
   BlogsViewModel,
 } from '../schemas/blogs.schema';
-import { Model, FilterQuery, ProjectionFields } from 'mongoose';
-import {
-  BannedUserDto,
-  BanStatusFilterEnum,
-  BlogPaginationDto,
-} from '../../helpers/dto/pagination.dto';
+import { FilterQuery, Model, ProjectionFields } from 'mongoose';
+import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsDto, BlogsModal_For_DB } from '../dto/blogsDto';
 import { UserModel } from '../../users/schemas/users.schema';
-import {
-  BlogsUserViewModel,
-  BlogsUserViewModelFor_DB,
-  UserBanned,
-  UserBannedDocument,
-} from '../schemas/user-banned.schema';
+import { UserBanned, UserBannedDocument } from '../schemas/user-banned.schema';
 import { UpdateResult } from 'mongodb';
 
 @Injectable()
@@ -74,6 +65,7 @@ export class BlogsRepository {
     };
     return this.getBlogs(paginationType, filter, projection);
   }
+
   private async getBlogs(
     paginationType: BlogPaginationDto,
     filter: FilterQuery<BlogsModal_For_DB>,
@@ -96,6 +88,7 @@ export class BlogsRepository {
       findAndSortedBlogs,
     );
   }
+
   async createBlog(blog: BlogsModal_For_DB): Promise<BlogsViewModel> {
     await this.blogsModel.create({ ...blog });
     const { blogOwnerInfo, banInfo, ...blogCopy } = blog;
@@ -128,6 +121,7 @@ export class BlogsRepository {
   async findBlogWithOwnerId(blogId: string): Promise<BlogsModal_For_DB> {
     return this.blogsModel.findOne({ id: blogId }, { _id: 0, __v: 0 });
   }
+
   async updateBlogById(
     id: string,
     user: BlogsDto,
@@ -144,6 +138,7 @@ export class BlogsRepository {
       },
     );
   }
+
   async banBlogById(
     blogId: string,
     updateBlog: BanInfo,

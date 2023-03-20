@@ -3,6 +3,12 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../../users/use-cases/create-user.use-case';
 import { UsersService } from '../../users/service/users.service';
 import { EmailService } from '../../email/email.service';
+import { UsersSqlRepository } from '../../users/repository/users.sql.repository';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 export class RegistrationCommand {
   constructor(readonly registrationDto: AuthDto) {}
@@ -13,6 +19,7 @@ export class RegistrationUseCase implements ICommandHandler {
   constructor(
     private usersService: UsersService,
     private emailService: EmailService,
+    private usersRepository: UsersSqlRepository,
   ) {}
 
   private getBodyTextMessage(code: string) {
@@ -23,12 +30,40 @@ export class RegistrationUseCase implements ICommandHandler {
   }
 
   async execute(command: CreateUserCommand) {
-    const { registrationDto } = command;
-    const user = await this.usersService.createUser(registrationDto);
-    return this.emailService.sentEmail(
-      registrationDto.email,
-      'confirm code',
-      this.getBodyTextMessage(user.emailConfirmation.confirmationCode),
+    const { email, login, password } = command.registrationDto;
+    const user = await this.usersRepository.findUserByEmail(email);
+    console.log('user', user);
+    if (user)
+      throw new BadRequestException([
+        {
+          message: 'User with this email is registered',
+          field: 'email',
+        },
+      ]);
+    const userByLogin = await this.usersRepository.findUserByLogin(login);
+    if (userByLogin)
+      throw new BadRequestException([
+        {
+          message: 'User login is registered yet',
+          field: 'login',
+        },
+      ]);
+    const passwordHash = await bcrypt.hash(password, 10);
+    const newUser = await this.usersRepository.createUser(
+      login,
+      email,
+      passwordHash,
     );
+    try {
+      await this.emailService.sentEmail(
+        email,
+        'confirm code',
+        this.getBodyTextMessage(newUser.emailConfirmation.confirmationCode),
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 }
