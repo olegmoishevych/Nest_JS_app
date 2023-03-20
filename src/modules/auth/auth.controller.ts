@@ -10,26 +10,26 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthDto, NewPasswordDto } from '../dto/auth.dto';
-import { AuthService } from '../service/auth.service';
+import { AuthDto, NewPasswordDto } from './dto/auth.dto';
+import { AuthService } from './service/auth.service';
 import { Throttle } from '@nestjs/throttler';
 import {
   MeViewModel,
   UserModel,
   UsersModel_For_DB,
-} from '../../users/schemas/users.schema';
-import { User } from '../decorator/request.decorator';
+} from '../users/schemas/users.schema';
+import { User } from './decorator/request.decorator';
 import { Request, Response } from 'express';
-import { Cookies } from '../decorator/cookies.decorator';
-import { JwtTokenPairViewModel } from '../schemas/tokens.schemas';
-import { Ip } from '../decorator/ip.decorator';
-import { IpDto } from '../dto/api.dto';
-import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { AccessTokenModal } from '../schemas/auth.schemas';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { Cookies } from './decorator/cookies.decorator';
+import { JwtTokenPairViewModel } from './schemas/tokens.schemas';
+import { Ip } from './decorator/ip.decorator';
+import { IpDto } from './dto/api.dto';
+import { RecoveryCodeModal } from './schemas/recoveryCode.schemas';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AccessTokenModal } from './schemas/auth.schemas';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
-import { RegistrationCommand } from '../use-cases/registration.use-case';
+import { RegistrationCommand } from './use-cases/registration.use-case';
 
 @Controller('auth')
 export class AuthController {
