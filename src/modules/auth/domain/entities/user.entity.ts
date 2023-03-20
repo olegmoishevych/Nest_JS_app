@@ -9,6 +9,7 @@ import { EmailConfirmationEntity } from './email.Confirmation.entity';
 import { BanInfoEntity } from './ban-info.entity';
 import { add } from 'date-fns';
 import { randomUUID } from 'crypto';
+import { PasswordRecoveryEntity } from './passwordRecoveryEntity';
 
 @Entity('User')
 export class UserEntity {
@@ -25,14 +26,19 @@ export class UserEntity {
   @OneToOne(() => EmailConfirmationEntity, (e) => e.user, {
     cascade: true,
     eager: true,
+    onDelete: 'CASCADE',
   })
-  @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
+  @OneToOne(() => PasswordRecoveryEntity, (r) => r.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  passwordRecovery: PasswordRecoveryEntity;
   @OneToOne(() => BanInfoEntity, (b) => b.user, {
     cascade: true,
     eager: true,
+    onDelete: 'CASCADE',
   })
-  @JoinColumn()
   banInfo: BanInfoEntity;
 
   confirmedCode(code: string) {

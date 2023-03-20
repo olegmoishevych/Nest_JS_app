@@ -72,6 +72,7 @@ import { LoginUseCase } from '../auth/use-cases/login.use-case';
 import { LogoutUseCase } from '../auth/use-cases/logout.user-case';
 import { RefreshTokenUseCase } from '../auth/use-cases/refreshToken.use-case';
 import { PasswordRecoveryUseCase } from '../auth/use-cases/password-recovery.use-case';
+import { PasswordRecoveryEntity } from '../auth/domain/entities/passwordRecoveryEntity';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -133,7 +134,12 @@ const repositories = [
   EmailRepository,
 ];
 
-const entities = [UserEntity, BanInfoEntity, EmailConfirmationEntity];
+const entities = [
+  UserEntity,
+  BanInfoEntity,
+  EmailConfirmationEntity,
+  PasswordRecoveryEntity,
+];
 
 const throttlerGuard = {
   provide: APP_GUARD,

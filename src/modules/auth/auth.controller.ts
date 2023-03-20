@@ -29,6 +29,7 @@ import { LoginCommand } from './use-cases/login.use-case';
 import { UserEntity } from './domain/entities/user.entity';
 import { LogoutCommand } from './use-cases/logout.user-case';
 import { RefreshTokenCommand } from './use-cases/refreshToken.use-case';
+import { PasswordRecoveryCommand } from './use-cases/password-recovery.use-case';
 
 @Controller('auth')
 export class AuthController {
@@ -113,7 +114,8 @@ export class AuthController {
   async userPasswordRecovery(
     @Body('email') email: string,
   ): Promise<RecoveryCodeModal> {
-    return this.authService.passwordRecovery(email);
+    // return this.authService.passwordRecovery(email);
+    return this.commandBus.execute(new PasswordRecoveryCommand(email));
   }
 
   @Throttle(5, 10)
