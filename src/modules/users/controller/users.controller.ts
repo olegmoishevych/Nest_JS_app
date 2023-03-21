@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { BanBlogUserDto, BanUserDto } from '../dto/userDto';
-import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
+import { UserModel } from '../schemas/users.schema';
 import {
   BlogPaginationDto,
   UserPaginationDtoWithBanStatusDto,
@@ -26,7 +26,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../use-cases/create-user.use-case';
 import { AuthDto } from '../../auth/dto/auth.dto';
 import { UsersRepository } from '../repository/users.repository';
-import { UsersSqlRepository } from '../repository/users.sql.repository';
+import { DeleteUserCommand } from '../use-cases/delete-user.use-case';
+import { DeleteResult } from 'typeorm';
 
 @Controller('sa')
 export class UsersController {
@@ -57,8 +58,8 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Delete('/users/:id')
   @HttpCode(204)
-  async deleteUserById(@Param('id') id: string): Promise<boolean> {
-    return this.usersService.deleteUserById(id);
+  async deleteUserById(@Param('id') id: string): Promise<DeleteResult> {
+    return this.commandBus.execute(new DeleteUserCommand(id));
   }
 
   @UseGuards(BasicAuthGuard)

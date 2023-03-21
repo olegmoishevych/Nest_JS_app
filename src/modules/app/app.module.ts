@@ -74,6 +74,7 @@ import { RefreshTokenUseCase } from '../auth/use-cases/refreshToken.use-case';
 import { PasswordRecoveryUseCase } from '../auth/use-cases/password-recovery.use-case';
 import { PasswordRecoveryEntity } from '../auth/domain/entities/passwordRecoveryEntity';
 import { NewPasswordUseCase } from '../auth/use-cases/new-password.use-case';
+import { DeleteUserUseCase } from '../users/use-cases/delete-user.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -108,6 +109,7 @@ const useCases = [
   RefreshTokenUseCase,
   PasswordRecoveryUseCase,
   NewPasswordUseCase,
+  DeleteUserUseCase,
 ];
 
 const services = [
