@@ -25,7 +25,6 @@ import { BlogsService } from '../../blogs/service/blogs.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../use-cases/create-user.use-case';
 import { AuthDto } from '../../auth/dto/auth.dto';
-import { UsersRepository } from '../repository/users.repository';
 import { DeleteUserCommand } from '../use-cases/delete-user.use-case';
 import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from '../repository/users.sql.repository';

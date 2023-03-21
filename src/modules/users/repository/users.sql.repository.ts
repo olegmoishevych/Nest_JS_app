@@ -16,7 +16,6 @@ export class UsersSqlRepository {
   ) {}
 
   async getAllUsersBySA(paginationDto: UserPaginationDtoWithBanStatusDto) {
-    await this.userTable.delete({});
     const countQuery = `
       SELECT COUNT(*)
       FROM public."User"

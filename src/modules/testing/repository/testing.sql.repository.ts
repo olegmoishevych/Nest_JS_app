@@ -6,6 +6,7 @@ export class TestingSqlRepository {
   constructor(private dataSource: DataSource) {}
 
   async deleteAllData() {
+    // await this.userTable.delete({});
     try {
       await this.dataSource.query(`
         CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
