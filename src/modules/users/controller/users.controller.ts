@@ -28,12 +28,14 @@ import { AuthDto } from '../../auth/dto/auth.dto';
 import { DeleteUserCommand } from '../use-cases/delete-user.use-case';
 import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from '../repository/users.sql.repository';
+import { BlogsSqlRepository } from '../../blogs/repository/blogs.sql.repository';
 
 @Controller('sa')
 export class UsersController {
   constructor(
     public usersService: UsersService,
-    public blogsRepository: BlogsRepository,
+    // public blogsRepository: BlogsRepository,
+    public blogsRepository: BlogsSqlRepository,
     public usersRepository: UsersSqlRepository,
     private commandBus: CommandBus,
     public blogsService: BlogsService,
@@ -82,9 +84,9 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Get('/blogs')
-  async getBlogs(
-    @Query() paginationDto: BlogPaginationDto,
-  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+  async getBlogs(@Query() paginationDto: BlogPaginationDto) {
+    // : Promise<PaginationViewModel<BlogsViewModel[]>> {
+    // return this.blogsRepository.getBlogsForSA(paginationDto);
     return this.blogsRepository.getBlogsForSA(paginationDto);
   }
 }

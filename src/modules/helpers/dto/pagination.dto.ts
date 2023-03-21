@@ -40,7 +40,7 @@ export class BannedUserDto extends PaginationDto {
 
 export class BlogPaginationDto extends PaginationDto {
   @IsOptional()
-  searchNameTerm: string | null = null;
+  searchNameTerm: string | null = '';
 }
 
 export class UserPaginationDto extends PaginationDto {
