@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import { useContainer } from 'class-validator';
-import { AppModule } from '../modules/app/app.module';
+import { AppModule } from '../modules/app.module';
 import { HttpExceptionFilter } from '../exceptionFilter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
