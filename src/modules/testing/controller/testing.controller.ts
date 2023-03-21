@@ -1,9 +1,12 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
-import { TestingRepository } from '../repository/testing.repository';
+import { TestingSqlRepository } from '../repository/testing.sql.repository';
 
 @Controller('testing')
 export class TestingController {
-  constructor(private testingRepository: TestingRepository) {}
+  constructor(
+    // private testingRepository: TestingRepository
+    private testingRepository: TestingSqlRepository,
+  ) {}
 
   @Delete('/all-data')
   @HttpCode(204)
