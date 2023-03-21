@@ -58,6 +58,8 @@ export class BlogsEntity {
     blogForDb.websiteUrl = websiteUrl;
     blogForDb.createdAt = new Date().toISOString();
     blogForDb.isMembership = false;
+    blogForDb.blogOwnerInfo = blogOwnerInfo;
+    blogForDb.banInfo = banInfo;
     return blogForDb;
   }
 }

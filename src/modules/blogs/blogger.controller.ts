@@ -31,6 +31,8 @@ import { CommentsForPostsViewModal } from '../comments/schema/comments.schema';
 import { BlogsRepository } from './repository/blogs.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogCommand } from './use-cases/createBlog.use-case';
+import { DeleteBlogCommand } from './use-cases/deleteBlog.use-case';
+import { DeleteResult } from 'typeorm';
 
 @Controller('blogger')
 export class BloggerController {
@@ -74,8 +76,9 @@ export class BloggerController {
   async deleteBlogById(
     @User() user: UserModel,
     @Param('id') id: string,
-  ): Promise<boolean> {
-    return this.blogsService.deleteBlogById(id, user.id);
+  ): Promise<DeleteResult> {
+    // return this.blogsService.deleteBlogById(id, user.id);
+    return this.commandBus.execute(new DeleteBlogCommand(id, user.id));
   }
 
   @UseGuards(JwtAuthGuard)

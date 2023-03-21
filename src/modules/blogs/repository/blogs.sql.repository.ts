@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { BlogsEntity } from '../domain/entities/blogs.entity';
 
 @Injectable()
@@ -26,5 +26,8 @@ export class BlogsSqlRepository {
   }
   async findBlogById(id: string): Promise<BlogsEntity> {
     return this.blogsTable.findOneBy({ id });
+  }
+  async deleteBlogById(id: string): Promise<DeleteResult> {
+    return this.blogsTable.delete(id);
   }
 }

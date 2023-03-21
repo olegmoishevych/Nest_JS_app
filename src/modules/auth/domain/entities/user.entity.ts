@@ -31,7 +31,7 @@ export class UserEntity {
   })
   @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
-  @OneToOne(() => PasswordRecoveryEntity, (r) => r.user, {
+  @OneToOne(() => PasswordRecoveryEntity, (p) => p.user, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',

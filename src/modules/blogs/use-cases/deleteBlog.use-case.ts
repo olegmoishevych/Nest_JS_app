@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class DeleteBlogCommand {
@@ -11,5 +16,12 @@ export class DeleteBlogCommand {
 export class DeleteBlogUseCase implements ICommandHandler {
   constructor(public blogsRepository: BlogsSqlRepository) {}
 
-  async execute(command: DeleteBlogCommand) {}
+  async execute(command: DeleteBlogCommand): Promise<DeleteResult> {
+    const blogById = await this.blogsRepository.findBlogById(command.id);
+    console.log('blogById', blogById);
+    if (!blogById) throw new NotFoundException(`User with not found`);
+    if (blogById.blogOwnerInfo.id !== command.userId)
+      throw new ForbiddenException([]);
+    return this.blogsRepository.deleteBlogById(command.id);
+  }
 }
