@@ -34,9 +34,9 @@ import { BlogIsExistRule } from '../blogs/validators/customValidateBlog';
 import { DevicesRepository } from '../devices/repository/devices.repository';
 import { DevicesService } from '../devices/service/devices.service';
 import { DevicesController } from '../devices/controller/devices.controller';
-import { BloggerController } from '../blogs/controller/blogger.controller';
+import { BloggerController } from '../blogs/blogger.controller';
 import { LocalStrategy } from '../auth/strategies/local.strategy';
-import { BlogsController } from '../blogs/controller/blogs.controller';
+import { BlogsController } from '../blogs/blogs.controller';
 import { UserBannedRepository } from '../blogs/repository/user-banned.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { RegistrationUseCase } from '../auth/use-cases/registration.use-case';
@@ -75,6 +75,7 @@ import { PasswordRecoveryUseCase } from '../auth/use-cases/password-recovery.use
 import { PasswordRecoveryEntity } from '../auth/domain/entities/passwordRecoveryEntity';
 import { NewPasswordUseCase } from '../auth/use-cases/new-password.use-case';
 import { DeleteUserUseCase } from '../users/use-cases/delete-user.use-case';
+import { TestingSqlRepository } from '../testing/repository/testing.sql.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -136,6 +137,7 @@ const repositories = [
   UserBannedRepository,
   UsersSqlRepository,
   EmailRepository,
+  TestingSqlRepository,
 ];
 
 const entities = [
