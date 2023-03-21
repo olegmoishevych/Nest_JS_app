@@ -1,12 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 
 @Entity('BanInfo')
 export class BanInfoEntity {
@@ -20,4 +14,6 @@ export class BanInfoEntity {
   banReason: string | null;
   @OneToOne(() => UserEntity, (user) => user.banInfo, { onDelete: 'CASCADE' })
   user: UserEntity;
+  @OneToOne(() => BlogsEntity, (b) => b.banInfo, { onDelete: 'CASCADE' })
+  blog: BlogsEntity;
 }

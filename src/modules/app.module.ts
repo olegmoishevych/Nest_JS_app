@@ -74,6 +74,10 @@ import { PasswordRecoveryEntity } from './auth/domain/entities/passwordRecoveryE
 import { NewPasswordUseCase } from './auth/use-cases/new-password.use-case';
 import { DeleteUserUseCase } from './users/use-cases/delete-user.use-case';
 import { TestingSqlRepository } from './testing/repository/testing.sql.repository';
+import { BlogsEntity } from './blogs/domain/entities/blogs.entity';
+import { BlogsSqlRepository } from './blogs/repository/blogs.sql.repository';
+import { CreateBlogUseCase } from './blogs/use-cases/createBlog.use-case';
+import { DeleteBlogUseCase } from './blogs/use-cases/deleteBlog.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -108,6 +112,8 @@ const useCases = [
   PasswordRecoveryUseCase,
   NewPasswordUseCase,
   DeleteUserUseCase,
+  CreateBlogUseCase,
+  DeleteBlogUseCase,
 ];
 
 const services = [
@@ -134,6 +140,7 @@ const repositories = [
   UsersSqlRepository,
   EmailRepository,
   TestingSqlRepository,
+  BlogsSqlRepository,
 ];
 
 const entities = [
@@ -141,6 +148,8 @@ const entities = [
   BanInfoEntity,
   EmailConfirmationEntity,
   PasswordRecoveryEntity,
+  BlogsEntity,
+  BanInfoEntity,
 ];
 
 const throttlerGuard = {

@@ -29,6 +29,8 @@ import { BlogsUserViewModel } from './schemas/user-banned.schema';
 import { CommentsRepository } from '../comments/repository/comments.repository';
 import { CommentsForPostsViewModal } from '../comments/schema/comments.schema';
 import { BlogsRepository } from './repository/blogs.repository';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateBlogCommand } from './use-cases/createBlog.use-case';
 
 @Controller('blogger')
 export class BloggerController {
@@ -36,6 +38,7 @@ export class BloggerController {
     public blogsService: BlogsService,
     public blogsRepository: BlogsRepository,
     public commentsRepository: CommentsRepository,
+    private commandBus: CommandBus,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -58,8 +61,11 @@ export class BloggerController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/blogs')
-  async createBlog(@Body() createBlogType: BlogsDto, @User() user: UserModel) {
-    return this.blogsService.createBlog(createBlogType, user);
+  async createBlog(
+    @Body() createBlogType: BlogsDto,
+    @User() user: UserModel,
+  ): Promise<BlogsViewModel> {
+    return this.commandBus.execute(new CreateBlogCommand(createBlogType, user));
   }
 
   @UseGuards(JwtAuthGuard)
