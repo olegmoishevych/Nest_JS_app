@@ -45,9 +45,9 @@ export class BlogPaginationDto extends PaginationDto {
 
 export class UserPaginationDto extends PaginationDto {
   @IsOptional()
-  searchLoginTerm: string | null = null;
+  searchLoginTerm: string | null = '';
   @IsOptional()
-  searchEmailTerm: string | null = null;
+  searchEmailTerm: string | null = '';
 }
 
 export enum BanStatusFilterEnum {

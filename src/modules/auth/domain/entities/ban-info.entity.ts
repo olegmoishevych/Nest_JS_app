@@ -6,8 +6,8 @@ import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 export class BanInfoEntity {
   @PrimaryGeneratedColumn()
   id: string;
-  @Column({ nullable: true })
-  isBanned: boolean | null;
+  @Column({ default: false })
+  isBanned: boolean;
   @Column({ nullable: true })
   banDate: string | null;
   @Column({ nullable: true })

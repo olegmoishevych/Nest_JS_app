@@ -19,11 +19,7 @@ BEGIN
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
-SELECT truncate_tables('BanInfo');
-SELECT truncate_tables('EmailConfirmation');
-SELECT truncate_tables('User');
-SELECT truncate_tables('passwordRecovery');
-        `);
+SELECT truncate_tables('postgres');`);
       return true;
     } catch (e) {
       console.log(e);
