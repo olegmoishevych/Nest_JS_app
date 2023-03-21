@@ -1,13 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import {
+  DeleteResult,
+  FindManyOptions,
+  FindOperator,
+  In,
+  Like,
+  Repository,
+} from 'typeorm';
+import {
+  BanStatusFilterEnum,
+  UserPaginationDtoWithBanStatusDto,
+} from 'src/modules/helpers/dto/pagination.dto';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { UsersModel_For_DB } from '../schemas/users.schema';
 
 @Injectable()
 export class UsersSqlRepository {
   constructor(
     @InjectRepository(UserEntity) private userTable: Repository<UserEntity>,
   ) {}
+
+  // async getBanStatusFilter(banStatus: BanStatusFilterEnum) {
+  //   switch (banStatus) {
+  //     case BanStatusFilterEnum.Banned:
+  //       return {
+  //         where: {
+  //           banInfo: {
+  //             isBanned: true,
+  //           },
+  //         },
+  //       };
+  //     case BanStatusFilterEnum.NotBanned:
+  //       return {
+  //         where: {
+  //           banInfo: {
+  //             isBanned: false,
+  //           },
+  //         },
+  //       };
+  //     default:
+  //       return {
+  //         where: [
+  //           { banInfo: { isBanned: true } },
+  //           { banInfo: { isBanned: false } },
+  //         ],
+  //       };
+  //   }
+  // }
 
   async createUser(
     login: string,
@@ -29,6 +70,7 @@ export class UsersSqlRepository {
   async deleteUserById(id: string): Promise<DeleteResult> {
     return this.userTable.delete(id);
   }
+
   async findUserById(id: string): Promise<UserEntity> {
     return this.userTable.findOneBy({ id });
   }

@@ -26,6 +26,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../use-cases/create-user.use-case';
 import { AuthDto } from '../../auth/dto/auth.dto';
 import { UsersRepository } from '../repository/users.repository';
+import { UsersSqlRepository } from '../repository/users.sql.repository';
 
 @Controller('sa')
 export class UsersController {
@@ -33,6 +34,7 @@ export class UsersController {
     public usersService: UsersService,
     public blogsRepository: BlogsRepository,
     public usersRepository: UsersRepository,
+    // public usersRepository: UsersSqlRepository,
     private commandBus: CommandBus,
     public blogsService: BlogsService,
   ) {}
@@ -40,9 +42,10 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Get('/users')
   async findAllUsers(
-    @Query() paginationDto: UserPaginationDtoWithBanStatusDto,
-  ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
+    @Query() paginationDto: UserPaginationDtoWithBanStatusDto, // : Promise<PaginationViewModel<UsersModel_For_DB[]>>
+  ) {
     return this.usersRepository.findAllUsers(paginationDto);
+    // return this.usersRepository.findAllUsers(paginationDto);
   }
 
   @UseGuards(BasicAuthGuard)

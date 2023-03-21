@@ -11,7 +11,6 @@ import {
 import { AuthDto, NewPasswordDto } from './dto/auth.dto';
 import { AuthService } from './service/auth.service';
 import { Throttle } from '@nestjs/throttler';
-import { MeViewModel, UserModel } from '../users/schemas/users.schema';
 import { User } from './decorator/request.decorator';
 import { Request, Response } from 'express';
 import { Cookies } from './decorator/cookies.decorator';
