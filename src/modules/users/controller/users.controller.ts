@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { BanBlogUserDto, BanUserDto } from '../dto/userDto';
-import { UserModel } from '../schemas/users.schema';
+import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
 import {
   BlogPaginationDto,
   UserPaginationDtoWithBanStatusDto,
@@ -34,7 +34,6 @@ export class UsersController {
   constructor(
     public usersService: UsersService,
     public blogsRepository: BlogsRepository,
-    // public usersRepository: UsersRepository,
     public usersRepository: UsersSqlRepository,
     private commandBus: CommandBus,
     public blogsService: BlogsService,
@@ -43,9 +42,8 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Get('/users')
   async findAllUsers(
-    @Query() paginationDto: UserPaginationDtoWithBanStatusDto, // : Promise<PaginationViewModel<UsersModel_For_DB[]>>
-  ) {
-    // return this.usersRepository.findAllUsers(paginationDto);
+    @Query() paginationDto: UserPaginationDtoWithBanStatusDto,
+  ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     return this.usersRepository.getAllUsersBySA(paginationDto);
   }
 

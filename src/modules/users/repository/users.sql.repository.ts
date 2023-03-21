@@ -7,6 +7,7 @@ import {
   UserPaginationDtoWithBanStatusDto,
 } from 'src/modules/helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { UsersModel_For_DB } from '../schemas/users.schema';
 
 @Injectable()
 export class UsersSqlRepository {
@@ -15,7 +16,9 @@ export class UsersSqlRepository {
     private dataSource: DataSource,
   ) {}
 
-  async getAllUsersBySA(paginationDto: UserPaginationDtoWithBanStatusDto) {
+  async getAllUsersBySA(
+    paginationDto: UserPaginationDtoWithBanStatusDto,
+  ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     const countQuery = `
       SELECT COUNT(*)
       FROM public."User"
