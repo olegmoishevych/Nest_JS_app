@@ -24,4 +24,7 @@ export class BlogsSqlRepository {
     );
     return this.blogsTable.save(newBlog);
   }
+  async findBlogById(id: string): Promise<BlogsEntity> {
+    return this.blogsTable.findOneBy({ id });
+  }
 }
