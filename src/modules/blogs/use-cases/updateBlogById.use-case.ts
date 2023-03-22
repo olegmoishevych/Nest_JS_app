@@ -36,7 +36,7 @@ export class UpdateBlogByIdUseCase implements ICommandHandler {
           field: 'user',
         },
       ]);
-    blog.updateBlog(command.updateBlogType, command.userId);
+    blog.updateBlog(command.updateBlogType);
     return this.blogsRepository.saveBlog(blog);
   }
 }

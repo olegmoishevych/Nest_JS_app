@@ -12,6 +12,8 @@ import { add } from 'date-fns';
 import { randomUUID } from 'crypto';
 import { PasswordRecoveryEntity } from './passwordRecoveryEntity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
+import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
+import { LikesEntity } from '../../../posts/domain/entities/likesEntity.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -53,6 +55,18 @@ export class UserEntity {
   })
   // @JoinColumn()
   blog: BlogsEntity;
+  @OneToMany(() => PostsEntity, (p) => p.user, {
+    // eager: true,
+    // cascade: true,
+    onDelete: 'CASCADE',
+  })
+  post: PostsEntity;
+  @OneToMany(() => LikesEntity, (l) => l.user, {
+    // eager: true,
+    // cascade: true,
+    onDelete: 'CASCADE',
+  })
+  likes: LikesEntity;
 
   confirmedCode(code: string) {
     if (this.emailConfirmation.isConfirmed) return false;

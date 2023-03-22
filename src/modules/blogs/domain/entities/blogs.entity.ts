@@ -3,12 +3,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { BlogsDto } from '../../dto/blogsDto';
+import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -38,12 +40,17 @@ export class BlogsEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
+  @OneToMany(() => PostsEntity, (p) => p.blog, {
+    // eager: true,
+    // cascade: true,
+    // onDelete: 'CASCADE',
+  })
+  post: PostsEntity;
 
-  updateBlog(updateBlogType: BlogsDto, userId: string) {
+  updateBlog(updateBlogType: BlogsDto) {
     const updatedBlog = (this.name = updateBlogType.name);
     (this.description = updateBlogType.description),
       (this.websiteUrl = updateBlogType.websiteUrl);
-    this.blogOwnerInfo.id = userId;
     return updatedBlog;
   }
 

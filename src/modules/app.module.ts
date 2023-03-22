@@ -9,7 +9,7 @@ import { TestingRepository } from './testing/repository/testing.repository';
 import { TestingController } from './testing/controller/testing.controller';
 import { PostsService } from './posts/service/posts.service';
 import { PostsRepository } from './posts/repository/posts.repository';
-import { PostsController } from './posts/controller/posts.controller';
+import { PostsController } from './posts/posts.controller';
 import { CommentsService } from './comments/service/comments.service';
 import { CommentsRepository } from './comments/repository/comments.repository';
 import { CommentsController } from './comments/controller/comments.controller';
@@ -81,6 +81,9 @@ import { DeleteBlogUseCase } from './blogs/use-cases/deleteBlog.use-case';
 import { BlogsSQLqueryRepository } from './blogs/repository/blogs.SQLquery.repository';
 import { FindBlogByIdUseCase } from './blogs/use-cases/findBlogById.use-case';
 import { UpdateBlogByIdUseCase } from './blogs/use-cases/updateBlogById.use-case';
+import { PostsEntity } from './posts/domain/entities/posts.entity';
+import { LikesEntity } from './posts/domain/entities/likesEntity.entity';
+import { PostsSQLRepository } from './posts/repository/postsSQL.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -147,6 +150,7 @@ const repositories = [
   TestingSqlRepository,
   BlogsSqlRepository,
   BlogsSQLqueryRepository,
+  PostsSQLRepository,
 ];
 
 const entities = [
@@ -156,6 +160,8 @@ const entities = [
   PasswordRecoveryEntity,
   BlogsEntity,
   BanInfoEntity,
+  PostsEntity,
+  LikesEntity,
 ];
 
 const throttlerGuard = {

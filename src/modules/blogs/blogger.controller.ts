@@ -94,7 +94,6 @@ export class BloggerController {
     return this.commandBus.execute(
       new UpdateBlogByIdCommand(id, user.id, updateBlogType),
     );
-    // return this.blogsService.updateBlogById(id, updateBlogType, user.id);
   }
 
   @UseGuards(JwtAuthGuard)

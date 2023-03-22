@@ -9,20 +9,20 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { PostsService } from '../service/posts.service';
-import { CreatePostDtoWithBlogId, LikeStatusDto } from '../dto/createPostDto';
-import { PostsViewModal } from '../schemas/posts.schema';
-import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import { PaginationDto } from '../../helpers/dto/pagination.dto';
-import { CommentsService } from '../../comments/service/comments.service';
-import { CommentsViewModal } from '../../comments/schema/comments.schema';
-import { CommentsDto } from '../../comments/dto/comments.dto';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { User } from '../../auth/decorator/request.decorator';
-import { UserModel } from '../../users/schemas/users.schema';
-import { Token } from '../../decorators/token.decorator';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
-import { PostsRepository } from '../repository/posts.repository';
+import { PostsService } from './service/posts.service';
+import { CreatePostDtoWithBlogId, LikeStatusDto } from './dto/createPostDto';
+import { PostsViewModal } from './schemas/posts.schema';
+import { PaginationViewModel } from '../helpers/pagination/pagination-view-model';
+import { PaginationDto } from '../helpers/dto/pagination.dto';
+import { CommentsService } from '../comments/service/comments.service';
+import { CommentsViewModal } from '../comments/schema/comments.schema';
+import { CommentsDto } from '../comments/dto/comments.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { User } from '../auth/decorator/request.decorator';
+import { UserModel } from '../users/schemas/users.schema';
+import { Token } from '../decorators/token.decorator';
+import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
+import { PostsRepository } from './repository/posts.repository';
 
 @Controller('posts')
 export class PostsController {
