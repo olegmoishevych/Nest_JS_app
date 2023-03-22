@@ -78,6 +78,9 @@ import { BlogsEntity } from './blogs/domain/entities/blogs.entity';
 import { BlogsSqlRepository } from './blogs/repository/blogs.sql.repository';
 import { CreateBlogUseCase } from './blogs/use-cases/createBlog.use-case';
 import { DeleteBlogUseCase } from './blogs/use-cases/deleteBlog.use-case';
+import { BlogsSQLqueryRepository } from './blogs/repository/blogs.SQLquery.repository';
+import { FindBlogByIdUseCase } from './blogs/use-cases/findBlogById.use-case';
+import { UpdateBlogByIdUseCase } from './blogs/use-cases/updateBlogById.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -114,6 +117,8 @@ const useCases = [
   DeleteUserUseCase,
   CreateBlogUseCase,
   DeleteBlogUseCase,
+  FindBlogByIdUseCase,
+  UpdateBlogByIdUseCase,
 ];
 
 const services = [
@@ -141,6 +146,7 @@ const repositories = [
   EmailRepository,
   TestingSqlRepository,
   BlogsSqlRepository,
+  BlogsSQLqueryRepository,
 ];
 
 const entities = [

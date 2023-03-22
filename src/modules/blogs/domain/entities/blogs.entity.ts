@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
+import { BlogsDto } from '../../dto/blogsDto';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -37,6 +38,14 @@ export class BlogsEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
+
+  updateBlog(updateBlogType: BlogsDto, userId: string) {
+    const updatedBlog = (this.name = updateBlogType.name);
+    (this.description = updateBlogType.description),
+      (this.websiteUrl = updateBlogType.websiteUrl);
+    this.blogOwnerInfo.id = userId;
+    return updatedBlog;
+  }
 
   static create(
     id: string,

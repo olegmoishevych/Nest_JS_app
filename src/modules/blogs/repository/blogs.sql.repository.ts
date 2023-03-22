@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { BlogsEntity } from '../domain/entities/blogs.entity';
 import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 
@@ -9,7 +9,6 @@ export class BlogsSqlRepository {
   constructor(
     @InjectRepository(BlogsEntity)
     private blogsTable: Repository<BlogsEntity>,
-    private dataSource: DataSource,
   ) {}
 
   async createBlog(
@@ -28,54 +27,13 @@ export class BlogsSqlRepository {
     );
     return this.blogsTable.save(newBlog);
   }
-
-  async getBlogsForSA(paginationDto: BlogPaginationDto) {
-    const builder = this.blogsTable
-      .createQueryBuilder('b')
-      .leftJoinAndSelect('b.blogOwnerInfo', 'blogOwnerInfo')
-      .leftJoinAndSelect('b.banInfo', 'banInfo')
-      .addSelect('blogOwnerInfo.email', 'blogOwnerInfo.email')
-      .addSelect('blogOwnerInfo.createdAt', 'blogOwnerInfo.createdAt')
-      .addSelect('blogOwnerInfo.passwordHash', 'blogOwnerInfo.passwordHash')
-      .addSelect('banInfo.id', 'banInfo.id')
-      .addSelect('banInfo.banReason', 'banInfo.banReason')
-      .orderBy(
-        `b.${paginationDto.sortBy}`,
-        paginationDto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      )
-      .where('banInfo.isBanned = false');
-
-    // if (settings.isAdminRequesting) {
-    //   builder.orWhere('banInfo.isBanned = true').leftJoinAndSelect('b.user', 'u');
-    // }
-
-    // if (settings.blogsOfSpecifiedUserId) {
-    //   builder.where('b.userId = :userId', { userId: settings.blogsOfSpecifiedUserId });
-    // }
-    if (paginationDto.searchNameTerm) {
-      builder.where('b.name ILIKE :name', {
-        name: `%${paginationDto.searchNameTerm}%`,
-      });
-    }
-
-    const [blogs, total] = await builder
-      .take(paginationDto.pageSize)
-      .skip((paginationDto.pageNumber - 1) * paginationDto.pageSize)
-      .getManyAndCount();
-    return {
-      pagesCount: Math.ceil(total / paginationDto.pageSize),
-      page: paginationDto.pageNumber,
-      pageSize: paginationDto.pageSize,
-      totalCount: total,
-      items: blogs,
-    };
-  }
-
   async findBlogById(id: string): Promise<BlogsEntity> {
     return this.blogsTable.findOneBy({ id });
   }
-
   async deleteBlogById(id: string): Promise<DeleteResult> {
     return this.blogsTable.delete(id);
+  }
+  async saveBlog(blog: BlogsEntity): Promise<BlogsEntity> {
+    return this.blogsTable.save(blog);
   }
 }

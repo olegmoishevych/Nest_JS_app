@@ -33,6 +33,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogCommand } from './use-cases/createBlog.use-case';
 import { DeleteBlogCommand } from './use-cases/deleteBlog.use-case';
 import { DeleteResult } from 'typeorm';
+import { BlogsEntity } from './domain/entities/blogs.entity';
+import { UpdateBlogByIdCommand } from './use-cases/updateBlogById.use-case';
 
 @Controller('blogger')
 export class BloggerController {
@@ -88,8 +90,11 @@ export class BloggerController {
     @Param('id') id: string,
     @Body() updateBlogType: BlogsDto,
     @User() user: UserModel,
-  ): Promise<boolean> {
-    return this.blogsService.updateBlogById(id, updateBlogType, user.id);
+  ): Promise<BlogsEntity> {
+    return this.commandBus.execute(
+      new UpdateBlogByIdCommand(id, user.id, updateBlogType),
+    );
+    // return this.blogsService.updateBlogById(id, updateBlogType, user.id);
   }
 
   @UseGuards(JwtAuthGuard)

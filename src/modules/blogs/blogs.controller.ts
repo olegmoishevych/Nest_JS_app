@@ -10,20 +10,24 @@ import { Token } from '../decorators/token.decorator';
 import { PostsViewModal } from '../posts/schemas/posts.schema';
 import { PostsService } from '../posts/service/posts.service';
 import { BlogsRepository } from './repository/blogs.repository';
+import { BlogsSqlRepository } from './repository/blogs.sql.repository';
+import { CommandBus } from '@nestjs/cqrs';
+import { FindBlogByIdCommand } from './use-cases/findBlogById.use-case';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private blogsService: BlogsService,
-    private blogsRepository: BlogsRepository,
+    // private blogsRepository: BlogsRepository,
+    private blogsRepository: BlogsSqlRepository,
+    private command: CommandBus,
     private postsService: PostsService,
   ) {}
 
   @Get('/')
-  async findAllBlogsForUsers(
-    @Query() paginationDto: BlogPaginationDto,
-  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogsForPublic(paginationDto);
+  async findAllBlogsForUsers(@Query() paginationDto: BlogPaginationDto) {
+    // : Promise<PaginationViewModel<BlogsViewModel[]>> {
+    // return this.blogsRepository.getBlogsForPublic(paginationDto);
   }
   @Get('/:blogId/posts')
   async findPostByBlogId(
@@ -35,6 +39,6 @@ export class BlogsController {
   }
   @Get('/:id')
   async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
-    return this.blogsService.findBlogById(id);
+    return this.command.execute(new FindBlogByIdCommand(id));
   }
 }

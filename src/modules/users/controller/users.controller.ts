@@ -29,6 +29,7 @@ import { DeleteUserCommand } from '../use-cases/delete-user.use-case';
 import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from '../repository/users.sql.repository';
 import { BlogsSqlRepository } from '../../blogs/repository/blogs.sql.repository';
+import { BlogsSQLqueryRepository } from '../../blogs/repository/blogs.SQLquery.repository';
 
 @Controller('sa')
 export class UsersController {
@@ -36,6 +37,7 @@ export class UsersController {
     public usersService: UsersService,
     // public blogsRepository: BlogsRepository,
     public blogsRepository: BlogsSqlRepository,
+    public queryRepo: BlogsSQLqueryRepository,
     public usersRepository: UsersSqlRepository,
     private commandBus: CommandBus,
     public blogsService: BlogsService,
@@ -84,9 +86,9 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Get('/blogs')
-  async getBlogs(@Query() paginationDto: BlogPaginationDto) {
-    // : Promise<PaginationViewModel<BlogsViewModel[]>> {
-    // return this.blogsRepository.getBlogsForSA(paginationDto);
-    return this.blogsRepository.getBlogsForSA(paginationDto);
+  async getBlogs(
+    @Query() paginationDto: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    return this.queryRepo.getBlogsForSA(paginationDto);
   }
 }
