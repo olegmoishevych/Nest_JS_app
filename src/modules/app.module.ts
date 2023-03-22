@@ -82,10 +82,11 @@ import { BlogsSQLqueryRepository } from './blogs/repository/blogs.SQLquery.repos
 import { FindBlogByIdUseCase } from './blogs/use-cases/findBlogById.use-case';
 import { UpdateBlogByIdUseCase } from './blogs/use-cases/updateBlogById.use-case';
 import { PostsEntity } from './posts/domain/entities/posts.entity';
-import { LikesEntity } from './posts/domain/entities/likesEntity.entity';
+import { LikesEntity } from './posts/domain/entities/likes.entity';
 import { PostsSQLRepository } from './posts/repository/postsSQL.repository';
 import { CreatePostByBlogIdUseCase } from './blogs/use-cases/createPostByBlogId.use-case';
 import { UpdatePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
+import { DeletePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/deletePostByBlogsAndPostsId.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -126,6 +127,7 @@ const useCases = [
   UpdateBlogByIdUseCase,
   CreatePostByBlogIdUseCase,
   UpdatePostByBlogsAndPostsIdUseCase,
+  DeletePostByBlogsAndPostsIdUseCase,
 ];
 
 const services = [

@@ -8,8 +8,9 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
-import { LikesEntity } from './likesEntity.entity';
+import { LikesEntity } from './likes.entity';
 import { CreatePostDto } from '../../dto/createPostDto';
+import { UpdatePostByBlogsAndPostsIdCommand } from '../../../blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
 
 @Entity('Posts')
 export class PostsEntity {
@@ -53,14 +54,18 @@ export class PostsEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  extendedLikesInfo: LikesEntity;
+  extendedLikesInfo: LikesEntity[];
 
+  updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
+    this.title = updatePost.title;
+    this.shortDescription = updatePost.shortDescription;
+    this.content = updatePost.content;
+  }
   static createPost(
     user: UserEntity,
     newPostByBlogId: CreatePostDto,
     blog: BlogsEntity,
   ) {
-    // const likes = new LikesEntity();
     const post = new PostsEntity();
     post.userId = user.id;
     post.isUserBanned = false;
@@ -71,7 +76,7 @@ export class PostsEntity {
     post.blogId = blog.id;
     post.blogName = blog.name;
     post.createdAt = new Date().toISOString();
-    // post.extendedLikesInfo = likes;
+    post.extendedLikesInfo = [];
     return post;
   }
 }

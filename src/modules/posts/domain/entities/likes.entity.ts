@@ -38,6 +38,6 @@ export class LikesEntity {
     // cascade: true,
     // onDelete: 'CASCADE',
   })
-  @JoinColumn()
+  // @JoinColumn()
   post: PostsEntity;
 }

@@ -21,4 +21,10 @@ export class PostsSQLRepository {
     const newPost = PostsEntity.createPost(user, newPostByBlogId, blog);
     return this.postsTable.save(newPost);
   }
+  async findPostById(id: string): Promise<PostsEntity> {
+    return this.postsTable.findOneBy({ id });
+  }
+  async save(post: PostsEntity): Promise<PostsEntity> {
+    return this.postsTable.save(post);
+  }
 }

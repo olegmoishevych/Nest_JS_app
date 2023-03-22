@@ -167,11 +167,11 @@ export class AuthService {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '5m',
+        expiresIn: '50h',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '10m',
+        expiresIn: '100h',
         secret: JWT.jwt_secret,
       }),
     };

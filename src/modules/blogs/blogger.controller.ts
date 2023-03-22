@@ -37,6 +37,7 @@ import { BlogsEntity } from './domain/entities/blogs.entity';
 import { UpdateBlogByIdCommand } from './use-cases/updateBlogById.use-case';
 import { CreatePostByBlogIdCommand } from './use-cases/createPostByBlogId.use-case';
 import { UserEntity } from '../auth/domain/entities/user.entity';
+import { UpdatePostByBlogsAndPostsIdCommand } from './use-cases/updatePostByBlogsAndPostsId.use-case';
 
 @Controller('blogger')
 export class BloggerController {
@@ -116,14 +117,11 @@ export class BloggerController {
   async updatePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
-    @User() user: UserModel,
+    @User() user: UserEntity,
     @Body() updatePost: CreatePostDto,
   ): Promise<boolean> {
-    return this.blogsService.updatePostByBlogsAndPostsId(
-      postId,
-      blogId,
-      user.id,
-      updatePost,
+    return this.commandBus.execute(
+      new UpdatePostByBlogsAndPostsIdCommand(blogId, postId, user, updatePost),
     );
   }
 
