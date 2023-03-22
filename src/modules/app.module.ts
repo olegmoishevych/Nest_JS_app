@@ -85,6 +85,7 @@ import { PostsEntity } from './posts/domain/entities/posts.entity';
 import { LikesEntity } from './posts/domain/entities/likesEntity.entity';
 import { PostsSQLRepository } from './posts/repository/postsSQL.repository';
 import { CreatePostByBlogIdUseCase } from './blogs/use-cases/createPostByBlogId.use-case';
+import { UpdatePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -124,6 +125,7 @@ const useCases = [
   FindBlogByIdUseCase,
   UpdateBlogByIdUseCase,
   CreatePostByBlogIdUseCase,
+  UpdatePostByBlogsAndPostsIdUseCase,
 ];
 
 const services = [

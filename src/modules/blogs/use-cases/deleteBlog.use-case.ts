@@ -18,7 +18,6 @@ export class DeleteBlogUseCase implements ICommandHandler {
 
   async execute(command: DeleteBlogCommand): Promise<DeleteResult> {
     const blogById = await this.blogsRepository.findBlogById(command.id);
-    console.log('blogById', blogById);
     if (!blogById) throw new NotFoundException(`User with not found`);
     if (blogById.blogOwnerInfo.id !== command.userId)
       throw new ForbiddenException([]);
