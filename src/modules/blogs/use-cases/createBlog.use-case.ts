@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsDto } from '../dto/blogsDto';
-import { UserModel } from '../../users/schemas/users.schema';
-import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
-import { BlogsEntity } from '../domain/entities/blogs.entity';
-import { BlogsViewModel } from '../schemas/blogs.schema';
+import { Injectable } from "@nestjs/common";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { BlogsDto } from "../dto/blogsDto";
+import { UserModel } from "../../users/schemas/users.schema";
+import { BlogsSqlRepository } from "../repository/blogs.sql.repository";
+import { BlogsViewModel } from "../schemas/blogs.schema";
 
 @Injectable()
 export class CreateBlogCommand {

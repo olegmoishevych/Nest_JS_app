@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -22,7 +23,7 @@ export class BlogsEntity {
   createdAt: string;
   @Column()
   isMembership: boolean;
-  @OneToOne(() => UserEntity, (u) => u.blog, {
+  @ManyToOne(() => UserEntity, (u) => u.blog, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
