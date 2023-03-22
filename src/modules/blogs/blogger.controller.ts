@@ -38,6 +38,7 @@ import { UpdateBlogByIdCommand } from './use-cases/updateBlogById.use-case';
 import { CreatePostByBlogIdCommand } from './use-cases/createPostByBlogId.use-case';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { UpdatePostByBlogsAndPostsIdCommand } from './use-cases/updatePostByBlogsAndPostsId.use-case';
+import { DeletePostByBlogsAndPostsIdCommand } from './use-cases/deletePostByBlogsAndPostsId.use-case';
 
 @Controller('blogger')
 export class BloggerController {
@@ -131,13 +132,11 @@ export class BloggerController {
   async deletePostByBlogsAndPostsId(
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
-    @User() user: UserModel,
-  ): Promise<boolean> {
-    return this.blogsService.deletePostByBlogsAndPostsId(
-      postId,
-      blogId,
-      user.id,
-    );
+    @User() user: UserEntity,
+  ): Promise<DeleteResult> {
+    return this.commandBus.execute(
+      new DeletePostByBlogsAndPostsIdCommand(blogId, postId, user),
+    ); // tyt
   }
 
   @UseGuards(JwtAuthGuard)
