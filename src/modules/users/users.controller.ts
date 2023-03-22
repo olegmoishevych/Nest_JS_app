@@ -10,26 +10,25 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../service/users.service';
-import { BanBlogUserDto, BanUserDto } from '../dto/userDto';
-import { UserModel, UsersModel_For_DB } from '../schemas/users.schema';
+import { UsersService } from './service/users.service';
+import { BanBlogUserDto, BanUserDto } from './dto/userDto';
+import { UserModel, UsersModel_For_DB } from './schemas/users.schema';
 import {
   BlogPaginationDto,
   UserPaginationDtoWithBanStatusDto,
-} from '../../helpers/dto/pagination.dto';
-import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
-import { BlogsViewModel } from '../../blogs/schemas/blogs.schema';
-import { BlogsRepository } from '../../blogs/repository/blogs.repository';
-import { BlogsService } from '../../blogs/service/blogs.service';
+} from '../helpers/dto/pagination.dto';
+import { PaginationViewModel } from '../helpers/pagination/pagination-view-model';
+import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
+import { BlogsViewModel } from '../blogs/schemas/blogs.schema';
+import { BlogsService } from '../blogs/service/blogs.service';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateUserCommand } from '../use-cases/create-user.use-case';
-import { AuthDto } from '../../auth/dto/auth.dto';
-import { DeleteUserCommand } from '../use-cases/delete-user.use-case';
+import { CreateUserCommand } from './use-cases/create-user.use-case';
+import { AuthDto } from '../auth/dto/auth.dto';
+import { DeleteUserCommand } from './use-cases/delete-user.use-case';
 import { DeleteResult } from 'typeorm';
-import { UsersSqlRepository } from '../repository/users.sql.repository';
-import { BlogsSqlRepository } from '../../blogs/repository/blogs.sql.repository';
-import { BlogsSQLqueryRepository } from '../../blogs/repository/blogs.SQLquery.repository';
+import { UsersSqlRepository } from './repository/users.sql.repository';
+import { BlogsSqlRepository } from '../blogs/repository/blogs.sql.repository';
+import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repository';
 
 @Controller('sa')
 export class UsersController {

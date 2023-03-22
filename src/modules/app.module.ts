@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BlogsRepository } from './blogs/repository/blogs.repository';
 import { BlogsService } from './blogs/service/blogs.service';
-import { UsersController } from './users/controller/users.controller';
+import { UsersController } from './users/users.controller';
 import { UsersService } from './users/service/users.service';
 import { UsersRepository } from './users/repository/users.repository';
 import { TestingRepository } from './testing/repository/testing.repository';
@@ -89,6 +89,7 @@ import { UpdatePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/updatePost
 import { DeletePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/deletePostByBlogsAndPostsId.use-case';
 import { BanUserByIdUseCase } from './blogs/use-cases/banUserById.use-case';
 import { UserBannedEntity } from './blogs/domain/entities/user-banned.entity';
+import { UserBannedSQLRepository } from './blogs/repository/user-banned.SQL.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -160,6 +161,7 @@ const repositories = [
   BlogsSqlRepository,
   BlogsSQLqueryRepository,
   PostsSQLRepository,
+  UserBannedSQLRepository,
 ];
 
 const entities = [

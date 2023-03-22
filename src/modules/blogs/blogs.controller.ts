@@ -9,7 +9,6 @@ import { BlogsViewModel } from './schemas/blogs.schema';
 import { Token } from '../decorators/token.decorator';
 import { PostsViewModal } from '../posts/schemas/posts.schema';
 import { PostsService } from '../posts/service/posts.service';
-import { BlogsRepository } from './repository/blogs.repository';
 import { BlogsSqlRepository } from './repository/blogs.sql.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { FindBlogByIdCommand } from './use-cases/findBlogById.use-case';
@@ -29,6 +28,7 @@ export class BlogsController {
     // : Promise<PaginationViewModel<BlogsViewModel[]>> {
     // return this.blogsRepository.getBlogsForPublic(paginationDto);
   }
+
   @Get('/:blogId/posts')
   async findPostByBlogId(
     @Param('blogId') blogId: string,
@@ -37,6 +37,7 @@ export class BlogsController {
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     return this.postsService.findPostByBlogId(blogId, paginationDto, userId);
   }
+
   @Get('/:id')
   async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
     return this.command.execute(new FindBlogByIdCommand(id));

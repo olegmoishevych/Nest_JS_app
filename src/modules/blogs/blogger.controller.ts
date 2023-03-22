@@ -39,6 +39,7 @@ import { CreatePostByBlogIdCommand } from './use-cases/createPostByBlogId.use-ca
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { UpdatePostByBlogsAndPostsIdCommand } from './use-cases/updatePostByBlogsAndPostsId.use-case';
 import { DeletePostByBlogsAndPostsIdCommand } from './use-cases/deletePostByBlogsAndPostsId.use-case';
+import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
 
 @Controller('blogger')
 export class BloggerController {
@@ -147,7 +148,10 @@ export class BloggerController {
     @Body() banUserModal: BanUserForBloggerDto,
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
-    return this.blogsService.banUserById(id, banUserModal, user.id);
+    // return this.blogsService.banUserById(id, banUserModal, user.id);
+    return this.commandBus.execute(
+      new BanUserByIdCommand(id, banUserModal, user),
+    ); // tyt
   }
 
   @UseGuards(JwtAuthGuard)

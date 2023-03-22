@@ -6,7 +6,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { BlogsRepository } from '../repository/blogs.repository';
+import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
 
 export function BlogIsExist(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
@@ -22,17 +22,12 @@ export function BlogIsExist(validationOptions?: ValidationOptions) {
 @ValidatorConstraint({ name: 'BlogIsExist', async: false })
 @Injectable()
 export class BlogIsExistRule implements ValidatorConstraintInterface {
-  constructor(private blogRepository: BlogsRepository) {}
+  constructor(private blogRepository: BlogsSqlRepository) {}
 
-  async validate(value: string) {
-    try {
-      const blog = await this.blogRepository.findBlogWithUserInfoById(value);
-      if (blog) {
-        return true;
-      } else return false;
-    } catch (e) {
-      return false;
-    }
+  async validate(id: string) {
+    const blog = await this.blogRepository.findBlogById(id);
+    if (!blog) return false;
+    return true;
   }
 
   defaultMessage(args: ValidationArguments) {

@@ -8,8 +8,9 @@ import { BanUserForBloggerDto } from '../dto/bloggerDto';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
 import { UsersSqlRepository } from '../../users/repository/users.sql.repository';
 import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
-import { BlogsUserViewModelFor_DB } from '../schemas/user-banned.schema';
-import { BlogsEntity } from '../domain/entities/blogs.entity';
+import { UserBannedSQLRepository } from '../repository/user-banned.SQL.repository';
+import { UserBannedEntity } from '../domain/entities/user-banned.entity';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class BanUserByIdCommand {
@@ -25,8 +26,12 @@ export class BanUserByIdUseCase implements ICommandHandler {
   constructor(
     public usersRepo: UsersSqlRepository,
     public blogsRepo: BlogsSqlRepository,
+    public bannedUserRepo: UserBannedSQLRepository,
   ) {}
-  async execute(command: BanUserByIdCommand) {
+
+  async execute(
+    command: BanUserByIdCommand,
+  ): Promise<UserBannedEntity | DeleteResult> {
     const user = await this.usersRepo.findUserById(command.id);
     if (!user) throw new NotFoundException(['User not found']);
     const blogWithOwner = await this.blogsRepo.findBlogById(
@@ -35,18 +40,24 @@ export class BanUserByIdUseCase implements ICommandHandler {
     if (!blogWithOwner) throw new NotFoundException(['Blog not found']);
     if (blogWithOwner.blogOwnerInfo.id !== command.user.id)
       throw new ForbiddenException([]); // 403 error
-    // const bannedUser = new BlogsEntity();
-    // bannedUser.ban(command.banUserModal.blogId, command.banUserModal);
-
-    // const bannedUser: BlogsUserViewModelFor_DB = {
-    //   id: id,
-    //   login: user.login,
-    //   blogId: banUserModal.blogId,
-    //   banInfo: {
-    //     isBanned: banUserModal.isBanned,
-    //     banDate: new Date().toISOString(),
-    //     banReason: banUserModal.banReason,
-    //   },
-    // };
+    const bannedUser = await this.bannedUserRepo.findBannedUserById(
+      command.banUserModal.blogId,
+      command.id,
+    );
+    console.log('bannedUser', bannedUser);
+    if (!bannedUser && command.banUserModal.isBanned === true) {
+      return this.bannedUserRepo.createBannedUser(
+        command.id,
+        blogWithOwner,
+        command.banUserModal,
+        command.user,
+      );
+    }
+    if (bannedUser && command.banUserModal.isBanned === false) {
+      return this.bannedUserRepo.deleteBannedUser(
+        command.banUserModal.blogId,
+        command.id,
+      );
+    }
   }
 }
