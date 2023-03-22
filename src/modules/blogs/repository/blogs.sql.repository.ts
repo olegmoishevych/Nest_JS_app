@@ -32,7 +32,13 @@ export class BlogsSqlRepository {
   async getBlogsForSA(paginationDto: BlogPaginationDto) {
     const builder = this.blogsTable
       .createQueryBuilder('b')
+      .leftJoinAndSelect('b.blogOwnerInfo', 'blogOwnerInfo')
       .leftJoinAndSelect('b.banInfo', 'banInfo')
+      .addSelect('blogOwnerInfo.email', 'blogOwnerInfo.email')
+      .addSelect('blogOwnerInfo.createdAt', 'blogOwnerInfo.createdAt')
+      .addSelect('blogOwnerInfo.passwordHash', 'blogOwnerInfo.passwordHash')
+      .addSelect('banInfo.id', 'banInfo.id')
+      .addSelect('banInfo.banReason', 'banInfo.banReason')
       .orderBy(
         `b.${paginationDto.sortBy}`,
         paginationDto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
