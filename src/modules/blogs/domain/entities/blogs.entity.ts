@@ -11,6 +11,8 @@ import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { BlogsDto } from '../../dto/blogsDto';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
+import { BanUserForBloggerDto } from '../../dto/bloggerDto';
+import { UserBannedEntity } from './user-banned.entity';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -46,7 +48,19 @@ export class BlogsEntity {
     // onDelete: 'CASCADE',
   })
   post: PostsEntity;
+  @OneToMany(() => UserBannedEntity, (u) => u.blog, {
+    // eager: true,
+    // cascade: true,
+    // onDelete: 'CASCADE',
+  })
+  UserBanned: UserBannedEntity;
 
+  // ban(blogId: string, banUserModal: BanUserForBloggerDto) {
+  //   // this.id = blogId
+  //   this.banInfo.isBanned = banUserModal.isBanned;
+  //   this.banInfo.banDate = new Date().toISOString();
+  //   this.banInfo.banReason = banUserModal.banReason;
+  // }
   updateBlog(updateBlogType: BlogsDto) {
     const updatedBlog = (this.name = updateBlogType.name);
     (this.description = updateBlogType.description),

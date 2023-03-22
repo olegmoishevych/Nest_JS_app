@@ -145,7 +145,7 @@ export class BloggerController {
   async banUserById(
     @Param('id') id: string,
     @Body() banUserModal: BanUserForBloggerDto,
-    @User() user: UserModel,
+    @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
     return this.blogsService.banUserById(id, banUserModal, user.id);
   }

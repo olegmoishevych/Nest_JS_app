@@ -87,6 +87,8 @@ import { PostsSQLRepository } from './posts/repository/postsSQL.repository';
 import { CreatePostByBlogIdUseCase } from './blogs/use-cases/createPostByBlogId.use-case';
 import { UpdatePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
 import { DeletePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/deletePostByBlogsAndPostsId.use-case';
+import { BanUserByIdUseCase } from './blogs/use-cases/banUserById.use-case';
+import { UserBannedEntity } from './blogs/domain/entities/user-banned.entity';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -128,6 +130,7 @@ const useCases = [
   CreatePostByBlogIdUseCase,
   UpdatePostByBlogsAndPostsIdUseCase,
   DeletePostByBlogsAndPostsIdUseCase,
+  BanUserByIdUseCase,
 ];
 
 const services = [
@@ -168,6 +171,7 @@ const entities = [
   BanInfoEntity,
   PostsEntity,
   LikesEntity,
+  UserBannedEntity,
 ];
 
 const throttlerGuard = {
