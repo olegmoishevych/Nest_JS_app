@@ -35,6 +35,8 @@ import { DeleteBlogCommand } from './use-cases/deleteBlog.use-case';
 import { DeleteResult } from 'typeorm';
 import { BlogsEntity } from './domain/entities/blogs.entity';
 import { UpdateBlogByIdCommand } from './use-cases/updateBlogById.use-case';
+import { CreatePostByBlogIdCommand } from './use-cases/createPostByBlogId.use-case';
+import { UserEntity } from '../auth/domain/entities/user.entity';
 
 @Controller('blogger')
 export class BloggerController {
@@ -101,12 +103,10 @@ export class BloggerController {
   async createPostByBlogId(
     @Param('blogId') blogId: string,
     @Body() newPostByBlogId: CreatePostDto,
-    @User() user: UserModel,
+    @User() user: UserEntity,
   ): Promise<PostsViewModal> {
-    return this.blogsService.createPostByBlogId(
-      blogId,
-      newPostByBlogId,
-      user.id,
+    return this.commandBus.execute(
+      new CreatePostByBlogIdCommand(blogId, newPostByBlogId, user),
     );
   }
 

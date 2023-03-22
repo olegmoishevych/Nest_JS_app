@@ -60,7 +60,7 @@ export class PostsEntity {
     newPostByBlogId: CreatePostDto,
     blog: BlogsEntity,
   ) {
-    const likes = new LikesEntity();
+    // const likes = new LikesEntity();
     const post = new PostsEntity();
     post.userId = user.id;
     post.isUserBanned = false;
@@ -71,7 +71,7 @@ export class PostsEntity {
     post.blogId = blog.id;
     post.blogName = blog.name;
     post.createdAt = new Date().toISOString();
-    post.extendedLikesInfo = likes;
+    // post.extendedLikesInfo = likes;
     return post;
   }
 }
