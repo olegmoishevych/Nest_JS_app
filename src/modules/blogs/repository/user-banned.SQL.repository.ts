@@ -18,15 +18,15 @@ export class UserBannedSQLRepository {
   ): Promise<UserBannedEntity> {
     return this.userBannedTable.findOneBy({ blogId });
   }
-  async createBannedUser(
-    id: string,
-    blog: BlogsEntity,
-    banUserModal: BanUserForBloggerDto,
-    user: UserEntity,
-  ): Promise<UserBannedEntity> {
-    const bannedUser = blog.createBannedUser(id, banUserModal, user);
-    return this.userBannedTable.save(bannedUser);
-  }
+  // async createBannedUser(
+  //   id: string,
+  //   blog: BlogsEntity,
+  //   banUserModal: BanUserForBloggerDto,
+  //   user: UserEntity,
+  // ): Promise<UserBannedEntity> {
+  //   const bannedUser = blog.createBannedUser(id, banUserModal, user);
+  //   return this.userBannedTable.save(bannedUser);
+  // }
   async deleteBannedUser(
     blogId: string,
     userId: string,

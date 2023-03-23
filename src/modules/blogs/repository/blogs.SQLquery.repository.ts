@@ -13,6 +13,8 @@ export class BlogsSQLqueryRepository {
     private blogsTable: Repository<BlogsEntity>,
   ) {}
 
+  async getBlogsForPublic() {}
+
   async getBlogsForSA(
     paginationDto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {

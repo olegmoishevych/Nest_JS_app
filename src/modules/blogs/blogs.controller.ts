@@ -30,7 +30,7 @@ export class BlogsController {
   }
 
   @Get('/:blogId/posts')
-  async findPostByBlogId(
+  async findPostsByBlogId(
     @Param('blogId') blogId: string,
     @Query() paginationDto: PaginationDto,
     @Token() userId: string,

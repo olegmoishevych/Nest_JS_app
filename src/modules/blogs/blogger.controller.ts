@@ -84,7 +84,6 @@ export class BloggerController {
     @User() user: UserModel,
     @Param('id') id: string,
   ): Promise<DeleteResult> {
-    // return this.blogsService.deleteBlogById(id, user.id);
     return this.commandBus.execute(new DeleteBlogCommand(id, user.id));
   }
 
@@ -137,7 +136,7 @@ export class BloggerController {
   ): Promise<DeleteResult> {
     return this.commandBus.execute(
       new DeletePostByBlogsAndPostsIdCommand(blogId, postId, user),
-    ); // tyt
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -150,7 +149,7 @@ export class BloggerController {
   ): Promise<BlogsUserViewModel> {
     // return this.blogsService.banUserById(id, banUserModal, user.id);
     return this.commandBus.execute(
-      new BanUserByIdCommand(id, banUserModal, user),
+      new BanUserByIdCommand(id, banUserModal, user), // не доделал
     ); // tyt
   }
 
