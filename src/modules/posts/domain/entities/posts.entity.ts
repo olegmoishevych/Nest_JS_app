@@ -11,6 +11,7 @@ import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { LikesEntity } from './likes.entity';
 import { CreatePostDto } from '../../dto/createPostDto';
 import { UpdatePostByBlogsAndPostsIdCommand } from '../../../blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
+import { CommentsEntity } from '../../../comments/domain/comments.entity';
 
 @Entity('Posts')
 export class PostsEntity {
@@ -55,6 +56,13 @@ export class PostsEntity {
   })
   @JoinColumn()
   extendedLikesInfo: LikesEntity[];
+  @OneToMany(() => CommentsEntity, (c) => c.postInfo, {
+    // eager: true,
+    // cascade: true,
+    // onDelete: 'CASCADE',
+  })
+  // @JoinColumn()
+  comments: CommentsEntity;
 
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;

@@ -12,7 +12,7 @@ import { PostsRepository } from './posts/repository/posts.repository';
 import { PostsController } from './posts/posts.controller';
 import { CommentsService } from './comments/service/comments.service';
 import { CommentsRepository } from './comments/repository/comments.repository';
-import { CommentsController } from './comments/controller/comments.controller';
+import { CommentsController } from './comments/comments.controller';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthController } from './auth/auth.controller';
@@ -95,6 +95,9 @@ import { GetAlldevicesUseCase } from './devices/use-cases/getAlldevices.use-case
 import { DevicesSQLRepository } from './devices/repository/devicesSQL.repository';
 import { DeleteAlldevicesUseCase } from './devices/use-cases/deleteAlldevies.use-case';
 import { DeleteAllDevicesByDeviceIdUseCase } from './devices/use-cases/deleteAllDevicesByDeviceId.use-case';
+import { CommentsEntity } from './comments/domain/comments.entity';
+import { CommentatorInfoEntity } from './comments/domain/commentatorInfo.entity';
+import { CommentsSQLRepository } from './comments/repository/commentsSQL.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -172,6 +175,7 @@ const repositories = [
   UserBannedSQLRepository,
   PostsSQLRepository,
   DevicesSQLRepository,
+  CommentsSQLRepository,
 ];
 
 const entities = [
@@ -185,6 +189,8 @@ const entities = [
   LikesEntity,
   UserBannedEntity,
   DevicesEntity,
+  CommentsEntity,
+  CommentatorInfoEntity,
 ];
 
 const throttlerGuard = {

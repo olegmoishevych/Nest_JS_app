@@ -9,6 +9,7 @@ import { LikeStatusEnum } from '../../../comments/schema/likeStatus.schema';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { PostsEntity } from './posts.entity';
+import { CommentsEntity } from '../../../comments/domain/comments.entity';
 
 @Entity('Likes')
 export class LikesEntity {
@@ -40,4 +41,11 @@ export class LikesEntity {
   })
   // @JoinColumn()
   post: PostsEntity;
+  @ManyToOne(() => CommentsEntity, (c) => c.likesInfo, {
+    // eager: true,
+    // cascade: true,
+    // onDelete: 'CASCADE',
+  })
+  // @JoinColumn()
+  comments: CommentsEntity;
 }

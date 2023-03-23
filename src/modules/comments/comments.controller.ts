@@ -8,14 +8,14 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CommentsService } from '../service/comments.service';
-import { CommentsViewModal } from '../schema/comments.schema';
-import { User } from '../../auth/decorator/request.decorator';
-import { UserModel } from '../../users/schemas/users.schema';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CommentsDto } from '../dto/comments.dto';
-import { LikeStatusDto } from '../dto/likeStatus.dto';
-import { Token } from '../../decorators/token.decorator';
+import { CommentsService } from './service/comments.service';
+import { CommentsViewModal } from './schema/comments.schema';
+import { User } from '../auth/decorator/request.decorator';
+import { UserModel } from '../users/schemas/users.schema';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CommentsDto } from './dto/comments.dto';
+import { LikeStatusDto } from './dto/likeStatus.dto';
+import { Token } from '../decorators/token.decorator';
 
 @Controller('comments')
 export class CommentsController {
