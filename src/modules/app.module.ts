@@ -93,6 +93,7 @@ import { UserBannedSQLRepository } from './blogs/repository/user-banned.SQL.repo
 import { DevicesEntity } from './devices/domain/entities/devices.entity';
 import { GetAlldevicesUseCase } from './devices/use-cases/getAlldevices.use-case';
 import { DevicesSQLRepository } from './devices/repository/devicesSQL.repository';
+import { DeleteAlldevicesUseCase } from './devices/use-cases/deleteAlldevies.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -136,6 +137,7 @@ const useCases = [
   DeletePostByBlogsAndPostsIdUseCase,
   BanUserByIdUseCase,
   GetAlldevicesUseCase,
+  DeleteAlldevicesUseCase,
 ];
 
 const services = [

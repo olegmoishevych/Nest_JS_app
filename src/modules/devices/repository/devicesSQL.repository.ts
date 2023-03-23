@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Not, Repository } from 'typeorm';
 import { DevicesEntity } from '../domain/entities/devices.entity';
 
 @Injectable()
@@ -26,11 +26,19 @@ export class DevicesSQLRepository {
     );
     return this.devicesTable.save(userSessionForDb);
   }
+
   async findAllUserDevicesByUserId(userId): Promise<DevicesEntity[]> {
     return this.devicesTable
       .createQueryBuilder('d')
       .select(['d.ip', 'd.title', 'd.lastActiveDate', 'd.deviceId'])
       .where('d.userId = :userId', { userId })
       .getMany();
+  }
+
+  async deleteAllDevicesById(
+    userId: string,
+    currentDeviceId: string,
+  ): Promise<DeleteResult> {
+    return this.devicesTable.delete({ userId, deviceId: Not(currentDeviceId) });
   }
 }
