@@ -9,6 +9,8 @@ import { AuthService } from '../service/auth.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { IpDto } from '../dto/api.dto';
 import { DevicesModal } from '../../devices/schemas/devices.schemas';
+import { DevicesEntity } from '../../devices/domain/entities/devices.entity';
+import { DevicesSQLRepository } from '../../devices/repository/devicesSQL.repository';
 
 @Injectable()
 export class RefreshTokenCommand {
@@ -19,7 +21,7 @@ export class RefreshTokenCommand {
 export class RefreshTokenUseCase {
   constructor(
     public authService: AuthService,
-    public devicesRepository: DevicesRepository,
+    public devicesRepository: DevicesSQLRepository,
   ) {}
 
   async execute(
@@ -47,14 +49,15 @@ export class RefreshTokenUseCase {
       command.refreshToken,
     );
     if (!lastActiveDate) throw new UnauthorizedException([]);
-    const newSession = new DevicesModal(
+    const newSession = new DevicesEntity();
+    newSession.updateUserSessionById(
       command.ipDto.ip,
       command.ipDto.title,
       lastActiveDate,
       tokenVerify.deviceId,
       tokenVerify.userId,
     );
-    await this.devicesRepository.updateUserSessionById({ ...newSession });
+    await this.devicesRepository.saveResult(newSession);
     return tokensPair;
   }
 }

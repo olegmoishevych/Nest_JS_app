@@ -28,6 +28,19 @@ export class DevicesEntity {
   user: UserEntity;
   @Column()
   userId: string;
+  updateUserSessionById(
+    ip: string,
+    title: string,
+    lastActiveDate: string,
+    deviceId: string,
+    userId: string,
+  ) {
+    (this.ip = ip),
+      (this.title = title),
+      (this.lastActiveDate = lastActiveDate),
+      (this.deviceId = deviceId),
+      (this.userId = userId);
+  }
   static createUserSession(
     ip: string,
     title: string,

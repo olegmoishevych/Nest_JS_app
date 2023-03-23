@@ -1,5 +1,4 @@
 import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
-import { DevicesService } from './service/devices.service';
 import { Cookies } from '../auth/decorator/cookies.decorator';
 import { DevicesEntity } from './domain/entities/devices.entity';
 import { CommandBus } from '@nestjs/cqrs';
@@ -10,10 +9,7 @@ import { DeleteAllDevicesByDeviceIdCommand } from './use-cases/deleteAllDevicesB
 
 @Controller('security')
 export class DevicesController {
-  constructor(
-    public devicesService: DevicesService,
-    public command: CommandBus,
-  ) {}
+  constructor(public command: CommandBus) {}
 
   @Get('/devices')
   async getAllDevices(@Cookies() cookies): Promise<DevicesEntity[]> {

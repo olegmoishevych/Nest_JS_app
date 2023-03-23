@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { AuthService } from '../service/auth.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
+import { DevicesSQLRepository } from '../../devices/repository/devicesSQL.repository';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class LogoutCommand {
@@ -12,10 +14,10 @@ export class LogoutCommand {
 export class LogoutUseCase {
   constructor(
     public authService: AuthService,
-    public devicesRepository: DevicesRepository,
+    public devicesRepository: DevicesSQLRepository,
   ) {}
 
-  async execute(command: LogoutCommand): Promise<boolean> {
+  async execute(command: LogoutCommand): Promise<DeleteResult> {
     if (!command.refreshToken)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const lastActiveDate = this.authService.getLastActiveDateFromRefreshToken(
@@ -36,7 +38,7 @@ export class LogoutUseCase {
       );
     if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    return this.devicesRepository.deleteSessionByUserId(
+    return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
       actualToken.deviceId,
       actualToken.userId,
     );

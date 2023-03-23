@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Not, Repository } from 'typeorm';
 import { DevicesEntity } from '../domain/entities/devices.entity';
+import { DevicesModal } from '../schemas/devices.schemas';
 
 @Injectable()
 export class DevicesSQLRepository {
@@ -49,5 +50,15 @@ export class DevicesSQLRepository {
     deviceId: string,
   ): Promise<DeleteResult> {
     return this.devicesTable.delete({ userId, deviceId });
+  }
+  async findDeviceByUserIdDeviceIdAndLastActiveDate(
+    userId: string,
+    deviceId: string,
+    lastActiveDate: string,
+  ): Promise<DevicesEntity> {
+    return this.devicesTable.findOneBy({ userId, deviceId, lastActiveDate });
+  }
+  async saveResult(newSession: DevicesEntity): Promise<DevicesEntity> {
+    return this.devicesTable.save(newSession);
   }
 }
