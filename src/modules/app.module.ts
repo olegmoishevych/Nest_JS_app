@@ -162,6 +162,7 @@ const repositories = [
   BlogsSQLqueryRepository,
   PostsSQLRepository,
   UserBannedSQLRepository,
+  PostsSQLRepository,
 ];
 
 const entities = [

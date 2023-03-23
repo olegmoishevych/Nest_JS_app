@@ -28,7 +28,7 @@ export class BlogsController {
   async findAllBlogsForUsers(
     @Query() query: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsSQLquery.getBlogsForPublic(query);
+    return this.blogsSQLquery.getBlogsForPublic(query); // сделано
   }
 
   @Get('/:blogId/posts')
@@ -37,11 +37,11 @@ export class BlogsController {
     @Query() paginationDto: PaginationDto,
     @Token() userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPostByBlogId(blogId, paginationDto, userId);
+    return this.postsService.findPostByBlogId(blogId, paginationDto, userId); // это не сделано
   }
 
   @Get('/:id')
   async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
-    return this.command.execute(new FindBlogByIdCommand(id));
+    return this.command.execute(new FindBlogByIdCommand(id)); // сделано
   }
 }

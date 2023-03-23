@@ -147,10 +147,9 @@ export class BloggerController {
     @Body() banUserModal: BanUserForBloggerDto,
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
-    // return this.blogsService.banUserById(id, banUserModal, user.id);
     return this.commandBus.execute(
       new BanUserByIdCommand(id, banUserModal, user), // не доделал
-    ); // tyt
+    );
   }
 
   @UseGuards(JwtAuthGuard)
