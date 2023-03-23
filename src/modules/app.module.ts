@@ -99,6 +99,8 @@ import { CommentsEntity } from './comments/domain/comments.entity';
 import { CommentatorInfoEntity } from './comments/domain/commentatorInfo.entity';
 import { CommentsSQLRepository } from './comments/repository/commentsSQL.repository';
 import { CreateCommentForPostUseCase } from './comments/use-cases/createCommentForPost.use-case';
+import { CreateLikeForPostUseCase } from './posts/use-cases/createLikeForPost.use-case';
+import { LikeStatusSQLRepository } from './posts/repository/likeStatusSQL.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -145,6 +147,7 @@ const useCases = [
   DeleteAlldevicesUseCase,
   DeleteAllDevicesByDeviceIdUseCase,
   CreateCommentForPostUseCase,
+  CreateLikeForPostUseCase,
 ];
 
 const services = [
@@ -178,6 +181,7 @@ const repositories = [
   PostsSQLRepository,
   DevicesSQLRepository,
   CommentsSQLRepository,
+  LikeStatusSQLRepository,
 ];
 
 const entities = [

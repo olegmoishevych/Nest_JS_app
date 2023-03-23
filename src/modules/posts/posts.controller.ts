@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './service/posts.service';
-import { CreatePostDtoWithBlogId, LikeStatusDto } from './dto/createPostDto';
+import { LikeStatusDto } from './dto/createPostDto';
 import { PostsViewModal } from './schemas/posts.schema';
 import { PaginationViewModel } from '../helpers/pagination/pagination-view-model';
 import { PaginationDto } from '../helpers/dto/pagination.dto';
@@ -19,13 +19,10 @@ import { CommentsViewModal } from '../comments/schema/comments.schema';
 import { CommentsDto } from '../comments/dto/comments.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../auth/decorator/request.decorator';
-import { UserModel } from '../users/schemas/users.schema';
 import { Token } from '../decorators/token.decorator';
-import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 import { PostsRepository } from './repository/posts.repository';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { CommandBus } from '@nestjs/cqrs';
-import { UpdatePostByIdCommand } from './use-cases/updatePostById.use-case';
 import { CreateCommentForPostCommand } from '../comments/use-cases/createCommentForPost.use-case';
 
 @Controller('posts')
@@ -96,14 +93,14 @@ export class PostsController {
   @Put('/:postId/like-status')
   @HttpCode(204)
   async updateLikeStatusByPostId(
-    @User() user,
+    @User() user: UserEntity,
     @Param('postId') postId: string,
-    @Body() likeStatus: LikeStatusDto,
-  ): Promise<boolean> {
-    return this.postsService.findPostByIdAndUpdateLikeStatus(
-      postId,
-      likeStatus.likeStatus,
-      user,
-    );
+    @Body() dto: LikeStatusDto,
+  ): Promise<any> {
+    // return this.postsService.findPostByIdAndUpdateLikeStatus(
+    //   postId,
+    //   dto.likeStatus,
+    //   user,
+    // );
   }
 }

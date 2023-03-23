@@ -5,11 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { LikeStatusEnum } from '../../../comments/schema/likeStatus.schema';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { PostsEntity } from './posts.entity';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
+
+export type LikeStatuses = 'Like' | 'Dislike' | 'None';
 
 @Entity('Likes')
 export class LikesEntity {
@@ -29,11 +30,11 @@ export class LikesEntity {
   @Column()
   userId: string;
   @Column()
-  login: string;
+  userLogin: string;
   @Column()
-  addedAt: Date;
+  addedAt: string;
   @Column()
-  likeStatus: LikeStatusEnum;
+  likeStatus: string;
   @ManyToOne(() => PostsEntity, (p) => p.extendedLikesInfo, {
     // eager: true,
     // cascade: true,

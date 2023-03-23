@@ -9,8 +9,7 @@ import {
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { LikesEntity } from './likes.entity';
-import { CreatePostDto } from '../../dto/createPostDto';
-import { UpdatePostByBlogsAndPostsIdCommand } from '../../../blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
+import { CreatePostDto, LikeStatusDto } from '../../dto/createPostDto';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
 
 @Entity('Posts')
@@ -64,11 +63,22 @@ export class PostsEntity {
   // @JoinColumn()
   comments: CommentsEntity;
 
+  createLike(postId: string, user: UserEntity, dto: LikeStatusDto) {
+    const likeForDb = new LikesEntity();
+    likeForDb.parentId = postId;
+    likeForDb.userId = user.id;
+    likeForDb.userLogin = user.login;
+    likeForDb.isUserBanned = false;
+    likeForDb.likeStatus = dto.likeStatus;
+    likeForDb.addedAt = new Date().toISOString();
+  }
+
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;
     this.shortDescription = updatePost.shortDescription;
     this.content = updatePost.content;
   }
+
   static createPost(
     user: UserEntity,
     newPostByBlogId: CreatePostDto,
