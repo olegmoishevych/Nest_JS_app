@@ -22,7 +22,6 @@ export class DevicesController {
   @Delete('/devices')
   @HttpCode(204)
   async deleteAllDevices(@Cookies() cookies): Promise<DeleteResult> {
-    // return this.devicesService.deleteAllDevices(cookies.refreshToken);
     return this.command.execute(
       new DeleteAlldevicesCommand(cookies.refreshToken),
     );

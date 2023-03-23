@@ -94,6 +94,7 @@ import { DevicesEntity } from './devices/domain/entities/devices.entity';
 import { GetAlldevicesUseCase } from './devices/use-cases/getAlldevices.use-case';
 import { DevicesSQLRepository } from './devices/repository/devicesSQL.repository';
 import { DeleteAlldevicesUseCase } from './devices/use-cases/deleteAlldevies.use-case';
+import { DeleteAllDevicesByDeviceIdUseCase } from './devices/use-cases/deleteAllDevicesByDeviceId.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -138,6 +139,7 @@ const useCases = [
   BanUserByIdUseCase,
   GetAlldevicesUseCase,
   DeleteAlldevicesUseCase,
+  DeleteAllDevicesByDeviceIdUseCase,
 ];
 
 const services = [
