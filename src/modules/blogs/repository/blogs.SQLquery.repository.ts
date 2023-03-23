@@ -13,7 +13,35 @@ export class BlogsSQLqueryRepository {
     private blogsTable: Repository<BlogsEntity>,
   ) {}
 
-  async getBlogsForPublic() {}
+  async getBlogsForPublic(
+    query: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    const builder = this.blogsTable
+      .createQueryBuilder('blogs')
+      // .leftJoinAndSelect('b.banInfo', 'banInfo')
+      // .addSelect('b.banInfo', 'b.banInfo')
+      .orderBy(
+        `blogs.${query.sortBy}`,
+        query.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+      );
+    // .where('banInfo.isBanned = false');
+    if (query.searchNameTerm) {
+      builder.where('blogs.name ILIKE :name', {
+        name: `%${query.searchNameTerm}%`,
+      });
+    }
+    const [blogs, total] = await builder
+      .take(query.pageSize)
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .getManyAndCount();
+    return {
+      pagesCount: Math.ceil(total / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: total,
+      items: blogs,
+    };
+  }
 
   async getBlogsForSA(
     paginationDto: BlogPaginationDto,

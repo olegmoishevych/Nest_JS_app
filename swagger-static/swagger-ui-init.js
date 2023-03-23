@@ -783,7 +783,7 @@ window.onload = function() {
       },
       "/api/blogs/{blogId}/posts": {
         "get": {
-          "operationId": "BlogsController_findPostByBlogId",
+          "operationId": "BlogsController_findPostsByBlogId",
           "parameters": [
             {
               "name": "blogId",

@@ -12,21 +12,23 @@ import { PostsService } from '../posts/service/posts.service';
 import { BlogsSqlRepository } from './repository/blogs.sql.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { FindBlogByIdCommand } from './use-cases/findBlogById.use-case';
+import { BlogsSQLqueryRepository } from './repository/blogs.SQLquery.repository';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private blogsService: BlogsService,
-    // private blogsRepository: BlogsRepository,
     private blogsRepository: BlogsSqlRepository,
+    private blogsSQLquery: BlogsSQLqueryRepository,
     private command: CommandBus,
     private postsService: PostsService,
   ) {}
 
   @Get('/')
-  async findAllBlogsForUsers(@Query() paginationDto: BlogPaginationDto) {
-    // : Promise<PaginationViewModel<BlogsViewModel[]>> {
-    // return this.blogsRepository.getBlogsForPublic(paginationDto);
+  async findAllBlogsForUsers(
+    @Query() query: BlogPaginationDto,
+  ): Promise<PaginationViewModel<BlogsViewModel[]>> {
+    return this.blogsSQLquery.getBlogsForPublic(query);
   }
 
   @Get('/:blogId/posts')
