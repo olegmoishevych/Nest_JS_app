@@ -15,20 +15,16 @@ export class PostsQuerySqlRepository {
     private likesTable: Repository<LikesEntity>,
   ) {}
 
-  async postsWithLikeStatus(
-    posts: PostsEntity[],
-    userId: string | null,
-  ): Promise<PostsViewModal[]> {
+  async postsWithLikeStatus(posts: PostsEntity[], userId: string | null) {
     return Promise.all(
       posts.map(async (c) => {
-        console.log('posts', posts);
         return this.postWithLikeStatus(c, userId);
       }),
     );
   }
 
   async postWithLikeStatus(post: any, userId: string | null) {
-    post.extendedLikesInfo.likeStatus = await this.likesTable.findOne({
+    post.extendedLikesInfo.likeStatus = await this.likesTable.count({
       where: {
         parentId: post.id,
         likeStatus: 'Like',
@@ -62,8 +58,28 @@ export class PostsQuerySqlRepository {
       });
       post.extendedLikesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
     }
-    console.log('post', post);
-    return post;
+    const result = {
+      id: post.id,
+      title: post.title,
+      shortDescription: post.shortDescription,
+      content: post.content,
+      blogId: post.blogId,
+      blogName: post.blogName,
+      createdAt: post.createdAt,
+      extendedLikesInfo: {
+        likesCount: post.extendedLikesInfo.likeStatus,
+        dislikesCount: post.extendedLikesInfo.dislikesCount,
+        myStatus: post.extendedLikesInfo.myStatus,
+        newestLikes: [
+          // {
+          //   "addedAt": "2023-03-23T18:07:26.236Z",
+          //   "userId": "string",
+          //   "login": "string"
+          // }
+        ],
+      },
+    };
+    return result;
   }
 
   async findPosts(userId: string, dto: PaginationDto) {
