@@ -22,7 +22,7 @@ export class LikesEntity {
   addedAt: string;
   @Column()
   likeStatus: string;
-  @ManyToOne(() => PostsEntity, (p) => p.extendedLikesInfo, {})
+  @ManyToOne(() => PostsEntity, (p) => p.likes, {})
   post: PostsEntity;
   @ManyToOne(() => CommentsEntity, (c) => c.likesInfo, {})
   comments: CommentsEntity;

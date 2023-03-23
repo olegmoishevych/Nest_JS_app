@@ -9,20 +9,13 @@ import {
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { LikesEntity } from './likes.entity';
-import { CreatePostDto, LikeStatusDto } from '../../dto/createPostDto';
+import { CreatePostDto } from '../../dto/createPostDto';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
 
 @Entity('Posts')
 export class PostsEntity {
   @PrimaryGeneratedColumn()
   id: string;
-  @ManyToOne(() => UserEntity, (u) => u.post, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  user: UserEntity;
   @Column()
   userId: string;
   @Column({ default: false })
@@ -35,6 +28,21 @@ export class PostsEntity {
   shortDescription: string;
   @Column()
   content: string;
+  @Column()
+  blogId: string;
+  @Column()
+  blogName: string;
+  @Column()
+  createdAt: string;
+  @Column({ type: 'json', nullable: true })
+  extendedLikesInfo: object;
+  @ManyToOne(() => UserEntity, (u) => u.post, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  user: UserEntity;
   @ManyToOne(() => BlogsEntity, (b) => b.post, {
     eager: true,
     cascade: true,
@@ -42,19 +50,13 @@ export class PostsEntity {
   })
   @JoinColumn()
   blog: BlogsEntity;
-  @Column()
-  blogId: string;
-  @Column()
-  blogName: string;
-  @Column()
-  createdAt: string;
   @OneToMany(() => LikesEntity, (l) => l.post, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  extendedLikesInfo: LikesEntity;
+  likes: LikesEntity;
   @OneToMany(() => CommentsEntity, (c) => c.postInfo, {
     // eager: true,
     // cascade: true,
@@ -84,7 +86,11 @@ export class PostsEntity {
     post.blogId = blog.id;
     post.blogName = blog.name;
     post.createdAt = new Date().toISOString();
-    post.extendedLikesInfo = null;
+    post.extendedLikesInfo = {
+      likesCount: 0,
+      dislikesCount: 0,
+      myStatus: 'None',
+    };
     return post;
   }
 }

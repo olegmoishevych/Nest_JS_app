@@ -15,7 +15,7 @@ export class PostsQuerySqlRepository {
     private likesTable: Repository<LikesEntity>,
   ) {}
 
-  private async postsWithLikeStatus(
+  async postsWithLikeStatus(
     posts: PostsEntity[],
     userId: string | null,
   ): Promise<PostsViewModal[]> {
@@ -27,7 +27,7 @@ export class PostsQuerySqlRepository {
     );
   }
 
-  private async postWithLikeStatus(post: any, userId: string | null) {
+  async postWithLikeStatus(post: any, userId: string | null) {
     post.extendedLikesInfo.likeStatus = await this.likesTable.findOne({
       where: {
         parentId: post.id,

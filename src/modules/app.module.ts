@@ -102,6 +102,7 @@ import { CreateCommentForPostUseCase } from './comments/use-cases/createCommentF
 import { CreateLikeForPostUseCase } from './posts/use-cases/createLikeForPost.use-case';
 import { LikeStatusSQLRepository } from './posts/repository/likeStatusSQL.repository';
 import { PostsQuerySqlRepository } from './posts/repository/postsQuerySql.repository';
+import { FindPostByIdUseCase } from './posts/use-cases/findPostById.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },

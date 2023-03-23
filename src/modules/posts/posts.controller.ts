@@ -26,6 +26,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentForPostCommand } from '../comments/use-cases/createCommentForPost.use-case';
 import { CreateLikeForPostCommand } from './use-cases/createLikeForPost.use-case';
 import { PostsQuerySqlRepository } from './repository/postsQuerySql.repository';
+import { FindPostByIdCommand } from './use-cases/findPostById.use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -65,7 +66,8 @@ export class PostsController {
     @Token() userId: string | null,
     @Param('id') id: string,
   ): Promise<PostsViewModal> {
-    return this.postsService.findPostById(id, userId);
+    // return this.postsService.findPostById(id, userId);
+    return this.command.execute(new FindPostByIdCommand(userId, id));
   }
 
   @Get('/:postId/comments')
