@@ -12,11 +12,11 @@ export class UserBannedSQLRepository {
     @InjectRepository(UserBannedEntity)
     private userBannedTable: Repository<UserBannedEntity>,
   ) {}
-  async findBannedUserById(
-    blogId: string,
-    userId: string,
-  ): Promise<UserBannedEntity> {
+  async findBannedUserByBlogId(blogId: string): Promise<UserBannedEntity> {
     return this.userBannedTable.findOneBy({ blogId });
+  }
+  async findBannedUserById(userId: string): Promise<UserBannedEntity> {
+    return this.userBannedTable.findOneBy({ id: userId });
   }
   // async createBannedUser(
   //   id: string,

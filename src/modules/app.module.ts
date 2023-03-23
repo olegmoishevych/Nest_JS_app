@@ -98,6 +98,7 @@ import { DeleteAllDevicesByDeviceIdUseCase } from './devices/use-cases/deleteAll
 import { CommentsEntity } from './comments/domain/comments.entity';
 import { CommentatorInfoEntity } from './comments/domain/commentatorInfo.entity';
 import { CommentsSQLRepository } from './comments/repository/commentsSQL.repository';
+import { CreateCommentForPostUseCase } from './comments/use-cases/createCommentForPost.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -143,6 +144,7 @@ const useCases = [
   GetAlldevicesUseCase,
   DeleteAlldevicesUseCase,
   DeleteAllDevicesByDeviceIdUseCase,
+  CreateCommentForPostUseCase,
 ];
 
 const services = [

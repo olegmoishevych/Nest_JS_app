@@ -26,6 +26,7 @@ import { PostsRepository } from './repository/posts.repository';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdatePostByIdCommand } from './use-cases/updatePostById.use-case';
+import { CreateCommentForPostCommand } from '../comments/use-cases/createCommentForPost.use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -84,9 +85,11 @@ export class PostsController {
   async createCommentByPostId(
     @Param('postId') postId: string,
     @Body() commentsDto: CommentsDto,
-    @User() user: UserModel,
+    @User() user: UserEntity,
   ): Promise<CommentsViewModal> {
-    return this.postsService.createCommentByPostId(postId, commentsDto, user);
+    return this.command.execute(
+      new CreateCommentForPostCommand(postId, commentsDto, user),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
