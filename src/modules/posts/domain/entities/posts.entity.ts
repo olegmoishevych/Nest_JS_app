@@ -54,7 +54,7 @@ export class PostsEntity {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  extendedLikesInfo: LikesEntity[];
+  extendedLikesInfo: LikesEntity;
   @OneToMany(() => CommentsEntity, (c) => c.postInfo, {
     // eager: true,
     // cascade: true,
@@ -84,7 +84,7 @@ export class PostsEntity {
     post.blogId = blog.id;
     post.blogName = blog.name;
     post.createdAt = new Date().toISOString();
-    post.extendedLikesInfo = [];
+    post.extendedLikesInfo = null;
     return post;
   }
 }

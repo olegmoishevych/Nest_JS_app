@@ -149,6 +149,7 @@ const useCases = [
   DeleteAllDevicesByDeviceIdUseCase,
   CreateCommentForPostUseCase,
   CreateLikeForPostUseCase,
+  FindPostByIdUseCase,
 ];
 
 const services = [

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PostsEntity } from '../domain/entities/posts.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
 import { LikeStatusDto } from '../dto/createPostDto';
@@ -12,6 +11,7 @@ export class LikeStatusSQLRepository {
     @InjectRepository(LikesEntity)
     private likesTable: Repository<LikesEntity>,
   ) {}
+
   async createLikeStatusByPostId(
     postId: string,
     user: UserEntity,
