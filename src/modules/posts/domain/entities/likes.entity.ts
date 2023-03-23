@@ -1,14 +1,8 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { PostsEntity } from './posts.entity';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
+import { LikeStatusDto } from '../../dto/createPostDto';
 
 export type LikeStatuses = 'Like' | 'Dislike' | 'None';
 
@@ -20,13 +14,6 @@ export class LikesEntity {
   parentId: string;
   @Column({ default: false })
   isUserBanned: boolean;
-  @ManyToOne(() => BlogsEntity, (b) => b.post, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  user: UserEntity;
   @Column()
   userId: string;
   @Column()
@@ -35,18 +22,23 @@ export class LikesEntity {
   addedAt: string;
   @Column()
   likeStatus: string;
-  @ManyToOne(() => PostsEntity, (p) => p.extendedLikesInfo, {
-    // eager: true,
-    // cascade: true,
-    // onDelete: 'CASCADE',
-  })
-  // @JoinColumn()
+  @ManyToOne(() => PostsEntity, (p) => p.extendedLikesInfo, {})
   post: PostsEntity;
-  @ManyToOne(() => CommentsEntity, (c) => c.likesInfo, {
-    // eager: true,
-    // cascade: true,
-    // onDelete: 'CASCADE',
-  })
-  // @JoinColumn()
+  @ManyToOne(() => CommentsEntity, (c) => c.likesInfo, {})
   comments: CommentsEntity;
+
+  static createLikeForPost(
+    postId: string,
+    user: UserEntity,
+    dto: LikeStatusDto,
+  ) {
+    const likeForDb = new LikesEntity();
+    likeForDb.parentId = postId;
+    likeForDb.userId = user.id;
+    likeForDb.userLogin = user.login;
+    likeForDb.isUserBanned = false;
+    likeForDb.likeStatus = dto.likeStatus;
+    likeForDb.addedAt = new Date().toISOString();
+    return likeForDb;
+  }
 }

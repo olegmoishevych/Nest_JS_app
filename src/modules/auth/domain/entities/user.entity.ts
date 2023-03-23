@@ -62,12 +62,6 @@ export class UserEntity {
     onDelete: 'CASCADE',
   })
   post: PostsEntity;
-  @OneToMany(() => LikesEntity, (l) => l.user, {
-    // eager: true,
-    // cascade: true,
-    onDelete: 'CASCADE',
-  })
-  likes: LikesEntity;
   @OneToMany(() => DevicesEntity, (d) => d.user, {
     // eager: true,
     // cascade: true,

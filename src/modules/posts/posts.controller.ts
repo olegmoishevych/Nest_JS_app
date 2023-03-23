@@ -24,6 +24,8 @@ import { PostsRepository } from './repository/posts.repository';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentForPostCommand } from '../comments/use-cases/createCommentForPost.use-case';
+import { CreateLikeForPostCommand } from './use-cases/createLikeForPost.use-case';
+import { PostsQuerySqlRepository } from './repository/postsQuerySql.repository';
 
 @Controller('posts')
 export class PostsController {
@@ -31,15 +33,17 @@ export class PostsController {
     public commentsService: CommentsService,
     public postsService: PostsService,
     public postsRepository: PostsRepository,
+    public postsQueryRepo: PostsQuerySqlRepository,
     public command: CommandBus,
   ) {}
 
   @Get('/')
   async findPosts(
-    @Token() userId: string | null,
+    @Token() userId: string,
     @Query() paginationDto: PaginationDto,
-  ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsRepository.findPosts(paginationDto, userId);
+  ) {
+    // : Promise<PaginationViewModel<PostsViewModal[]>> {
+    return this.postsQueryRepo.findPosts(userId, paginationDto);
   }
 
   // @UseGuards(BasicAuthGuard)
@@ -96,11 +100,9 @@ export class PostsController {
     @User() user: UserEntity,
     @Param('postId') postId: string,
     @Body() dto: LikeStatusDto,
-  ): Promise<any> {
-    // return this.postsService.findPostByIdAndUpdateLikeStatus(
-    //   postId,
-    //   dto.likeStatus,
-    //   user,
-    // );
+  ): Promise<boolean> {
+    return this.command.execute(
+      new CreateLikeForPostCommand(user, postId, dto),
+    );
   }
 }

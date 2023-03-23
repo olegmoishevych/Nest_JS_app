@@ -63,16 +63,6 @@ export class PostsEntity {
   // @JoinColumn()
   comments: CommentsEntity;
 
-  createLike(postId: string, user: UserEntity, dto: LikeStatusDto) {
-    const likeForDb = new LikesEntity();
-    likeForDb.parentId = postId;
-    likeForDb.userId = user.id;
-    likeForDb.userLogin = user.login;
-    likeForDb.isUserBanned = false;
-    likeForDb.likeStatus = dto.likeStatus;
-    likeForDb.addedAt = new Date().toISOString();
-  }
-
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;
     this.shortDescription = updatePost.shortDescription;
