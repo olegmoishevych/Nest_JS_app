@@ -6,6 +6,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { GetAlldevicesCommand } from './use-cases/getAlldevices.use-case';
 import { DeleteResult } from 'typeorm';
 import { DeleteAlldevicesCommand } from './use-cases/deleteAlldevies.use-case';
+import { DeleteAllDevicesByDeviceIdCommand } from './use-cases/deleteAllDevicesByDeviceId.use-case';
 
 @Controller('security')
 export class DevicesController {
@@ -32,10 +33,9 @@ export class DevicesController {
   async deleteDevicesByDeviceId(
     @Cookies() cookies,
     @Param('deviceId') deviceId: string,
-  ): Promise<boolean> {
-    return this.devicesService.deleteAllDevicesByDeviceId(
-      cookies.refreshToken,
-      deviceId,
+  ): Promise<DeleteResult> {
+    return this.command.execute(
+      new DeleteAllDevicesByDeviceIdCommand(cookies.refreshToken, deviceId),
     );
   }
 }

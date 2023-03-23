@@ -41,4 +41,13 @@ export class DevicesSQLRepository {
   ): Promise<DeleteResult> {
     return this.devicesTable.delete({ userId, deviceId: Not(currentDeviceId) });
   }
+  async findDeviceByDeviceId(deviceId: string): Promise<DevicesEntity> {
+    return this.devicesTable.findOneBy({ deviceId });
+  }
+  async deleteUserSessionByUserAndDeviceId(
+    userId: string,
+    deviceId: string,
+  ): Promise<DeleteResult> {
+    return this.devicesTable.delete({ userId, deviceId });
+  }
 }
