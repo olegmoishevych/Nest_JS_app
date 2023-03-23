@@ -14,6 +14,7 @@ import { PasswordRecoveryEntity } from './passwordRecoveryEntity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { LikesEntity } from '../../../posts/domain/entities/likes.entity';
+import { DevicesEntity } from '../../../devices/domain/entities/devices.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -67,6 +68,12 @@ export class UserEntity {
     onDelete: 'CASCADE',
   })
   likes: LikesEntity;
+  @OneToMany(() => DevicesEntity, (d) => d.user, {
+    // eager: true,
+    // cascade: true,
+    onDelete: 'CASCADE',
+  })
+  devices: DevicesEntity;
 
   confirmedCode(code: string) {
     if (this.emailConfirmation.isConfirmed) return false;

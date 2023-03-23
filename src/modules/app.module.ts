@@ -31,7 +31,7 @@ import { LikeStatusRepository } from './posts/repository/likeStatus.repository';
 import { BlogIsExistRule } from './blogs/validators/customValidateBlog';
 import { DevicesRepository } from './devices/repository/devices.repository';
 import { DevicesService } from './devices/service/devices.service';
-import { DevicesController } from './devices/controller/devices.controller';
+import { DevicesController } from './devices/devices.controller';
 import { BloggerController } from './blogs/blogger.controller';
 import { LocalStrategy } from './auth/strategies/local.strategy';
 import { BlogsController } from './blogs/blogs.controller';
@@ -90,6 +90,9 @@ import { DeletePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/deletePost
 import { BanUserByIdUseCase } from './blogs/use-cases/banUserById.use-case';
 import { UserBannedEntity } from './blogs/domain/entities/user-banned.entity';
 import { UserBannedSQLRepository } from './blogs/repository/user-banned.SQL.repository';
+import { DevicesEntity } from './devices/domain/entities/devices.entity';
+import { GetAlldevicesUseCase } from './devices/use-cases/getAlldevices.use-case';
+import { DevicesSQLRepository } from './devices/repository/devicesSQL.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -132,6 +135,7 @@ const useCases = [
   UpdatePostByBlogsAndPostsIdUseCase,
   DeletePostByBlogsAndPostsIdUseCase,
   BanUserByIdUseCase,
+  GetAlldevicesUseCase,
 ];
 
 const services = [
@@ -163,6 +167,7 @@ const repositories = [
   PostsSQLRepository,
   UserBannedSQLRepository,
   PostsSQLRepository,
+  DevicesSQLRepository,
 ];
 
 const entities = [
@@ -175,6 +180,7 @@ const entities = [
   PostsEntity,
   LikesEntity,
   UserBannedEntity,
+  DevicesEntity,
 ];
 
 const throttlerGuard = {

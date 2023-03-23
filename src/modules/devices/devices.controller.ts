@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, HttpCode, Param } from '@nestjs/common';
-import { DevicesService } from '../service/devices.service';
-import { Cookies } from '../../auth/decorator/cookies.decorator';
-import { DevicesModal } from '../schemas/devices.schemas';
+import { DevicesService } from './service/devices.service';
+import { Cookies } from '../auth/decorator/cookies.decorator';
+import { DevicesModal } from './schemas/devices.schemas';
 import { DeleteResult } from 'mongodb';
 
 @Controller('security')
