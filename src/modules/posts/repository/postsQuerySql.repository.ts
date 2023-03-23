@@ -44,7 +44,7 @@ export class PostsQuerySqlRepository {
         likeStatus: 'Like',
         isUserBanned: false,
       },
-      select: ['userId'],
+      select: ['addedAt', 'userId', 'login'],
       order: { id: 'DESC' },
       take: 3,
     });
@@ -70,13 +70,7 @@ export class PostsQuerySqlRepository {
         likesCount: post.extendedLikesInfo.likeStatus,
         dislikesCount: post.extendedLikesInfo.dislikesCount,
         myStatus: post.extendedLikesInfo.myStatus,
-        newestLikes: [
-          // {
-          //   "addedAt": "2023-03-23T18:07:26.236Z",
-          //   "userId": "string",
-          //   "login": "string"
-          // }
-        ],
+        newestLikes: post.extendedLikesInfo.newestLikes,
       },
     };
     return result;

@@ -17,7 +17,7 @@ export class LikesEntity {
   @Column()
   userId: string;
   @Column()
-  userLogin: string;
+  login: string;
   @Column()
   addedAt: string;
   @Column()
@@ -35,7 +35,7 @@ export class LikesEntity {
     const likeForDb = new LikesEntity();
     likeForDb.parentId = postId;
     likeForDb.userId = user.id;
-    likeForDb.userLogin = user.login;
+    likeForDb.login = user.login;
     likeForDb.isUserBanned = false;
     likeForDb.likeStatus = dto.likeStatus;
     likeForDb.addedAt = new Date().toISOString();
