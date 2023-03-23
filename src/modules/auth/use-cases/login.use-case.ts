@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { UserEntity } from '../domain/entities/user.entity';
 import { ObjectId } from 'mongodb';
 import { AuthService } from '../service/auth.service';
 import { DevicesService } from '../../devices/service/devices.service';
+import { DevicesSQLRepository } from '../../devices/repository/devicesSQL.repository';
 
 @Injectable()
 export class LoginCommand {
@@ -19,6 +20,7 @@ export class LoginUseCase {
   constructor(
     private authService: AuthService,
     private deviceService: DevicesService,
+    private devicesRepo: DevicesSQLRepository,
   ) {}
 
   async execute(
@@ -34,7 +36,7 @@ export class LoginUseCase {
     const lastActiveDate = this.authService.getLastActiveDateFromRefreshToken(
       jwtTokens.refreshToken,
     );
-    await this.deviceService.createUserSession(
+    await this.devicesRepo.createUserSession(
       ip,
       title,
       lastActiveDate,

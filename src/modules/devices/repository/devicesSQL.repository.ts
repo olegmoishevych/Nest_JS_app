@@ -9,4 +9,28 @@ export class DevicesSQLRepository {
     @InjectRepository(DevicesEntity)
     private devicesTable: Repository<DevicesEntity>,
   ) {}
+
+  async createUserSession(
+    ip: string,
+    title: string,
+    lastActiveDate: string,
+    deviceId: string,
+    userId: string,
+  ): Promise<DevicesEntity> {
+    const userSessionForDb = DevicesEntity.createUserSession(
+      ip,
+      title,
+      lastActiveDate,
+      deviceId,
+      userId,
+    );
+    return this.devicesTable.save(userSessionForDb);
+  }
+  async findAllUserDevicesByUserId(userId): Promise<DevicesEntity[]> {
+    return this.devicesTable
+      .createQueryBuilder('d')
+      .select(['d.ip', 'd.title', 'd.lastActiveDate', 'd.deviceId'])
+      .where('d.userId = :userId', { userId })
+      .getMany();
+  }
 }
