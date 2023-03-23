@@ -23,6 +23,9 @@ import { UserModel } from '../users/schemas/users.schema';
 import { Token } from '../decorators/token.decorator';
 import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 import { PostsRepository } from './repository/posts.repository';
+import { UserEntity } from '../auth/domain/entities/user.entity';
+import { CommandBus } from '@nestjs/cqrs';
+import { UpdatePostByIdCommand } from './use-cases/updatePostById.use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -30,6 +33,7 @@ export class PostsController {
     public commentsService: CommentsService,
     public postsService: PostsService,
     public postsRepository: PostsRepository,
+    public command: CommandBus,
   ) {}
 
   @Get('/')
@@ -40,16 +44,19 @@ export class PostsController {
     return this.postsRepository.findPosts(paginationDto, userId);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Put('/:id')
-  @HttpCode(204)
-  async updatePostById(
-    @Param('id') id: string,
-    @Body() updatePost: CreatePostDtoWithBlogId,
-    @User() user: UserModel,
-  ): Promise<boolean> {
-    return this.postsService.updatePostById(id, updatePost, user.id);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Put('/:id')
+  // @HttpCode(204)
+  // async updatePostById(
+  //   @Param('id') id: string,
+  //   @Body() updatePost: CreatePostDtoWithBlogId,
+  //   @User() user: UserEntity,
+  // ): Promise<boolean> {
+  //   return this.command.execute(
+  //     new UpdatePostByIdCommand(id, updatePost, user),
+  //   );
+  // return this.postsService.updatePostById(id, updatePost, user.id);
+  // }
 
   @Get('/:id')
   async findPostById(
