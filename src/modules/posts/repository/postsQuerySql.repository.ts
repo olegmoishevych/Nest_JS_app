@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { LikesEntity } from '../domain/entities/likes.entity';
 import { PostsViewModal } from '../schemas/posts.schema';
+import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class PostsQuerySqlRepository {
@@ -24,7 +25,7 @@ export class PostsQuerySqlRepository {
   }
 
   async postWithLikeStatus(post: any, userId: string | null) {
-    post.extendedLikesInfo.likeStatus = await this.likesTable.count({
+    post.extendedLikesInfo.likesCount = await this.likesTable.count({
       where: {
         parentId: post.id,
         likeStatus: 'Like',
@@ -45,7 +46,7 @@ export class PostsQuerySqlRepository {
         isUserBanned: false,
       },
       select: ['addedAt', 'userId', 'login'],
-      order: { id: 'DESC' },
+      order: { addedAt: 'DESC' },
       take: 3,
     });
     if (userId) {
@@ -64,6 +65,9 @@ export class PostsQuerySqlRepository {
   async findPosts(userId: string, dto: PaginationDto) {
     const builder = this.postsTable
       .createQueryBuilder('post')
+      .addSelect('post.isUserBanned', 'isUserBanned')
+      .addSelect('post.isBlogBanned', 'isBlogBanned')
+      // .addSelect('post.likeStatus', 'likeStatus')
       .orderBy(
         `post.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
@@ -77,13 +81,12 @@ export class PostsQuerySqlRepository {
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
-    // const postsWithLikes = await this.postsWithLikeStatus(posts, userId);
-    return {
-      pagesCount: Math.ceil(total / dto.pageSize),
-      page: dto.pageNumber,
-      pageSize: dto.pageSize,
-      totalCount: total,
-      items: posts,
-    };
+    const postsWithLikes = await this.postsWithLikeStatus(posts, userId);
+    return new PaginationViewModel<any>(
+      total,
+      dto.pageNumber,
+      dto.pageSize,
+      postsWithLikes,
+    );
   }
 }
