@@ -53,10 +53,10 @@ export class BloggerController {
   @UseGuards(JwtAuthGuard)
   @Get('/blogs/comments')
   async getCommentsForAllPosts(
-    @Query() pagination: PaginationDto,
-    @User() user: UserModel,
+    @Query() dto: PaginationDto,
+    @User() user: UserEntity,
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
-    return this.commentsRepository.getCommentsByUserId(pagination, user.id);
+    return this.commentsRepository.getCommentsByUserId(dto, user.id);
   }
 
   @UseGuards(JwtAuthGuard)
