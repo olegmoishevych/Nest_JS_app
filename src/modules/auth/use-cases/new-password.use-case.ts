@@ -7,7 +7,7 @@ import { UserEntity } from '../domain/entities/user.entity';
 
 @Injectable()
 export class NewPasswordCommand {
-  constructor(readonly newPassword: NewPasswordDto) {}
+  constructor(readonly dto: NewPasswordDto) {}
 }
 
 @CommandHandler(NewPasswordCommand)
@@ -15,7 +15,7 @@ export class NewPasswordUseCase {
   constructor(public usersRepository: UsersSqlRepository) {}
   async execute(command: NewPasswordCommand): Promise<UserEntity> {
     const user = await this.usersRepository.findUserByRecoveryCode(
-      command.newPassword.recoveryCode,
+      command.dto.recoveryCode,
     );
     if (!user)
       throw new NotFoundException([
@@ -24,7 +24,7 @@ export class NewPasswordUseCase {
           field: 'recoveryCode',
         },
       ]);
-    const passwordHash = await bcrypt.hash(command.newPassword.newPassword, 5);
+    const passwordHash = await bcrypt.hash(command.dto.newPassword, 5);
     user.updateUserHash(passwordHash);
     return this.usersRepository.saveUser(user);
   }

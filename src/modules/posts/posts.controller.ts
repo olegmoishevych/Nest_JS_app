@@ -9,18 +9,15 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { PostsService } from './service/posts.service';
 import { LikeStatusDto } from './dto/createPostDto';
 import { PostsViewModal } from './schemas/posts.schema';
 import { PaginationViewModel } from '../helpers/pagination/pagination-view-model';
 import { PaginationDto } from '../helpers/dto/pagination.dto';
-import { CommentsService } from '../comments/service/comments.service';
 import { CommentsViewModal } from '../comments/schema/comments.schema';
 import { CommentsDto } from '../comments/dto/comments.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../auth/decorator/request.decorator';
 import { Token } from '../decorators/token.decorator';
-import { PostsRepository } from './repository/posts.repository';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentForPostCommand } from '../comments/use-cases/createCommentForPost.use-case';
@@ -33,9 +30,6 @@ import { FindCommentsByPostIdCommand } from './use-cases/findCommentsByPostId.us
 @Controller('posts')
 export class PostsController {
   constructor(
-    public commentsService: CommentsService,
-    public postsService: PostsService,
-    public postsRepository: PostsRepository,
     public postsQueryRepo: PostsQuerySqlRepository,
     public command: CommandBus,
   ) {}

@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthDto, NewPasswordDto } from './dto/auth.dto';
-import { AuthService } from './service/auth.service';
 import { Throttle } from '@nestjs/throttler';
 import { User } from './decorator/request.decorator';
 import { Request, Response } from 'express';
@@ -31,10 +30,7 @@ import { NewPasswordCommand } from './use-cases/new-password.use-case';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    public authService: AuthService,
-    private commandBus: CommandBus,
-  ) {}
+  constructor(private commandBus: CommandBus) {}
 
   @Throttle(5, 10)
   @Post('/registration')
@@ -116,16 +112,14 @@ export class AuthController {
   @Throttle(5, 10)
   @Post('/new-password')
   @HttpCode(204)
-  async userNewPassword(
-    @Body() newPassword: NewPasswordDto,
-  ): Promise<UserEntity> {
-    return this.commandBus.execute(new NewPasswordCommand(newPassword));
+  async userNewPassword(@Body() dto: NewPasswordDto): Promise<UserEntity> {
+    return this.commandBus.execute(new NewPasswordCommand(dto));
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/me')
   async getUser(
-    @User() user,
+    @User() user: UserEntity,
   ): Promise<{ email: string; login: string; userId: string }> {
     return { email: user.email, login: user.login, userId: user.id };
   }
