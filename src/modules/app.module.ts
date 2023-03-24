@@ -104,6 +104,7 @@ import { LikeStatusSQLRepository } from './posts/repository/likeStatusSQL.reposi
 import { PostsQuerySqlRepository } from './posts/repository/postsQuerySql.repository';
 import { FindPostByIdUseCase } from './posts/use-cases/findPostById.use-case';
 import { FindCommentByIdUseCase } from './comments/use-cases/findCommentById.use-case';
+import { CommentsSQLqueryRepository } from './comments/repository/commentsSQLquery.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -188,6 +189,7 @@ const repositories = [
   CommentsSQLRepository,
   LikeStatusSQLRepository,
   PostsQuerySqlRepository,
+  CommentsSQLqueryRepository,
 ];
 
 const entities = [
