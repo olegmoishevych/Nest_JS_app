@@ -28,6 +28,7 @@ import { CreateLikeForPostCommand } from './use-cases/createLikeForPost.use-case
 import { PostsQuerySqlRepository } from './repository/postsQuerySql.repository';
 import { FindPostByIdCommand } from './use-cases/findPostById.use-case';
 import { LikesEntity } from './domain/entities/likes.entity';
+import { FindCommentsByPostIdCommand } from './use-cases/findCommentsByPostId.use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -70,12 +71,10 @@ export class PostsController {
   async findCommentsByPostId(
     @Param('postId') postId: string,
     @Token() userId: string | null,
-    @Query() paginationDto: PaginationDto,
+    @Query() dto: PaginationDto,
   ): Promise<PaginationViewModel<CommentsViewModal[]>> {
-    return this.commentsService.findCommentsByPostId(
-      postId,
-      paginationDto,
-      userId,
+    return this.command.execute(
+      new FindCommentsByPostIdCommand(postId, userId, dto),
     );
   }
 
