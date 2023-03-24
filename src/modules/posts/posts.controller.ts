@@ -76,11 +76,11 @@ export class PostsController {
   @Post('/:postId/comments')
   async createCommentByPostId(
     @Param('postId') postId: string,
-    @Body() commentsDto: CommentsDto,
+    @Body() dto: CommentsDto,
     @User() user: UserEntity,
   ): Promise<CommentsViewModal> {
     return this.command.execute(
-      new CreateCommentForPostCommand(postId, commentsDto, user),
+      new CreateCommentForPostCommand(postId, dto, user),
     );
   }
 

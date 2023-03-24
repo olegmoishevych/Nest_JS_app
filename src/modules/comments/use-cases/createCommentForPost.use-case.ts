@@ -9,7 +9,6 @@ import { UserEntity } from '../../auth/domain/entities/user.entity';
 import { PostsSQLRepository } from '../../posts/repository/postsSQL.repository';
 import { UserBannedSQLRepository } from '../../blogs/repository/user-banned.SQL.repository';
 import { CommentsSQLRepository } from '../repository/commentsSQL.repository';
-import { CommentsForPostsViewModal } from '../schema/comments.schema';
 
 @Injectable()
 export class CreateCommentForPostCommand {

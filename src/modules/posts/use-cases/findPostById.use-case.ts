@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommand } from '@nestjs/cqrs';
 import { PostsSQLRepository } from '../repository/postsSQL.repository';
 import { PostsQuerySqlRepository } from '../repository/postsQuerySql.repository';
-import { PostsViewModal } from '../schemas/posts.schema';
 
 @Injectable()
 export class FindPostByIdCommand {
