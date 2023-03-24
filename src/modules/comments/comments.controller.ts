@@ -18,6 +18,9 @@ import { LikeStatusDto } from './dto/likeStatus.dto';
 import { Token } from '../decorators/token.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { FindCommentByIdCommand } from './use-cases/findCommentById.use-case';
+import { UserEntity } from '../auth/domain/entities/user.entity';
+import { CreateLikeForCommentCommand } from './use-cases/createLikeForCommentUseCase';
+import { LikesEntity } from '../posts/domain/entities/likes.entity';
 
 @Controller('comments')
 export class CommentsController {
@@ -65,13 +68,11 @@ export class CommentsController {
   @Put('/:commentId/like-status')
   async updateLikeStatusByCommentId(
     @Param('commentId') commentId: string,
-    @Body() likeStatus: LikeStatusDto,
-    @User() user: UserModel,
-  ): Promise<CommentsViewModal> {
-    return this.commentsService.updateLikeStatusByCommentId(
-      commentId,
-      likeStatus.likeStatus,
-      user,
+    @Body() dto: LikeStatusDto,
+    @User() user: UserEntity,
+  ): Promise<LikesEntity> {
+    return this.command.execute(
+      new CreateLikeForCommentCommand(commentId, dto, user),
     );
   }
 }

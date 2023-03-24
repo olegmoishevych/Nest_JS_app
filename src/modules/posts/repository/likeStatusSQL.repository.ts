@@ -23,7 +23,22 @@ export class LikeStatusSQLRepository {
   async saveResult(like: LikesEntity): Promise<LikesEntity> {
     return this.likesTable.save(like);
   }
-  async findLikeForUser(userId: string, postId: string): Promise<LikesEntity> {
-    return this.likesTable.findOneBy({ userId, parentId: postId });
+  async findLikeForUser(
+    userId: string,
+    parentId: string,
+  ): Promise<LikesEntity> {
+    return this.likesTable.findOneBy({ userId, parentId });
+  }
+  async createLikeStatusByCommentId(
+    commentId: string,
+    user: UserEntity,
+    dto: LikeStatusDto,
+  ): Promise<LikesEntity> {
+    const likeForComment = LikesEntity.createLikeForComment(
+      commentId,
+      user,
+      dto,
+    );
+    return this.likesTable.save(likeForComment);
   }
 }

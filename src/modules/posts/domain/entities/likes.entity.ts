@@ -31,7 +31,7 @@ export class LikesEntity {
     postId: string,
     user: UserEntity,
     dto: LikeStatusDto,
-  ) {
+  ): LikesEntity {
     const likeForDb = new LikesEntity();
     likeForDb.parentId = postId;
     likeForDb.userId = user.id;
@@ -40,5 +40,19 @@ export class LikesEntity {
     likeForDb.likeStatus = dto.likeStatus;
     likeForDb.addedAt = new Date().toISOString();
     return likeForDb;
+  }
+  static createLikeForComment(
+    commentId: string,
+    user: UserEntity,
+    dto: LikeStatusDto,
+  ): LikesEntity {
+    const likeForComment = new LikesEntity();
+    likeForComment.parentId = commentId;
+    likeForComment.isUserBanned = false;
+    likeForComment.userId = user.id;
+    likeForComment.login = user.login;
+    likeForComment.likeStatus = dto.likeStatus;
+    likeForComment.addedAt = new Date().toISOString();
+    return likeForComment;
   }
 }
