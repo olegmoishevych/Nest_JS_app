@@ -41,12 +41,13 @@ import { UpdatePostByBlogsAndPostsIdCommand } from './use-cases/updatePostByBlog
 import { DeletePostByBlogsAndPostsIdCommand } from './use-cases/deletePostByBlogsAndPostsId.use-case';
 import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
 import { CommentsSQLqueryRepository } from '../comments/repository/commentsSQLquery.repository';
+import { BlogsSQLqueryRepository } from './repository/blogs.SQLquery.repository';
 
 @Controller('blogger')
 export class BloggerController {
   constructor(
     public blogsService: BlogsService,
-    public blogsRepository: BlogsRepository,
+    public blogsQueryRepo: BlogsSQLqueryRepository,
     public commentsRepository: CommentsRepository,
     public commentsQueryRepo: CommentsSQLqueryRepository,
     private commandBus: CommandBus,
@@ -65,10 +66,10 @@ export class BloggerController {
   @UseGuards(JwtAuthGuard)
   @Get('/blogs')
   async findBlogs(
-    @Query() paginationDto: BlogPaginationDto,
-    @User() user: UserModel,
+    @Query() dto: BlogPaginationDto,
+    @User() user: UserEntity,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsRepository.getBlogsForOwner(paginationDto, user);
+    return this.blogsQueryRepo.getBlogsForOwner(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
