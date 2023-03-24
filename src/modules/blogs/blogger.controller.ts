@@ -40,6 +40,7 @@ import { UserEntity } from '../auth/domain/entities/user.entity';
 import { UpdatePostByBlogsAndPostsIdCommand } from './use-cases/updatePostByBlogsAndPostsId.use-case';
 import { DeletePostByBlogsAndPostsIdCommand } from './use-cases/deletePostByBlogsAndPostsId.use-case';
 import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
+import { CommentsSQLqueryRepository } from '../comments/repository/commentsSQLquery.repository';
 
 @Controller('blogger')
 export class BloggerController {
@@ -47,6 +48,7 @@ export class BloggerController {
     public blogsService: BlogsService,
     public blogsRepository: BlogsRepository,
     public commentsRepository: CommentsRepository,
+    public commentsQueryRepo: CommentsSQLqueryRepository,
     private commandBus: CommandBus,
   ) {}
 
@@ -56,7 +58,8 @@ export class BloggerController {
     @Query() dto: PaginationDto,
     @User() user: UserEntity,
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
-    return this.commentsRepository.getCommentsByUserId(dto, user.id);
+    // return this.commentsRepository.getCommentsByUserId(dto, user.id);
+    return this.commentsQueryRepo.getCommentsByUserId(dto, user.id); // не сделал
   }
 
   @UseGuards(JwtAuthGuard)

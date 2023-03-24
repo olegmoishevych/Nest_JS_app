@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsEntity } from '../domain/comments.entity';
 import { Repository } from 'typeorm';
-import { CommentsViewModal } from '../schema/comments.schema';
+import {
+  CommentsForPostsViewModal,
+  CommentsViewModal,
+} from '../schema/comments.schema';
 import { LikesEntity } from '../../posts/domain/entities/likes.entity';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { BlogsEntity } from '../../blogs/domain/entities/blogs.entity';
+import { PostsEntity } from '../../posts/domain/entities/posts.entity';
 
 @Injectable()
 export class CommentsSQLqueryRepository {
@@ -14,6 +19,10 @@ export class CommentsSQLqueryRepository {
     private commentsTable: Repository<CommentsEntity>,
     @InjectRepository(LikesEntity)
     private likesTable: Repository<LikesEntity>,
+    @InjectRepository(BlogsEntity)
+    private blogsTable: Repository<BlogsEntity>,
+    @InjectRepository(PostsEntity)
+    private postsTable: Repository<PostsEntity>,
   ) {}
 
   async commentsWithLikeStatus(
@@ -94,5 +103,41 @@ export class CommentsSQLqueryRepository {
         postId: postId,
       },
     });
+  }
+
+  async getCommentsByUserId(
+    dto: PaginationDto,
+    userId: string,
+  ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
+    const blog = await this.blogsTable
+      .createQueryBuilder('blog')
+      // .select('DISTINCT blog.id')
+      .where('blog.blogOwnerInfo.userId = :userId', { userId });
+    console.log('blog', blog);
+    const postByBlogId = await this.postsTable
+      .createQueryBuilder('blog')
+      .select('DISTINCT blog.id')
+      .where('blog.blogId = :blogId', { blog });
+    const builder = this.commentsTable
+      .createQueryBuilder('comment')
+      .orderBy(
+        `comment.${dto.sortBy}`,
+        dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+      )
+      // .where('comment.isUserBanned = :isUserBanned')
+      .where('comment.postId = :postId', { postId: postByBlogId });
+    // .setParameters({
+    //   isUserBanned: false,
+    // });
+    const [comments, total] = await builder
+      .take(dto.pageSize)
+      .skip((dto.pageNumber - 1) * dto.pageSize)
+      .getManyAndCount();
+    return new PaginationViewModel<CommentsForPostsViewModal[]>(
+      total,
+      dto.pageNumber,
+      dto.pageSize,
+      comments,
+    );
   }
 }

@@ -86,4 +86,5 @@ export class BlogsSQLqueryRepository {
       items: blogs,
     };
   }
+  async getBlogsForOwner() {}
 }
