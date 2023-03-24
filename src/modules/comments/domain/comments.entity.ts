@@ -47,12 +47,16 @@ export class CommentsEntity {
   })
   @JoinColumn()
   postInfo: PostsEntity;
-
+  updateComment(dto: CommentsDto, commentId: string, user: UserEntity): void {
+    this.id = commentId;
+    this.commentatorInfo.userId = user.id;
+    this.content = dto.content;
+  }
   static createCommentByPostId(
     post: PostsEntity,
     dto: CommentsDto,
     user: UserEntity,
-  ) {
+  ): CommentsEntity {
     const commentatorInfo = new CommentatorInfoEntity();
     commentatorInfo.userId = user.id;
     commentatorInfo.userLogin = user.login;

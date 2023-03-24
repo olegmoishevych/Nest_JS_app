@@ -107,6 +107,7 @@ import { FindCommentByIdUseCase } from './comments/use-cases/findCommentById.use
 import { CommentsSQLqueryRepository } from './comments/repository/commentsSQLquery.repository';
 import { CreateLikeForCommentUseCase } from './comments/use-cases/createLikeForCommentUseCase';
 import { DeleteCommentByIdUseCase } from './comments/use-cases/deleteCommentById.use-case';
+import { UpdateCommentByIdUseCase } from './comments/use-cases/updateCommentById.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -158,6 +159,7 @@ const useCases = [
   FindCommentByIdUseCase,
   CreateLikeForCommentUseCase,
   DeleteCommentByIdUseCase,
+  UpdateCommentByIdUseCase,
 ];
 
 const services = [

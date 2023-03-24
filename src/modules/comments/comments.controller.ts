@@ -23,6 +23,7 @@ import { CreateLikeForCommentCommand } from './use-cases/createLikeForCommentUse
 import { LikesEntity } from '../posts/domain/entities/likes.entity';
 import { DeleteCommentByIdCommand } from './use-cases/deleteCommentById.use-case';
 import { DeleteResult } from 'typeorm';
+import { UpdateCommentByIdCommand } from './use-cases/updateCommentById.use-case';
 
 @Controller('comments')
 export class CommentsController {
@@ -46,7 +47,6 @@ export class CommentsController {
     @User() user: UserEntity,
     @Param('commentId') commentId: string,
   ): Promise<DeleteResult> {
-    // return this.commentsService.findCommentByIdAndDelete(commentId, user.id);
     return this.command.execute(new DeleteCommentByIdCommand(user, commentId));
   }
 
@@ -54,14 +54,17 @@ export class CommentsController {
   @HttpCode(204)
   @Put('/:commentId')
   async updateCommentByCommentId(
-    @User() user: UserModel,
+    @User() user: UserEntity,
     @Param('commentId') commentId: string,
-    @Body() content: CommentsDto,
-  ): Promise<CommentsViewModal> {
-    return this.commentsService.updateCommentByCommentId(
-      commentId,
-      user.id,
-      content.content,
+    @Body() dto: CommentsDto,
+  ): Promise<CommentsViewModal | any> {
+    // return this.commentsService.updateCommentByCommentId(
+    //   commentId,
+    //   user.id,
+    //   dto.content,
+    // );
+    return this.command.execute(
+      new UpdateCommentByIdCommand(user, commentId, dto),
     );
   }
 
