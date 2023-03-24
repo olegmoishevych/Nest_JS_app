@@ -31,13 +31,15 @@ export class CommentsEntity {
   commentatorInfo: CommentatorInfoEntity;
   @Column()
   createdAt: string;
+  @Column({ type: 'json', nullable: true })
+  likesInfo: object;
   @OneToMany(() => LikesEntity, (l) => l.comments, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  likesInfo: LikesEntity[];
+  likes: LikesEntity;
   @ManyToOne(() => PostsEntity, (p) => p.comments, {
     eager: true,
     cascade: true,
@@ -67,7 +69,11 @@ export class CommentsEntity {
     commentForDB.content = dto.content;
     commentForDB.commentatorInfo = commentatorInfo;
     commentForDB.createdAt = new Date().toISOString();
-    commentForDB.likesInfo = [];
+    commentForDB.likesInfo = {
+      likesCount: 0,
+      dislikesCount: 0,
+      myStatus: 'None',
+    };
     commentForDB.postInfo = postInfo;
     return commentForDB;
   }

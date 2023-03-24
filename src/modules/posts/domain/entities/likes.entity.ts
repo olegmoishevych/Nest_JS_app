@@ -24,7 +24,7 @@ export class LikesEntity {
   likeStatus: string;
   @ManyToOne(() => PostsEntity, (p) => p.likes, {})
   post: PostsEntity;
-  @ManyToOne(() => CommentsEntity, (c) => c.likesInfo, {})
+  @ManyToOne(() => CommentsEntity, (c) => c.likes, {})
   comments: CommentsEntity;
 
   static createLikeForPost(
