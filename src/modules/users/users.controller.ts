@@ -34,7 +34,6 @@ import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repo
 export class UsersController {
   constructor(
     public usersService: UsersService,
-    // public blogsRepository: BlogsRepository,
     public blogsRepository: BlogsSqlRepository,
     public queryRepo: BlogsSQLqueryRepository,
     public usersRepository: UsersSqlRepository,

@@ -3,10 +3,7 @@ import { TestingSqlRepository } from '../repository/testing.sql.repository';
 
 @Controller('testing')
 export class TestingController {
-  constructor(
-    // private testingRepository: TestingRepository
-    private testingRepository: TestingSqlRepository,
-  ) {}
+  constructor(private testingRepository: TestingSqlRepository) {}
 
   @Delete('/all-data')
   @HttpCode(204)
