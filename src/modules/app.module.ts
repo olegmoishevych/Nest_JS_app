@@ -6,7 +6,7 @@ import { UsersController } from './users/users.controller';
 import { UsersService } from './users/service/users.service';
 import { UsersRepository } from './users/repository/users.repository';
 import { TestingRepository } from './testing/repository/testing.repository';
-import { TestingController } from './testing/controller/testing.controller';
+import { TestingController } from './testing/testing.controller';
 import { PostsService } from './posts/service/posts.service';
 import { PostsRepository } from './posts/repository/posts.repository';
 import { PostsController } from './posts/posts.controller';
@@ -109,6 +109,7 @@ import { CreateLikeForCommentUseCase } from './comments/use-cases/createLikeForC
 import { DeleteCommentByIdUseCase } from './comments/use-cases/deleteCommentById.use-case';
 import { UpdateCommentByIdUseCase } from './comments/use-cases/updateCommentById.use-case';
 import { FindCommentsByPostIdUseCase } from './posts/use-cases/findCommentsByPostId.use-case';
+import { FindPostsByBlogIdUseCase } from './blogs/use-cases/findPostsByBlogId.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -162,6 +163,7 @@ const useCases = [
   DeleteCommentByIdUseCase,
   UpdateCommentByIdUseCase,
   FindCommentsByPostIdUseCase,
+  FindPostsByBlogIdUseCase,
 ];
 
 const services = [

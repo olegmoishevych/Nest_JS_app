@@ -1,5 +1,5 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
-import { TestingSqlRepository } from '../repository/testing.sql.repository';
+import { TestingSqlRepository } from './repository/testing.sql.repository';
 
 @Controller('testing')
 export class TestingController {

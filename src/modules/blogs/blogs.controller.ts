@@ -34,10 +34,10 @@ export class BlogsController {
   @Get('/:blogId/posts')
   async findPostsByBlogId(
     @Param('blogId') blogId: string,
-    @Query() paginationDto: PaginationDto,
+    @Query() dto: PaginationDto,
     @Token() userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPostByBlogId(blogId, paginationDto, userId); // это не сделано
+    return this.postsService.findPostByBlogId(blogId, dto, userId); // это не сделано
   }
 
   @Get('/:id')
