@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommand } from '@nestjs/cqrs';
 import { PostsSQLRepository } from '../repository/postsSQL.repository';
 import { PostsQuerySqlRepository } from '../repository/postsQuerySql.repository';
+import { PostsViewModal } from '../schemas/posts.schema';
 
 @Injectable()
 export class FindPostByIdCommand {
@@ -18,6 +19,24 @@ export class FindPostByIdUseCase implements ICommand {
   async execute(command: FindPostByIdCommand) {
     const post = await this.postsRepo.findPostById(command.id);
     if (!post) throw new NotFoundException(`Post not found`);
-    return this.postsQueryRepo.postWithLikeStatus(post, command.userId);
+    const postWithLikeStatus = await this.postsQueryRepo.postWithLikeStatus(
+      post,
+      command.userId,
+    );
+    return {
+      id: postWithLikeStatus.id,
+      title: postWithLikeStatus.title,
+      shortDescription: postWithLikeStatus.shortDescription,
+      content: postWithLikeStatus.content,
+      blogId: postWithLikeStatus.blogId,
+      blogName: postWithLikeStatus.blogName,
+      createdAt: postWithLikeStatus.createdAt,
+      extendedLikesInfo: {
+        likesCount: postWithLikeStatus.extendedLikesInfo.likeStatus,
+        dislikesCount: postWithLikeStatus.extendedLikesInfo.dislikesCount,
+        myStatus: postWithLikeStatus.extendedLikesInfo.myStatus,
+        newestLikes: postWithLikeStatus.extendedLikesInfo.newestLikes,
+      },
+    };
   }
 }

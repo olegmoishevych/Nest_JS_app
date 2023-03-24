@@ -15,7 +15,7 @@ export class PostsQuerySqlRepository {
     private likesTable: Repository<LikesEntity>,
   ) {}
 
-  async postsWithLikeStatus(posts: PostsEntity[], userId: string | null) {
+  async postsWithLikeStatus(posts: any, userId: string | null) {
     return Promise.all(
       posts.map(async (c) => {
         return this.postWithLikeStatus(c, userId);
@@ -58,22 +58,7 @@ export class PostsQuerySqlRepository {
       });
       post.extendedLikesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
     }
-    const result = {
-      id: post.id,
-      title: post.title,
-      shortDescription: post.shortDescription,
-      content: post.content,
-      blogId: post.blogId,
-      blogName: post.blogName,
-      createdAt: post.createdAt,
-      extendedLikesInfo: {
-        likesCount: post.extendedLikesInfo.likeStatus,
-        dislikesCount: post.extendedLikesInfo.dislikesCount,
-        myStatus: post.extendedLikesInfo.myStatus,
-        newestLikes: post.extendedLikesInfo.newestLikes,
-      },
-    };
-    return result;
+    return post;
   }
 
   async findPosts(userId: string, dto: PaginationDto) {

@@ -63,11 +63,7 @@ export class PostsController {
   // }
 
   @Get('/:id')
-  async findPostById(
-    @Token() userId: string | null,
-    @Param('id') id: string,
-  ): Promise<PostsViewModal> {
-    // return this.postsService.findPostById(id, userId);
+  async findPostById(@Token() userId: string | null, @Param('id') id: string) {
     return this.command.execute(new FindPostByIdCommand(userId, id));
   }
 
