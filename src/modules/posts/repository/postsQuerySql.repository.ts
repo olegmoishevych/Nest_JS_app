@@ -77,14 +77,13 @@ export class PostsQuerySqlRepository {
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
-    const postsWithLikes = await this.postsWithLikeStatus(posts, userId);
-    console.log('postsWithLikes', postsWithLikes);
+    // const postsWithLikes = await this.postsWithLikeStatus(posts, userId);
     return {
       pagesCount: Math.ceil(total / dto.pageSize),
       page: dto.pageNumber,
       pageSize: dto.pageSize,
       totalCount: total,
-      items: postsWithLikes,
+      items: posts,
     };
   }
 }
