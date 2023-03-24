@@ -23,7 +23,7 @@ export class RegistrationUseCase implements ICommandHandler {
   ) {}
 
   async execute(command: CreateUserCommand): Promise<boolean> {
-    const { email, login, password } = command.registrationDto;
+    const { email, login, password } = command.dto;
     const userByEmail = await this.usersRepository.findUserByEmail(email);
     if (userByEmail)
       throw new BadRequestException([

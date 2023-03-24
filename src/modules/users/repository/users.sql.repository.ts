@@ -17,7 +17,7 @@ export class UsersSqlRepository {
   ) {}
 
   async getAllUsersBySA(
-    paginationDto: UserPaginationDtoWithBanStatusDto,
+    dto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     const countQuery = `
       SELECT COUNT(*)
@@ -26,16 +26,16 @@ export class UsersSqlRepository {
       WHERE ("User"."login" ilike $1 OR "User"."email" ilike $2)
         AND
         CASE
-        WHEN '${paginationDto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
+        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
         THEN "BanInfo"."isBanned" = false
-        WHEN '${paginationDto.banStatus}' = '${BanStatusFilterEnum.Banned}'
+        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.Banned}'
         THEN "BanInfo"."isBanned" = true
         ELSE "BanInfo"."isBanned" IN (true, false)
         END`;
 
     const countResult = await this.dataSource.query(countQuery, [
-      '%' + paginationDto.searchLoginTerm + '%',
-      '%' + paginationDto.searchEmailTerm + '%',
+      '%' + dto.searchLoginTerm + '%',
+      '%' + dto.searchEmailTerm + '%',
     ]);
 
     const dataQuery = `
@@ -46,20 +46,20 @@ export class UsersSqlRepository {
       WHERE ("User"."login" ilike $1 OR "User"."email" ilike $2)
         AND
         CASE
-        WHEN '${paginationDto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
+        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
         THEN "BanInfo"."isBanned" = false
-        WHEN '${paginationDto.banStatus}' = '${BanStatusFilterEnum.Banned}'
+        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.Banned}'
         THEN "BanInfo"."isBanned" = true
         ELSE "BanInfo"."isBanned" IN (true, false)
         END
-        ORDER BY "${paginationDto.sortBy}" ${paginationDto.sortDirection}
+        ORDER BY "${dto.sortBy}" ${dto.sortDirection}
               OFFSET $4 ROWS FETCH NEXT $3 ROWS ONLY`;
 
     const dataResult = await this.dataSource.query(dataQuery, [
-      '%' + paginationDto.searchLoginTerm + '%',
-      '%' + paginationDto.searchEmailTerm + '%',
-      paginationDto.pageSize,
-      (paginationDto.pageNumber - 1) * paginationDto.pageSize,
+      '%' + dto.searchLoginTerm + '%',
+      '%' + dto.searchEmailTerm + '%',
+      dto.pageSize,
+      (dto.pageNumber - 1) * dto.pageSize,
     ]);
 
     const mappedUsers = dataResult.map((u) => ({
@@ -75,8 +75,8 @@ export class UsersSqlRepository {
     }));
     return new PaginationViewModel(
       countResult[0].count,
-      paginationDto.pageNumber,
-      paginationDto.pageSize,
+      dto.pageNumber,
+      dto.pageSize,
       mappedUsers,
     );
   }

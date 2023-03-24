@@ -5,7 +5,7 @@ import { UsersSqlRepository } from '../repository/users.sql.repository';
 import * as bcrypt from 'bcrypt';
 
 export class CreateUserCommand {
-  constructor(readonly registrationDto: AuthDto) {}
+  constructor(readonly dto: AuthDto) {}
 }
 
 @CommandHandler(CreateUserCommand)
@@ -13,11 +13,10 @@ export class CreateUserUseCase implements ICommandHandler {
   constructor(private usersRepository: UsersSqlRepository) {}
 
   async execute(command: CreateUserCommand): Promise<UserModel> {
-    const { registrationDto } = command;
-    const passwordHash = await bcrypt.hash(registrationDto.password, 5);
+    const passwordHash = await bcrypt.hash(command.dto.password, 5);
     const user = await this.usersRepository.createUser(
-      registrationDto.login,
-      registrationDto.email,
+      command.dto.login,
+      command.dto.email,
       passwordHash,
     );
     return {

@@ -44,7 +44,7 @@ export class BlogsSQLqueryRepository {
   }
 
   async getBlogsForSA(
-    paginationDto: BlogPaginationDto,
+    dto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     const builder = this.blogsTable
       .createQueryBuilder('b')
@@ -56,8 +56,8 @@ export class BlogsSQLqueryRepository {
       .addSelect('banInfo.id', 'banInfo.id')
       .addSelect('banInfo.banReason', 'banInfo.banReason')
       .orderBy(
-        `b.${paginationDto.sortBy}`,
-        paginationDto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+        `b.${dto.sortBy}`,
+        dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       )
       .where('banInfo.isBanned = false');
 
@@ -68,20 +68,20 @@ export class BlogsSQLqueryRepository {
     // if (settings.blogsOfSpecifiedUserId) {
     //   builder.where('b.userId = :userId', { userId: settings.blogsOfSpecifiedUserId });
     // }
-    if (paginationDto.searchNameTerm) {
+    if (dto.searchNameTerm) {
       builder.where('b.name ILIKE :name', {
-        name: `%${paginationDto.searchNameTerm}%`,
+        name: `%${dto.searchNameTerm}%`,
       });
     }
 
     const [blogs, total] = await builder
-      .take(paginationDto.pageSize)
-      .skip((paginationDto.pageNumber - 1) * paginationDto.pageSize)
+      .take(dto.pageSize)
+      .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
     return {
-      pagesCount: Math.ceil(total / paginationDto.pageSize),
-      page: paginationDto.pageNumber,
-      pageSize: paginationDto.pageSize,
+      pagesCount: Math.ceil(total / dto.pageSize),
+      page: dto.pageNumber,
+      pageSize: dto.pageSize,
       totalCount: total,
       items: blogs,
     };

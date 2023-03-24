@@ -27,14 +27,12 @@ import { AuthDto } from '../auth/dto/auth.dto';
 import { DeleteUserCommand } from './use-cases/delete-user.use-case';
 import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from './repository/users.sql.repository';
-import { BlogsSqlRepository } from '../blogs/repository/blogs.sql.repository';
 import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repository';
 
 @Controller('sa')
 export class UsersController {
   constructor(
     public usersService: UsersService,
-    public blogsRepository: BlogsSqlRepository,
     public queryRepo: BlogsSQLqueryRepository,
     public usersRepository: UsersSqlRepository,
     private commandBus: CommandBus,
@@ -44,15 +42,15 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Get('/users')
   async findAllUsers(
-    @Query() paginationDto: UserPaginationDtoWithBanStatusDto,
+    @Query() dto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
-    return this.usersRepository.getAllUsersBySA(paginationDto);
+    return this.usersRepository.getAllUsersBySA(dto);
   }
 
   @UseGuards(BasicAuthGuard)
   @Post('/users')
-  async createUser(@Body() registrationDto: AuthDto): Promise<UserModel> {
-    return this.commandBus.execute(new CreateUserCommand(registrationDto));
+  async createUser(@Body() dto: AuthDto): Promise<UserModel> {
+    return this.commandBus.execute(new CreateUserCommand(dto));
   }
 
   @UseGuards(BasicAuthGuard)
@@ -85,8 +83,8 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Get('/blogs')
   async getBlogs(
-    @Query() paginationDto: BlogPaginationDto,
+    @Query() dto: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.queryRepo.getBlogsForSA(paginationDto);
+    return this.queryRepo.getBlogsForSA(dto);
   }
 }
