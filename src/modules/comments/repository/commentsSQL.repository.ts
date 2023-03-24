@@ -20,4 +20,7 @@ export class CommentsSQLRepository {
     const newComment = CommentsEntity.createCommentByPostId(post, dto, user);
     return this.commentsTable.save(newComment);
   }
+  async findCommentById(id: string): Promise<CommentsEntity> {
+    return this.commentsTable.findOneBy({ id });
+  }
 }

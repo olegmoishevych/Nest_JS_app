@@ -16,17 +16,23 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CommentsDto } from './dto/comments.dto';
 import { LikeStatusDto } from './dto/likeStatus.dto';
 import { Token } from '../decorators/token.decorator';
+import { CommandBus } from '@nestjs/cqrs';
+import { FindCommentByIdCommand } from './use-cases/findCommentById.use-case';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(public commentsService: CommentsService) {}
+  constructor(
+    public commentsService: CommentsService,
+    public command: CommandBus,
+  ) {}
 
   @Get('/:id')
   async findCommentById(
     @Param('id') id: string,
     @Token() userId: string,
   ): Promise<CommentsViewModal> {
-    return this.commentsService.findCommentById(id, userId);
+    // return this.commentsService.findCommentById(id, userId);
+    return this.command.execute(new FindCommentByIdCommand(id, userId));
   }
 
   @UseGuards(JwtAuthGuard)
