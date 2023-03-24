@@ -16,7 +16,7 @@ export class PostsQuerySqlRepository {
     private likesTable: Repository<LikesEntity>,
   ) {}
 
-  async postsWithLikeStatus(posts: any, userId: string | null) {
+  async postsWithLikeStatus(posts: PostsEntity[], userId: string | null) {
     return Promise.all(
       posts.map(async (c) => {
         return this.postWithLikeStatus(c, userId);
@@ -62,12 +62,14 @@ export class PostsQuerySqlRepository {
     return post;
   }
 
-  async findPosts(userId: string, dto: PaginationDto) {
+  async findPosts(
+    userId: string,
+    dto: PaginationDto,
+  ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const builder = this.postsTable
       .createQueryBuilder('post')
       .addSelect('post.isUserBanned', 'isUserBanned')
       .addSelect('post.isBlogBanned', 'isBlogBanned')
-      // .addSelect('post.likeStatus', 'likeStatus')
       .orderBy(
         `post.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
@@ -82,7 +84,7 @@ export class PostsQuerySqlRepository {
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
     const postsWithLikes = await this.postsWithLikeStatus(posts, userId);
-    return new PaginationViewModel<any>(
+    return new PaginationViewModel<PostsViewModal[]>(
       total,
       dto.pageNumber,
       dto.pageSize,

@@ -28,7 +28,6 @@ import { CreateLikeForPostCommand } from './use-cases/createLikeForPost.use-case
 import { PostsQuerySqlRepository } from './repository/postsQuerySql.repository';
 import { FindPostByIdCommand } from './use-cases/findPostById.use-case';
 import { LikesEntity } from './domain/entities/likes.entity';
-import { FindPostsCommand } from './use-cases/findPosts.use-case';
 
 @Controller('posts')
 export class PostsController {
@@ -41,10 +40,11 @@ export class PostsController {
   ) {}
 
   @Get('/')
-  async findPosts(@Token() userId: string, @Query() dto: PaginationDto) {
-    // : Promise<PaginationViewModel<PostsViewModal[]>> {
-    // return this.postsQueryRepo.findPosts(userId, dto);
-    return this.command.execute(new FindPostsCommand(userId, dto));
+  async findPosts(
+    @Token() userId: string,
+    @Query() dto: PaginationDto,
+  ): Promise<PaginationViewModel<PostsViewModal[]>> {
+    return this.postsQueryRepo.findPosts(userId, dto);
   }
 
   // @UseGuards(BasicAuthGuard)
