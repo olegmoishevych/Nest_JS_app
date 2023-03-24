@@ -8,7 +8,6 @@ import { PaginationViewModel } from '../helpers/pagination/pagination-view-model
 import { BlogsViewModel } from './schemas/blogs.schema';
 import { Token } from '../decorators/token.decorator';
 import { PostsViewModal } from '../posts/schemas/posts.schema';
-import { PostsService } from '../posts/service/posts.service';
 import { BlogsSqlRepository } from './repository/blogs.sql.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { FindBlogByIdCommand } from './use-cases/findBlogById.use-case';
@@ -18,18 +17,15 @@ import { FindPostsByBlogIdCommand } from './use-cases/findPostsByBlogId.use-case
 @Controller('blogs')
 export class BlogsController {
   constructor(
-    private blogsService: BlogsService,
-    private blogsRepository: BlogsSqlRepository,
     private blogsSQLquery: BlogsSQLqueryRepository,
     private command: CommandBus,
-    private postsService: PostsService,
   ) {}
 
   @Get('/')
   async findAllBlogsForUsers(
     @Query() query: BlogPaginationDto,
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
-    return this.blogsSQLquery.getBlogsForPublic(query); // сделано
+    return this.blogsSQLquery.getBlogsForPublic(query);
   }
 
   @Get('/:blogId/posts')
@@ -38,14 +34,13 @@ export class BlogsController {
     @Query() dto: PaginationDto,
     @Token() userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    // return this.postsService.findPostByBlogId(blogId, dto, userId); // это не сделано
     return this.command.execute(
       new FindPostsByBlogIdCommand(blogId, dto, userId),
-    ); // это не сделано
+    );
   }
 
   @Get('/:id')
   async findBlogById(@Param('id') id: string): Promise<BlogsViewModel> {
-    return this.command.execute(new FindBlogByIdCommand(id)); // сделано
+    return this.command.execute(new FindBlogByIdCommand(id));
   }
 }
