@@ -27,6 +27,7 @@ import { CreateCommentForPostCommand } from '../comments/use-cases/createComment
 import { CreateLikeForPostCommand } from './use-cases/createLikeForPost.use-case';
 import { PostsQuerySqlRepository } from './repository/postsQuerySql.repository';
 import { FindPostByIdCommand } from './use-cases/findPostById.use-case';
+import { LikesEntity } from './domain/entities/likes.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -102,7 +103,7 @@ export class PostsController {
     @User() user: UserEntity,
     @Param('postId') postId: string,
     @Body() dto: LikeStatusDto,
-  ): Promise<boolean> {
+  ): Promise<LikesEntity> {
     return this.command.execute(
       new CreateLikeForPostCommand(user, postId, dto),
     );
