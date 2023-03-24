@@ -6,6 +6,7 @@ import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { LikesEntity } from '../domain/entities/likes.entity';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { CommentsEntity } from '../../comments/domain/comments.entity';
 
 @Injectable()
 export class PostsQuerySqlRepository {
@@ -90,5 +91,40 @@ export class PostsQuerySqlRepository {
       dto.pageSize,
       postsWithLikes,
     );
+  }
+  async findPostsByBlogId(blogId: string, dto: PaginationDto) {
+    const builder = this.postsTable
+      .createQueryBuilder('posts')
+      .addSelect('posts.userId', 'userId')
+      .addSelect('posts.isUserBanned', 'isUserBanned')
+      .addSelect('posts.isBlogBanned', 'isBlogBanned')
+      .orderBy(
+        `posts.${dto.sortBy}`,
+        dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+      )
+      .where('posts.isUserBanned = :isUserBanned')
+      .where('posts.isBlogBanned = :isBlogBanned')
+      .andWhere('posts.blogId = :blogId', { blogId: blogId })
+      .setParameters({
+        isUserBanned: false,
+        isBlogBanned: false,
+      });
+    const [posts, total] = await builder
+      .take(dto.pageSize)
+      .skip((dto.pageNumber - 1) * dto.pageSize)
+      .getManyAndCount();
+    return new PaginationViewModel<PostsEntity[]>(
+      total,
+      dto.pageNumber,
+      dto.pageSize,
+      posts,
+    );
+  }
+  async getCountCollection(blogId: string): Promise<number> {
+    return this.postsTable.count({
+      where: {
+        blogId: blogId,
+      },
+    });
   }
 }

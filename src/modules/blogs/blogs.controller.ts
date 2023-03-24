@@ -13,6 +13,7 @@ import { BlogsSqlRepository } from './repository/blogs.sql.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { FindBlogByIdCommand } from './use-cases/findBlogById.use-case';
 import { BlogsSQLqueryRepository } from './repository/blogs.SQLquery.repository';
+import { FindPostsByBlogIdCommand } from './use-cases/findPostsByBlogId.use-case';
 
 @Controller('blogs')
 export class BlogsController {
@@ -37,7 +38,10 @@ export class BlogsController {
     @Query() dto: PaginationDto,
     @Token() userId: string,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
-    return this.postsService.findPostByBlogId(blogId, dto, userId); // это не сделано
+    // return this.postsService.findPostByBlogId(blogId, dto, userId); // это не сделано
+    return this.command.execute(
+      new FindPostsByBlogIdCommand(blogId, dto, userId),
+    ); // это не сделано
   }
 
   @Get('/:id')
