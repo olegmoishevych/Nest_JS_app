@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CommentsEntity } from '../domain/comments.entity';
 import { PostsEntity } from '../../posts/domain/entities/posts.entity';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
@@ -22,5 +22,8 @@ export class CommentsSQLRepository {
   }
   async findCommentById(id: string): Promise<CommentsEntity> {
     return this.commentsTable.findOneBy({ id });
+  }
+  async deleteCommentById(commentId: string): Promise<DeleteResult> {
+    return this.commentsTable.delete({ id: commentId });
   }
 }

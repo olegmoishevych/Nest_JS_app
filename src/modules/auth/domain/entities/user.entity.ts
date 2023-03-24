@@ -13,7 +13,6 @@ import { randomUUID } from 'crypto';
 import { PasswordRecoveryEntity } from './passwordRecoveryEntity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
-import { LikesEntity } from '../../../posts/domain/entities/likes.entity';
 import { DevicesEntity } from '../../../devices/domain/entities/devices.entity';
 
 @Entity('User')

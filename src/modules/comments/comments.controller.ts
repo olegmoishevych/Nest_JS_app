@@ -21,6 +21,8 @@ import { FindCommentByIdCommand } from './use-cases/findCommentById.use-case';
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { CreateLikeForCommentCommand } from './use-cases/createLikeForCommentUseCase';
 import { LikesEntity } from '../posts/domain/entities/likes.entity';
+import { DeleteCommentByIdCommand } from './use-cases/deleteCommentById.use-case';
+import { DeleteResult } from 'typeorm';
 
 @Controller('comments')
 export class CommentsController {
@@ -34,7 +36,6 @@ export class CommentsController {
     @Param('id') id: string,
     @Token() userId: string,
   ): Promise<CommentsViewModal> {
-    // return this.commentsService.findCommentById(id, userId);
     return this.command.execute(new FindCommentByIdCommand(id, userId));
   }
 
@@ -42,10 +43,11 @@ export class CommentsController {
   @HttpCode(204)
   @Delete('/:commentId')
   async deleteCommentByCommentId(
-    @User() user: UserModel,
+    @User() user: UserEntity,
     @Param('commentId') commentId: string,
-  ): Promise<CommentsViewModal> {
-    return this.commentsService.findCommentByIdAndDelete(commentId, user.id);
+  ): Promise<DeleteResult> {
+    // return this.commentsService.findCommentByIdAndDelete(commentId, user.id);
+    return this.command.execute(new DeleteCommentByIdCommand(user, commentId));
   }
 
   @UseGuards(JwtAuthGuard)

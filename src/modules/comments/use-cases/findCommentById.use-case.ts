@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommand } from '@nestjs/cqrs';
 import { CommentsSQLRepository } from '../repository/commentsSQL.repository';
 import { CommentsSQLqueryRepository } from '../repository/commentsSQLquery.repository';
+import { CommentsViewModal } from '../schema/comments.schema';
 
 @Injectable()
 export class FindCommentByIdCommand {
