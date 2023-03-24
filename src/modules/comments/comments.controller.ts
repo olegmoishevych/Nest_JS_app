@@ -24,6 +24,7 @@ import { LikesEntity } from '../posts/domain/entities/likes.entity';
 import { DeleteCommentByIdCommand } from './use-cases/deleteCommentById.use-case';
 import { DeleteResult } from 'typeorm';
 import { UpdateCommentByIdCommand } from './use-cases/updateCommentById.use-case';
+import { CommentsEntity } from './domain/comments.entity';
 
 @Controller('comments')
 export class CommentsController {
@@ -57,12 +58,7 @@ export class CommentsController {
     @User() user: UserEntity,
     @Param('commentId') commentId: string,
     @Body() dto: CommentsDto,
-  ): Promise<CommentsViewModal | any> {
-    // return this.commentsService.updateCommentByCommentId(
-    //   commentId,
-    //   user.id,
-    //   dto.content,
-    // );
+  ): Promise<CommentsEntity> {
     return this.command.execute(
       new UpdateCommentByIdCommand(user, commentId, dto),
     );

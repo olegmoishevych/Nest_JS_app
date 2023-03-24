@@ -26,4 +26,7 @@ export class CommentsSQLRepository {
   async deleteCommentById(commentId: string): Promise<DeleteResult> {
     return this.commentsTable.delete({ id: commentId });
   }
+  async saveResult(comment: CommentsEntity): Promise<CommentsEntity> {
+    return this.commentsTable.save(comment);
+  }
 }
