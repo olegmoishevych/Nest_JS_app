@@ -5,7 +5,6 @@ import { UserBannedEntity } from '../domain/entities/user-banned.entity';
 import { BannedUserDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsUserViewModel } from '../schemas/user-banned.schema';
-import { CommentsForPostsViewModal } from '../../comments/schema/comments.schema';
 
 @Injectable()
 export class BannedUserQueryRepository {
@@ -14,43 +13,40 @@ export class BannedUserQueryRepository {
     private bannedUserTable: Repository<UserBannedEntity>,
   ) {}
 
-  async getBannedUsersForBlog(blogId: string, dto: BannedUserDto) {
-    // : Promise<PaginationViewModel<BlogsUserViewModel[]>> {
-    // const user = await this.bannedUserTable
-    //   .createQueryBuilder('user-banned')
-    //   .leftJoinAndSelect('user-banned.banInfo', 'banInfo')
-    //   // .addSelect('blog.isUserBanned', 'isUserBanned')
-    //   // .where('blogId = :blogId', { blogId: blogId })
-    //   .where('banInfo.isBanned = true')
-    //   .orderBy(
-    //     `user-banned.${dto.sortBy}`,
-    //     dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-    //   );
-    // if (dto.searchLoginTerm) {
-    //   user.where('user-banned.name ILIKE :name', {
-    //     name: `%${dto.searchLoginTerm}%`,
-    //   });
-    // }
-    // const [users, total] = await user
-    //   // .select([
-    //   //   'comment.id',
-    //   //   'comment.content',
-    //   //   'commentatorInfo.userId',
-    //   //   'commentatorInfo.userLogin',
-    //   //   'comment.createdAt',
-    //   //   'postInfo.id',
-    //   //   'postInfo.title',
-    //   //   'postInfo.blogId',
-    //   //   'postInfo.blogName',
-    //   // ])
-    //   .take(dto.pageSize)
-    //   .skip((dto.pageNumber - 1) * dto.pageSize)
-    //   .getManyAndCount();
-    // return new PaginationViewModel<CommentsForPostsViewModal[] | any>(
-    //   total,
-    //   dto.pageNumber,
-    //   dto.pageSize,
-    //   users,
-    // );
+  async getBannedUsersForBlog(
+    blogId: string,
+    dto: BannedUserDto,
+  ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
+    const builder = await this.bannedUserTable
+      .createQueryBuilder('banned')
+      .leftJoinAndSelect('banned.banInfo', 'banInfo')
+      .where('banned.blogId = :blogId', { blogId: blogId })
+      .andWhere('banInfo.isBanned = true');
+    if (dto.searchLoginTerm) {
+      builder.where('banned.login ILIKE :login', {
+        login: `%${dto.searchLoginTerm}%`,
+      });
+    }
+    const [users, total] = await builder
+      .select([
+        'banned.id',
+        'banned.login',
+        'banInfo.isBanned',
+        'banInfo.banDate',
+        'banInfo.banReason',
+      ])
+      .take(dto.pageSize)
+      .skip((dto.pageNumber - 1) * dto.pageSize)
+      // .orderBy(
+      //   `banned.${dto.sortBy}`,
+      //   dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+      // )
+      .getManyAndCount();
+    return new PaginationViewModel<BlogsUserViewModel[]>(
+      total,
+      dto.pageNumber,
+      dto.pageSize,
+      users,
+    );
   }
 }

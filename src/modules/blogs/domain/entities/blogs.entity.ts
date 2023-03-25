@@ -54,7 +54,7 @@ export class BlogsEntity {
     // cascade: true,
     // onDelete: 'CASCADE',
   })
-  UserBanned: UserBannedEntity;
+  userBanned: UserBannedEntity;
 
   updateBlog(updateBlogType: BlogsDto) {
     const updatedBlog = (this.name = updateBlogType.name);

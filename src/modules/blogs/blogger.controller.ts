@@ -47,7 +47,6 @@ import { GetBannedUsersCommand } from './use-cases/getBannedUsers.use-case';
 @Controller('blogger')
 export class BloggerController {
   constructor(
-    public blogsService: BlogsService,
     public blogsQueryRepo: BlogsSQLqueryRepository,
     public commentsQueryRepo: CommentsSQLqueryRepository,
     private commandBus: CommandBus,
@@ -150,9 +149,7 @@ export class BloggerController {
     @Body() dto: BanUserForBloggerDto,
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
-    return this.commandBus.execute(
-      new BanUserByIdCommand(id, dto, user), // не доделал
-    );
+    return this.commandBus.execute(new BanUserByIdCommand(id, dto, user));
   }
 
   @UseGuards(JwtAuthGuard)
@@ -162,6 +159,6 @@ export class BloggerController {
     @Query() dto: BannedUserDto,
     @User() user: UserEntity,
   ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
-    return this.commandBus.execute(new GetBannedUsersCommand(id, dto, user)); // не доделал
+    return this.commandBus.execute(new GetBannedUsersCommand(id, dto, user));
   }
 }

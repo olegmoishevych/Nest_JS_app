@@ -8,7 +8,7 @@ import {
 import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
 import { BlogsEntity } from './blogs.entity';
 
-@Entity('User-banned')
+@Entity('Banned')
 export class UserBannedEntity {
   @PrimaryGeneratedColumn()
   id: string;
@@ -23,7 +23,7 @@ export class UserBannedEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
-  @ManyToOne(() => BlogsEntity, (b) => b.UserBanned, {
+  @ManyToOne(() => BlogsEntity, (b) => b.userBanned, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
