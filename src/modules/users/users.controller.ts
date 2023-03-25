@@ -29,6 +29,7 @@ import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from './repository/users.sql.repository';
 import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repository';
 import { UsersSQLQueryRepository } from './repository/users.SQL.query.repository';
+import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
 
 @Controller('sa')
 export class UsersController {
@@ -77,9 +78,10 @@ export class UsersController {
   @HttpCode(204)
   async banUserById(
     @Param('id') id: string,
-    @Body() banUserModel: BanUserDto,
+    @Body() dto: BanUserDto,
   ): Promise<boolean> {
-    return this.usersService.banUserById(id, banUserModel);
+    // return this.usersService.banUserById(id, dto);
+    return this.commandBus.execute(new BanUserByIdCommand(id, dto));
   }
 
   @UseGuards(BasicAuthGuard)
