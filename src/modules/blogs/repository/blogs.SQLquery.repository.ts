@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogsEntity } from '../domain/entities/blogs.entity';
 import { Repository } from 'typeorm';
-import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
+import {
+  BannedUserDto,
+  BlogPaginationDto,
+} from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../schemas/blogs.schema';
 import { UserEntity } from '../../auth/domain/entities/user.entity';

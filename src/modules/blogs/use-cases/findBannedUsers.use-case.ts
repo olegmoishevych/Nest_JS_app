@@ -7,6 +7,7 @@ import { CommandHandler, ICommand } from '@nestjs/cqrs';
 import { BannedUserDto } from '../../helpers/dto/pagination.dto';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
 import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
+import { BlogsSQLqueryRepository } from '../repository/blogs.SQLquery.repository';
 
 @Injectable()
 export class FindBannedUsersCommand {
@@ -18,7 +19,10 @@ export class FindBannedUsersCommand {
 }
 @CommandHandler(FindBannedUsersCommand)
 export class FindBannedUsersUseCase implements ICommand {
-  constructor(public blogsRepo: BlogsSqlRepository) {}
+  constructor(
+    public blogsRepo: BlogsSqlRepository,
+    public blogsQueryRepo: BlogsSQLqueryRepository,
+  ) {}
   async execute(command: FindBannedUsersCommand) {
     const blog = await this.blogsRepo.findBlogById(command.id);
     if (!blog) throw new NotFoundException(['Blog not found']);

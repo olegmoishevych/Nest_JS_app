@@ -48,7 +48,6 @@ export class BloggerController {
   constructor(
     public blogsService: BlogsService,
     public blogsQueryRepo: BlogsSQLqueryRepository,
-    public commentsRepository: CommentsRepository,
     public commentsQueryRepo: CommentsSQLqueryRepository,
     private commandBus: CommandBus,
   ) {}

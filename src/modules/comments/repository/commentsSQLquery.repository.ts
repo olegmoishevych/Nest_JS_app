@@ -111,25 +111,41 @@ export class CommentsSQLqueryRepository {
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
     const blog = await this.blogsTable
       .createQueryBuilder('blog')
-      // .select('DISTINCT blog.id')
-      .where('blog.blogOwnerInfo.userId = :userId', { userId });
-    console.log('blog', blog);
+      .leftJoinAndSelect('blog.blogOwnerInfo', 'blogOwnerInfo')
+      .addSelect('blog.isUserBanned', 'isUserBanned')
+      .where('blogOwnerInfo.id = :id', { id: userId })
+      .select('blog.id')
+      .getRawOne();
     const postByBlogId = await this.postsTable
-      .createQueryBuilder('blog')
-      .select('DISTINCT blog.id')
-      .where('blog.blogId = :blogId', { blog });
+      .createQueryBuilder('post')
+      .addSelect('post.isUserBanned', 'isUserBanned')
+      .where('post.blogId = :blogId', { blogId: blog.blog_id })
+      .select('post.id')
+      .getRawOne();
     const builder = this.commentsTable
       .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.commentatorInfo', 'commentatorInfo')
+      .leftJoinAndSelect('comment.postInfo', 'postInfo')
+      .addSelect('comment.isUserBanned', 'isUserBanned')
+      .where('comment.postId = :postId', {
+        postId: postByBlogId.post_id,
+      })
       .orderBy(
         `comment.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      )
-      // .where('comment.isUserBanned = :isUserBanned')
-      .where('comment.postId = :postId', { postId: postByBlogId });
-    // .setParameters({
-    //   isUserBanned: false,
-    // });
+      );
     const [comments, total] = await builder
+      .select([
+        'comment.id',
+        'comment.content',
+        'commentatorInfo.userId',
+        'commentatorInfo.userLogin',
+        'comment.createdAt',
+        'postInfo.id',
+        'postInfo.title',
+        'postInfo.blogId',
+        'postInfo.blogName',
+      ])
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
