@@ -112,6 +112,7 @@ import { FindCommentsByPostIdUseCase } from './posts/use-cases/findCommentsByPos
 import { FindPostsByBlogIdUseCase } from './blogs/use-cases/findPostsByBlogId.use-case';
 import { GetCommentsForAllPostsUseCase } from './blogs/use-cases/getCommentsForAllPosts.use-case';
 import { FindBannedUsersUseCase } from './blogs/use-cases/findBannedUsers.use-case';
+import { GetBannedUsersUseCase } from './blogs/use-cases/getBannedUsers.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -168,6 +169,7 @@ const useCases = [
   FindPostsByBlogIdUseCase,
   GetCommentsForAllPostsUseCase,
   FindBannedUsersUseCase,
+  GetBannedUsersUseCase,
 ];
 
 const services = [
