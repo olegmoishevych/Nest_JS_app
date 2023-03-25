@@ -26,7 +26,7 @@ export class PasswordRecoveryUseCase {
       ]);
     const recoveryCode = user.createPasswordRecovery(command.email);
     try {
-      await this.usersRepository.saveUser(user);
+      await this.usersRepository.saveResult(user);
       await this.emailService.sendPasswordRecoveryCode(
         user.email,
         recoveryCode,

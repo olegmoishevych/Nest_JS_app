@@ -21,7 +21,7 @@ export class ConfirmationUseCase implements ICommandHandler {
       ]);
     try {
       userByCode.confirmedCode(command.code);
-      await this.usersRepository.saveUser(userByCode);
+      await this.usersRepository.saveResult(userByCode);
       return true;
     } catch (e) {
       console.log(e);

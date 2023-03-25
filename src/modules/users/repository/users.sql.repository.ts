@@ -127,7 +127,7 @@ export class UsersSqlRepository {
     ]);
   }
 
-  async saveUser(user: UserEntity): Promise<UserEntity> {
+  async saveResult(user: UserEntity): Promise<UserEntity> {
     return this.userTable.save(user);
   }
 }

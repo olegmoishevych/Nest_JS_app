@@ -26,6 +26,6 @@ export class NewPasswordUseCase {
       ]);
     const passwordHash = await bcrypt.hash(command.dto.newPassword, 5);
     user.updateUserHash(passwordHash);
-    return this.usersRepository.saveUser(user);
+    return this.usersRepository.saveResult(user);
   }
 }

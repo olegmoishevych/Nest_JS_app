@@ -8,8 +8,6 @@ import { CreatePostDto } from '../../posts/dto/createPostDto';
 import { PostsSQLRepository } from '../../posts/repository/postsSQL.repository';
 import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
-import { PostsEntity } from '../../posts/domain/entities/posts.entity';
-import { PostsViewModal } from '../../posts/schemas/posts.schema';
 
 @Injectable()
 export class CreatePostByBlogIdCommand {

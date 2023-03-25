@@ -14,6 +14,7 @@ import { PasswordRecoveryEntity } from './passwordRecoveryEntity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { DevicesEntity } from '../../../devices/domain/entities/devices.entity';
+import { BanUserDto } from '../../../users/dto/userDto';
 
 @Entity('User')
 export class UserEntity {
@@ -91,11 +92,24 @@ export class UserEntity {
   updateUserHash(passwordHash: string) {
     this.passwordHash = passwordHash;
   }
-
+  banUser(userId: string, user: UserEntity, dto: BanUserDto) {
+    if (user.banInfo.isBanned) {
+      this.banInfo.isBanned = false;
+      this.banInfo.banDate = null;
+      this.banInfo.banReason = null;
+      this.banInfo.userId = null;
+    } else {
+      this.banInfo.isBanned = true;
+      this.banInfo.banDate = new Date().toISOString();
+      this.banInfo.banReason = dto.banReason;
+      this.banInfo.userId = userId;
+    }
+  }
   static create(login: string, email: string, passwordHash: string) {
     const banInfo = new BanInfoEntity();
     banInfo.isBanned = false;
     (banInfo.banDate = null), (banInfo.banReason = null);
+    banInfo.userId = null;
 
     const emailConfirmation = new EmailConfirmationEntity();
     emailConfirmation.confirmationCode = randomUUID();

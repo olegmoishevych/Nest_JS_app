@@ -27,6 +27,13 @@ export class LikesEntity {
   @ManyToOne(() => CommentsEntity, (c) => c.likes, {})
   comments: CommentsEntity;
 
+  banUser(user: UserEntity) {
+    if (user.banInfo.isBanned) {
+      this.isUserBanned = false;
+    } else {
+      this.isUserBanned = true;
+    }
+  }
   static createLikeForPost(
     postId: string,
     user: UserEntity,

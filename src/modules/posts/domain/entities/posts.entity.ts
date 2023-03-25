@@ -11,6 +11,7 @@ import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { LikesEntity } from './likes.entity';
 import { CreatePostDto } from '../../dto/createPostDto';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
+import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
 
 @Entity('Posts')
 export class PostsEntity {
@@ -57,13 +58,15 @@ export class PostsEntity {
   })
   @JoinColumn()
   likes: LikesEntity;
-  @OneToMany(() => CommentsEntity, (c) => c.postInfo, {
-    // eager: true,
-    // cascade: true,
-    // onDelete: 'CASCADE',
-  })
-  // @JoinColumn()
+  @OneToMany(() => CommentsEntity, (c) => c.postInfo, {})
   comments: CommentsEntity;
+  @ManyToOne(() => BanInfoEntity, (b) => b.posts, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  banInfo: BanInfoEntity;
 
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;
@@ -76,6 +79,10 @@ export class PostsEntity {
     newPostByBlogId: CreatePostDto,
     blog: BlogsEntity,
   ) {
+    const banInfo = new BanInfoEntity();
+    banInfo.isBanned = false;
+    (banInfo.banDate = null), (banInfo.banReason = null);
+    banInfo.userId = null;
     const post = new PostsEntity();
     post.userId = user.id;
     post.isUserBanned = false;
@@ -91,6 +98,7 @@ export class PostsEntity {
       dislikesCount: 0,
       myStatus: 'None',
     };
+    post.banInfo = banInfo;
     return post;
   }
 }

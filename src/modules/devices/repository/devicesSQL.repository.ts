@@ -61,4 +61,7 @@ export class DevicesSQLRepository {
   async saveResult(newSession: DevicesEntity): Promise<DevicesEntity> {
     return this.devicesTable.save(newSession);
   }
+  async deleteSessionsBanUserById(userId: string): Promise<DeleteResult> {
+    return this.devicesTable.delete({ userId });
+  }
 }

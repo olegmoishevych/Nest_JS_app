@@ -8,11 +8,14 @@ import {
 import { UserEntity } from './user.entity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { UserBannedEntity } from '../../../blogs/domain/entities/user-banned.entity';
+import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 
 @Entity('BanInfo')
 export class BanInfoEntity {
   @PrimaryGeneratedColumn()
   id: string;
+  @Column({ nullable: true })
+  userId: string;
   @Column({ default: false })
   isBanned: boolean;
   @Column({ nullable: true })
@@ -25,4 +28,6 @@ export class BanInfoEntity {
   blog: BlogsEntity;
   @OneToMany(() => UserBannedEntity, (u) => u.banInfo, { onDelete: 'CASCADE' })
   userBanned: UserBannedEntity;
+  @OneToMany(() => PostsEntity, (p) => p.banInfo, { onDelete: 'CASCADE' })
+  posts: PostsEntity;
 }

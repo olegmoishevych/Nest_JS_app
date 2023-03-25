@@ -29,7 +29,7 @@ import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from './repository/users.sql.repository';
 import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repository';
 import { UsersSQLQueryRepository } from './repository/users.SQL.query.repository';
-import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
+import { BanUserByIdForSaCommand } from './use-cases/ban-user-by-id-for-sa-use.case';
 
 @Controller('sa')
 export class UsersController {
@@ -80,8 +80,7 @@ export class UsersController {
     @Param('id') id: string,
     @Body() dto: BanUserDto,
   ): Promise<boolean> {
-    // return this.usersService.banUserById(id, dto);
-    return this.commandBus.execute(new BanUserByIdCommand(id, dto));
+    return this.commandBus.execute(new BanUserByIdForSaCommand(id, dto));
   }
 
   @UseGuards(BasicAuthGuard)

@@ -27,7 +27,7 @@ export class EmailResendingUseCase implements ICommandHandler {
       ]);
     userByEmail.updateConfirmationDate();
     try {
-      await this.usersRepository.saveUser(userByEmail);
+      await this.usersRepository.saveResult(userByEmail);
       await this.emailService.sendConfirmationCodeByEmail(
         command.email,
         userByEmail.emailConfirmation.confirmationCode,

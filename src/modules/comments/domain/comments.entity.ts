@@ -47,6 +47,11 @@ export class CommentsEntity {
   })
   @JoinColumn()
   postInfo: PostsEntity;
+  banUser(user: UserEntity) {
+    user.banInfo.isBanned
+      ? (this.isUserBanned = false)
+      : (this.isUserBanned = true);
+  }
   updateComment(dto: CommentsDto): void {
     this.content = dto.content;
   }
