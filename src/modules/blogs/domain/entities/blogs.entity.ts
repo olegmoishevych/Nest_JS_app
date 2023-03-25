@@ -81,10 +81,11 @@ export class BlogsEntity {
   }
   banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
     if (blog.banInfo.isBanned) {
-      this.banInfo.isBanned = dto.isBanned;
-      this.banInfo.banDate = null;
+      this.banInfo.isBlogBanned = dto.isBanned;
+      this.banInfo.userId = null;
     } else {
-      this.banInfo.isBanned = dto.isBanned;
+      this.banInfo.isBlogBanned = dto.isBanned;
+      this.banInfo.userId = blog.blogOwnerInfo.id;
       this.banInfo.banDate = new Date().toISOString();
     }
   }
@@ -102,6 +103,7 @@ export class BlogsEntity {
     const banInfo = new BanInfoEntity();
     banInfo.isBanned = false;
     banInfo.banDate = null;
+    banInfo.isBlogBanned = false;
 
     const blogForDb = new BlogsEntity();
     blogForDb.name = name;

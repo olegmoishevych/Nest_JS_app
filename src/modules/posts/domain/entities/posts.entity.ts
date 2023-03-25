@@ -4,6 +4,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
@@ -12,6 +13,7 @@ import { LikesEntity } from './likes.entity';
 import { CreatePostDto } from '../../dto/createPostDto';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
 import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
+import { BanBlogUserDto } from '../../../users/dto/userDto';
 
 @Entity('Posts')
 export class PostsEntity {
@@ -19,8 +21,6 @@ export class PostsEntity {
   id: string;
   @Column()
   userId: string;
-  @Column({ default: false })
-  isUserBanned: boolean;
   @Column({ default: false })
   isBlogBanned: boolean;
   @Column()
@@ -60,32 +60,29 @@ export class PostsEntity {
   likes: LikesEntity;
   @OneToMany(() => CommentsEntity, (c) => c.postInfo, {})
   comments: CommentsEntity;
-  @ManyToOne(() => BanInfoEntity, (b) => b.posts, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  banInfo: BanInfoEntity;
+  // @OneToOne(() => BanInfoEntity, (b) => b.posts, {
+  //   eager: true,
+  //   cascade: true,
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn()
+  // banInfo: BanInfoEntity;
 
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;
     this.shortDescription = updatePost.shortDescription;
     this.content = updatePost.content;
   }
-
   static createPost(
     user: UserEntity,
     newPostByBlogId: CreatePostDto,
     blog: BlogsEntity,
   ) {
-    const banInfo = new BanInfoEntity();
-    banInfo.isBanned = false;
-    (banInfo.banDate = null), (banInfo.banReason = null);
-    banInfo.userId = null;
+    // const banInfo = new BanInfoEntity();
+    // banInfo.isBlogBanned = false;
+    // banInfo.userId = null;
     const post = new PostsEntity();
     post.userId = user.id;
-    post.isUserBanned = false;
     post.isBlogBanned = false;
     post.title = newPostByBlogId.title;
     post.shortDescription = newPostByBlogId.shortDescription;
@@ -98,7 +95,7 @@ export class PostsEntity {
       dislikesCount: 0,
       myStatus: 'None',
     };
-    post.banInfo = banInfo;
+    // post.banInfo = banInfo;
     return post;
   }
 }

@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommand } from '@nestjs/cqrs';
 import { BanBlogUserDto } from '../dto/userDto';
 import { BlogsSqlRepository } from '../../blogs/repository/blogs.sql.repository';
+import { PostsSQLRepository } from '../../posts/repository/postsSQL.repository';
+import { PostsEntity } from '../../posts/domain/entities/posts.entity';
 
 @Injectable()
 export class BanBlogByIdCommand {
@@ -10,7 +12,10 @@ export class BanBlogByIdCommand {
 
 @CommandHandler(BanBlogByIdCommand)
 export class BanBlogByIdUseCase implements ICommand {
-  constructor(public blogsRepo: BlogsSqlRepository) {}
+  constructor(
+    public blogsRepo: BlogsSqlRepository,
+    public postsRepo: PostsSQLRepository,
+  ) {}
 
   async execute(command: BanBlogByIdCommand): Promise<boolean> {
     const blog = await this.blogsRepo.findBlogById(command.id);

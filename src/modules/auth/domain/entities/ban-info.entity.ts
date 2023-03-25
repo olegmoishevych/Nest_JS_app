@@ -15,6 +15,8 @@ export class BanInfoEntity {
   @PrimaryGeneratedColumn()
   id: string;
   @Column({ nullable: true })
+  isBlogBanned: boolean;
+  @Column({ nullable: true })
   userId: string;
   @Column({ default: false })
   isBanned: boolean;
@@ -28,6 +30,6 @@ export class BanInfoEntity {
   blog: BlogsEntity;
   @OneToMany(() => UserBannedEntity, (u) => u.banInfo, { onDelete: 'CASCADE' })
   userBanned: UserBannedEntity;
-  @OneToMany(() => PostsEntity, (p) => p.banInfo, { onDelete: 'CASCADE' })
-  posts: PostsEntity;
+  // @OneToOne(() => PostsEntity, (p) => p.banInfo, { onDelete: 'CASCADE' })
+  // posts: PostsEntity;
 }

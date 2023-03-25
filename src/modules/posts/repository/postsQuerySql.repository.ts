@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsEntity } from '../domain/entities/posts.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { LikesEntity } from '../domain/entities/likes.entity';
 import { PostsViewModal } from '../schemas/posts.schema';
@@ -92,24 +92,33 @@ export class PostsQuerySqlRepository {
     );
   }
 
-  async findPostsByBlogId(blogId: string, dto: PaginationDto) {
+  async findPostsByBlogId(
+    blogId: string,
+    dto: PaginationDto,
+  ): Promise<PaginationViewModel<PostsEntity[]>> {
     const builder = this.postsTable
       .createQueryBuilder('posts')
+      .leftJoinAndSelect('posts.blog', 'blog')
+      .leftJoinAndSelect('blog.banInfo', 'banInfo')
       .addSelect('posts.userId', 'userId')
-      .addSelect('posts.isUserBanned', 'isUserBanned')
       .addSelect('posts.isBlogBanned', 'isBlogBanned')
+      .where('banInfo.isBlogBanned = false')
+      .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .orderBy(
         `posts.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      )
-      .where('posts.isUserBanned = :isUserBanned')
-      .where('posts.isBlogBanned = :isBlogBanned')
-      .andWhere('posts.blogId = :blogId', { blogId: blogId })
-      .setParameters({
-        isUserBanned: false,
-        isBlogBanned: false,
-      });
+      );
     const [posts, total] = await builder
+      .select([
+        'posts.id',
+        'posts.title',
+        'posts.shortDescription',
+        'posts.content',
+        'posts.blogId',
+        'posts.blogName',
+        'posts.createdAt',
+        'posts.extendedLikesInfo',
+      ])
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
@@ -122,10 +131,12 @@ export class PostsQuerySqlRepository {
   }
 
   async getCountCollection(blogId: string): Promise<number> {
-    return this.postsTable.count({
-      where: {
-        blogId: blogId,
-      },
-    });
+    return this.postsTable
+      .createQueryBuilder('posts')
+      .leftJoinAndSelect('posts.blog', 'blog')
+      .leftJoinAndSelect('blog.banInfo', 'banInfo')
+      .where('banInfo.isBlogBanned = false')
+      .andWhere('posts.blogId = :blogId', { blogId: blogId })
+      .getCount();
   }
 }

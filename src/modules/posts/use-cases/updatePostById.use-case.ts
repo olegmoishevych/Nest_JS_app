@@ -34,6 +34,6 @@ export class UpdatePostByIdUseCase implements ICommand {
     const updatePost = new PostsEntity();
     updatePost.updatePostByBlogsAndPostsId(updatePost);
     // return this.postsRepo.savePost(command.user, blog, command.updatePost);
-    return this.postsRepo.save(updatePost);
+    return this.postsRepo.saveResult(updatePost);
   }
 }

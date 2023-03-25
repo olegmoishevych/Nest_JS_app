@@ -62,8 +62,8 @@ export class BlogsSQLqueryRepository {
       .orderBy(
         `b.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      )
-      .where('banInfo.isBanned = false');
+      );
+    // .where('banInfo.isBanned = false');
 
     // if (settings.isAdminRequesting) {
     //   builder.orWhere('banInfo.isBanned = true').leftJoinAndSelect('b.user', 'u');

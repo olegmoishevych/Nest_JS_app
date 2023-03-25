@@ -47,6 +47,6 @@ export class UpdatePostByBlogsAndPostsIdUseCase implements ICommandHandler {
         { message: 'Its not your blog', field: 'blog' },
       ]);
     post.updatePostByBlogsAndPostsId(command.updatePost);
-    return this.postsRepo.save(post);
+    return this.postsRepo.saveResult(post);
   }
 }
