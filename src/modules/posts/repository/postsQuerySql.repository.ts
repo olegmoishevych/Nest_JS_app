@@ -6,7 +6,6 @@ import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { LikesEntity } from '../domain/entities/likes.entity';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
-import { CommentsEntity } from '../../comments/domain/comments.entity';
 
 @Injectable()
 export class PostsQuerySqlRepository {
@@ -92,6 +91,7 @@ export class PostsQuerySqlRepository {
       postsWithLikes,
     );
   }
+
   async findPostsByBlogId(blogId: string, dto: PaginationDto) {
     const builder = this.postsTable
       .createQueryBuilder('posts')
@@ -120,6 +120,7 @@ export class PostsQuerySqlRepository {
       posts,
     );
   }
+
   async getCountCollection(blogId: string): Promise<number> {
     return this.postsTable.count({
       where: {

@@ -14,13 +14,6 @@ export class UserBannedEntity {
   id: string;
   @Column()
   login: string;
-  @ManyToOne(() => BlogsEntity, (b) => b.UserBanned, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  blog: BlogsEntity;
   @Column()
   blogId: string;
   @ManyToOne(() => BanInfoEntity, (b) => b.userBanned, {
@@ -30,4 +23,11 @@ export class UserBannedEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
+  @ManyToOne(() => BlogsEntity, (b) => b.UserBanned, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  blog: BlogsEntity;
 }

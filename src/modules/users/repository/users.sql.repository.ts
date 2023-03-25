@@ -16,69 +16,68 @@ export class UsersSqlRepository {
     private dataSource: DataSource,
   ) {}
 
-  async getAllUsersBySA(
-    dto: UserPaginationDtoWithBanStatusDto,
-  ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
-    const countQuery = `
-      SELECT COUNT(*)
-      FROM public."User"
-      LEFT JOIN "BanInfo"  ON "User"."id" = "BanInfo"."id"
-      WHERE ("User"."login" ilike $1 OR "User"."email" ilike $2)
-        AND
-        CASE
-        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
-        THEN "BanInfo"."isBanned" = false
-        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.Banned}'
-        THEN "BanInfo"."isBanned" = true
-        ELSE "BanInfo"."isBanned" IN (true, false)
-        END`;
-
-    const countResult = await this.dataSource.query(countQuery, [
-      '%' + dto.searchLoginTerm + '%',
-      '%' + dto.searchEmailTerm + '%',
-    ]);
-
-    const dataQuery = `
-      SELECT "User"."id", "User"."login", "User"."email", "User"."createdAt",
-             "BanInfo"."isBanned", "BanInfo"."banDate", "BanInfo"."banReason"
-      FROM public."User"
-      LEFT JOIN "BanInfo"  ON "User"."id" = "BanInfo"."id"
-      WHERE ("User"."login" ilike $1 OR "User"."email" ilike $2)
-        AND
-        CASE
-        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
-        THEN "BanInfo"."isBanned" = false
-        WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.Banned}'
-        THEN "BanInfo"."isBanned" = true
-        ELSE "BanInfo"."isBanned" IN (true, false)
-        END
-        ORDER BY "${dto.sortBy}" ${dto.sortDirection}
-              OFFSET $4 ROWS FETCH NEXT $3 ROWS ONLY`;
-
-    const dataResult = await this.dataSource.query(dataQuery, [
-      '%' + dto.searchLoginTerm + '%',
-      '%' + dto.searchEmailTerm + '%',
-      dto.pageSize,
-      (dto.pageNumber - 1) * dto.pageSize,
-    ]);
-
-    const mappedUsers = dataResult.map((u) => ({
-      id: u.id,
-      login: u.id,
-      email: u.email,
-      createdAt: u.createdAt,
-      banInfo: {
-        isBanned: u.isBanned,
-        banDate: u.banDate,
-        banReason: u.banReason,
-      },
-    }));
-    return new PaginationViewModel(
-      countResult[0].count,
-      dto.pageNumber,
-      dto.pageSize,
-      mappedUsers,
-    );
+  async getAllUsersBySA(dto: UserPaginationDtoWithBanStatusDto) {
+    // : Promise<PaginationViewModel<UsersModel_For_DB[]>> {
+    // const countQuery = `
+    //   SELECT COUNT(*)
+    //   FROM public."User"
+    //   LEFT JOIN "BanInfo"  ON "User"."id" = "BanInfo"."id"
+    //   WHERE ("User"."login" ilike $1 OR "User"."email" ilike $2)
+    //     AND
+    //     CASE
+    //     WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
+    //     THEN "BanInfo"."isBanned" = false
+    //     WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.Banned}'
+    //     THEN "BanInfo"."isBanned" = true
+    //     ELSE "BanInfo"."isBanned" IN (true, false)
+    //     END`;
+    //
+    // const countResult = await this.dataSource.query(countQuery, [
+    //   '%' + dto.searchLoginTerm + '%',
+    //   '%' + dto.searchEmailTerm + '%',
+    // ]);
+    //
+    // const dataQuery = `
+    //   SELECT "User"."id", "User"."login", "User"."email", "User"."createdAt",
+    //          "BanInfo"."isBanned", "BanInfo"."banDate", "BanInfo"."banReason"
+    //   FROM public."User"
+    //   LEFT JOIN "BanInfo"  ON "User"."id" = "BanInfo"."id"
+    //   WHERE ("User"."login" ilike $1 OR "User"."email" ilike $2)
+    //     AND
+    //     CASE
+    //     WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.NotBanned}'
+    //     THEN "BanInfo"."isBanned" = false
+    //     WHEN '${dto.banStatus}' = '${BanStatusFilterEnum.Banned}'
+    //     THEN "BanInfo"."isBanned" = true
+    //     ELSE "BanInfo"."isBanned" IN (true, false)
+    //     END
+    //     ORDER BY "${dto.sortBy}" ${dto.sortDirection}
+    //           OFFSET $4 ROWS FETCH NEXT $3 ROWS ONLY`;
+    //
+    // const dataResult = await this.dataSource.query(dataQuery, [
+    //   '%' + dto.searchLoginTerm + '%',
+    //   '%' + dto.searchEmailTerm + '%',
+    //   dto.pageSize,
+    //   (dto.pageNumber - 1) * dto.pageSize,
+    // ]);
+    // console.log('dataResult', dataResult);
+    // const mappedUsers = dataResult.map((u) => ({
+    //   id: u.id,
+    //   login: u.id,
+    //   email: u.email,
+    //   createdAt: u.createdAt,
+    //   banInfo: {
+    //     isBanned: u.isBanned,
+    //     banDate: u.banDate,
+    //     banReason: u.banReason,
+    //   },
+    // }));
+    // return new PaginationViewModel(
+    //   countResult[0].count,
+    //   dto.pageNumber,
+    //   dto.pageSize,
+    //   mappedUsers,
+    // );
   }
   async createUser(
     login: string,

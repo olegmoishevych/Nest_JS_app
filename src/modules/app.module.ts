@@ -114,6 +114,7 @@ import { GetCommentsForAllPostsUseCase } from './blogs/use-cases/getCommentsForA
 import { FindBannedUsersUseCase } from './blogs/use-cases/findBannedUsers.use-case';
 import { GetBannedUsersUseCase } from './blogs/use-cases/getBannedUsers.use-case';
 import { BannedUserQueryRepository } from './blogs/repository/bannedUserQuery.repository';
+import { UsersSQLQueryRepository } from './users/repository/users.SQL.query.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -208,6 +209,7 @@ const repositories = [
   PostsQuerySqlRepository,
   CommentsSQLqueryRepository,
   BannedUserQueryRepository,
+  UsersSQLQueryRepository,
 ];
 
 const entities = [

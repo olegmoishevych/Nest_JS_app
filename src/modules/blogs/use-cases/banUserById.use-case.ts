@@ -32,30 +32,29 @@ export class BanUserByIdUseCase implements ICommandHandler {
   async execute(command: BanUserByIdCommand) {
     const user = await this.usersRepo.findUserById(command.id);
     if (!user) throw new NotFoundException(['User not found']);
-    // const blogWithOwner = await this.blogsRepo.findBlogById(
-    //   command.banUserModal.blogId,
-    // );
-    // if (!blogWithOwner) throw new NotFoundException(['Blog not found']);
-    // if (blogWithOwner.blogOwnerInfo.id !== command.user.id)
-    //   throw new ForbiddenException([]); // 403 error
-    // const bannedUser = await this.bannedUserRepo.findBannedUserById(
-    //   command.banUserModal.blogId,
-    //   command.id,
-    // );
-    // console.log('bannedUser', bannedUser);
-    // if (!bannedUser && command.banUserModal.isBanned === true) {
-    //   return this.bannedUserRepo.createBannedUser(
-    //     command.id,
-    //     blogWithOwner,
-    //     command.banUserModal,
-    //     command.user,
-    //   );
-    // }
-    // if (bannedUser && command.banUserModal.isBanned === false) {
-    //   return this.bannedUserRepo.deleteBannedUser(
-    //     command.banUserModal.blogId,
-    //     command.id,
-    //   );
-    // }
+    const blogWithOwner = await this.blogsRepo.findBlogById(
+      command.banUserModal.blogId,
+    );
+    if (!blogWithOwner) throw new NotFoundException(['Blog not found']);
+    if (blogWithOwner.blogOwnerInfo.id !== command.user.id)
+      throw new ForbiddenException([]);
+    const bannedUser = await this.bannedUserRepo.findBannedUserById(
+      command.user.id,
+      blogWithOwner.id,
+    );
+    if (!bannedUser && command.banUserModal.isBanned === true) {
+      return this.bannedUserRepo.createBannedUser(
+        command.id,
+        blogWithOwner,
+        command.banUserModal,
+        command.user,
+      );
+    }
+    if (bannedUser && command.banUserModal.isBanned === false) {
+      return this.bannedUserRepo.deleteBannedUser(
+        command.banUserModal.blogId,
+        command.id,
+      );
+    }
   }
 }

@@ -28,6 +28,7 @@ import { DeleteUserCommand } from './use-cases/delete-user.use-case';
 import { DeleteResult } from 'typeorm';
 import { UsersSqlRepository } from './repository/users.sql.repository';
 import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repository';
+import { UsersSQLQueryRepository } from './repository/users.SQL.query.repository';
 
 @Controller('sa')
 export class UsersController {
@@ -35,6 +36,7 @@ export class UsersController {
     public usersService: UsersService,
     public queryRepo: BlogsSQLqueryRepository,
     public usersRepository: UsersSqlRepository,
+    public usersQueryRepo: UsersSQLQueryRepository,
     private commandBus: CommandBus,
     public blogsService: BlogsService,
   ) {}
@@ -44,7 +46,7 @@ export class UsersController {
   async findAllUsers(
     @Query() dto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
-    return this.usersRepository.getAllUsersBySA(dto);
+    return this.usersQueryRepo.getAllUsersBySA(dto);
   }
 
   @UseGuards(BasicAuthGuard)

@@ -147,11 +147,11 @@ export class BloggerController {
   @HttpCode(204)
   async banUserById(
     @Param('id') id: string,
-    @Body() banUserModal: BanUserForBloggerDto,
+    @Body() dto: BanUserForBloggerDto,
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
     return this.commandBus.execute(
-      new BanUserByIdCommand(id, banUserModal, user), // не доделал
+      new BanUserByIdCommand(id, dto, user), // не доделал
     );
   }
 
@@ -162,7 +162,6 @@ export class BloggerController {
     @Query() dto: BannedUserDto,
     @User() user: UserEntity,
   ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
-    // return this.blogsService.getBannedUsers(id, dto, user.id);
-    return this.commandBus.execute(new GetBannedUsersCommand(id, dto, user));
+    return this.commandBus.execute(new GetBannedUsersCommand(id, dto, user)); // не доделал
   }
 }
