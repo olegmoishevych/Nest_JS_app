@@ -42,6 +42,7 @@ import { DeletePostByBlogsAndPostsIdCommand } from './use-cases/deletePostByBlog
 import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
 import { CommentsSQLqueryRepository } from '../comments/repository/commentsSQLquery.repository';
 import { BlogsSQLqueryRepository } from './repository/blogs.SQLquery.repository';
+import { GetBannedUsersCommand } from './use-cases/getBannedUsers.use-case';
 
 @Controller('blogger')
 export class BloggerController {
@@ -161,6 +162,7 @@ export class BloggerController {
     @Query() dto: BannedUserDto,
     @User() user: UserEntity,
   ): Promise<PaginationViewModel<BlogsUserViewModel[]>> {
-    return this.blogsService.getBannedUsers(id, dto, user.id);
+    // return this.blogsService.getBannedUsers(id, dto, user.id);
+    return this.commandBus.execute(new GetBannedUsersCommand(id, dto, user));
   }
 }

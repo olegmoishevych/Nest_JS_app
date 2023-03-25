@@ -113,6 +113,7 @@ import { FindPostsByBlogIdUseCase } from './blogs/use-cases/findPostsByBlogId.us
 import { GetCommentsForAllPostsUseCase } from './blogs/use-cases/getCommentsForAllPosts.use-case';
 import { FindBannedUsersUseCase } from './blogs/use-cases/findBannedUsers.use-case';
 import { GetBannedUsersUseCase } from './blogs/use-cases/getBannedUsers.use-case';
+import { BannedUserQueryRepository } from './blogs/repository/bannedUserQuery.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -206,6 +207,7 @@ const repositories = [
   LikeStatusSQLRepository,
   PostsQuerySqlRepository,
   CommentsSQLqueryRepository,
+  BannedUserQueryRepository,
 ];
 
 const entities = [
