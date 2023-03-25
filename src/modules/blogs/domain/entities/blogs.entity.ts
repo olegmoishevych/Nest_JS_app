@@ -13,6 +13,7 @@ import { BlogsDto } from '../../dto/blogsDto';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { BanUserForBloggerDto } from '../../dto/bloggerDto';
 import { UserBannedEntity } from './user-banned.entity';
+import { BanBlogUserDto } from '../../../users/dto/userDto';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -55,12 +56,6 @@ export class BlogsEntity {
   })
   UserBanned: UserBannedEntity;
 
-  // ban(blogId: string, banUserModal: BanUserForBloggerDto) {
-  //   // this.id = blogId
-  //   this.banInfo.isBanned = banUserModal.isBanned;
-  //   this.banInfo.banDate = new Date().toISOString();
-  //   this.banInfo.banReason = banUserModal.banReason;
-  // }
   updateBlog(updateBlogType: BlogsDto) {
     const updatedBlog = (this.name = updateBlogType.name);
     (this.description = updateBlogType.description),
@@ -83,6 +78,15 @@ export class BlogsEntity {
     bannedUser.blogId = banUserModal.blogId;
     bannedUser.banInfo = banInfo;
     return bannedUser;
+  }
+  banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
+    if (blog.banInfo.isBanned) {
+      this.banInfo.isBanned = dto.isBanned;
+      this.banInfo.banDate = null;
+    } else {
+      this.banInfo.isBanned = dto.isBanned;
+      this.banInfo.banDate = new Date().toISOString();
+    }
   }
   static create(
     id: string,

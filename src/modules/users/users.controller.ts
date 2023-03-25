@@ -20,7 +20,6 @@ import {
 import { PaginationViewModel } from '../helpers/pagination/pagination-view-model';
 import { BasicAuthGuard } from '../auth/guards/basic-auth.guard';
 import { BlogsViewModel } from '../blogs/schemas/blogs.schema';
-import { BlogsService } from '../blogs/service/blogs.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from './use-cases/create-user.use-case';
 import { AuthDto } from '../auth/dto/auth.dto';
@@ -30,6 +29,7 @@ import { UsersSqlRepository } from './repository/users.sql.repository';
 import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repository';
 import { UsersSQLQueryRepository } from './repository/users.SQL.query.repository';
 import { BanUserByIdForSaCommand } from './use-cases/ban-user-by-id-for-sa-use.case';
+import { BanBlogByIdCommand } from './use-cases/banBlogById.use-case';
 
 @Controller('sa')
 export class UsersController {
@@ -39,7 +39,6 @@ export class UsersController {
     public usersRepository: UsersSqlRepository,
     public usersQueryRepo: UsersSQLQueryRepository,
     private commandBus: CommandBus,
-    public blogsService: BlogsService,
   ) {}
 
   @UseGuards(BasicAuthGuard)
@@ -68,9 +67,9 @@ export class UsersController {
   @HttpCode(204)
   async banBlogById(
     @Param('id') id: string,
-    @Body() isBanned: BanBlogUserDto,
+    @Body() dto: BanBlogUserDto,
   ): Promise<boolean> {
-    return this.blogsService.banBlogById(id, isBanned.isBanned);
+    return this.commandBus.execute(new BanBlogByIdCommand(id, dto));
   }
 
   @UseGuards(BasicAuthGuard)
