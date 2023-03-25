@@ -172,6 +172,7 @@ const useCases = [
   GetCommentsForAllPostsUseCase,
   FindBannedUsersUseCase,
   GetBannedUsersUseCase,
+  BanUserByIdUseCase,
 ];
 
 const services = [
