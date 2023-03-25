@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { UserBannedEntity } from '../domain/entities/user-banned.entity';
-import { BlogsEntity } from '../domain/entities/blogs.entity';
-import { UserEntity } from '../../auth/domain/entities/user.entity';
-import { BanUserForBloggerDto } from '../dto/bloggerDto';
 
 @Injectable()
 export class UserBannedSQLRepository {
@@ -12,12 +9,15 @@ export class UserBannedSQLRepository {
     @InjectRepository(UserBannedEntity)
     private userBannedTable: Repository<UserBannedEntity>,
   ) {}
+
   async findBannedUserByBlogId(blogId: string): Promise<UserBannedEntity> {
     return this.userBannedTable.findOneBy({ blogId });
   }
+
   async findBannedUserById(userId: string): Promise<UserBannedEntity> {
     return this.userBannedTable.findOneBy({ id: userId });
   }
+
   // async createBannedUser(
   //   id: string,
   //   blog: BlogsEntity,
