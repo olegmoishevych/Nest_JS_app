@@ -47,6 +47,7 @@ export class UsersController {
     @Query() dto: UserPaginationDtoWithBanStatusDto,
   ): Promise<PaginationViewModel<UsersModel_For_DB[]>> {
     return this.usersQueryRepo.getAllUsersBySA(dto);
+    // console.log();
   }
 
   @UseGuards(BasicAuthGuard)
