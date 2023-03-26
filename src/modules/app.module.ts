@@ -88,7 +88,7 @@ import { CreatePostByBlogIdUseCase } from './blogs/use-cases/createPostByBlogId.
 import { UpdatePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/updatePostByBlogsAndPostsId.use-case';
 import { DeletePostByBlogsAndPostsIdUseCase } from './blogs/use-cases/deletePostByBlogsAndPostsId.use-case';
 import { BanUserByIdUseCase } from './blogs/use-cases/banUserById.use-case';
-import { UserBannedEntity } from './blogs/domain/entities/user-banned.entity';
+import { BannedUserForBlogEntity } from './blogs/domain/entities/banned-user-for-blog.entity';
 import { UserBannedSQLRepository } from './blogs/repository/user-banned.SQL.repository';
 import { DevicesEntity } from './devices/domain/entities/devices.entity';
 import { GetAlldevicesUseCase } from './devices/use-cases/getAlldevices.use-case';
@@ -225,7 +225,7 @@ const entities = [
   BanInfoEntity,
   PostsEntity,
   LikesEntity,
-  UserBannedEntity,
+  BannedUserForBlogEntity,
   DevicesEntity,
   CommentsEntity,
   CommentatorInfoEntity,

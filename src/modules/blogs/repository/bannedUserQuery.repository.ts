@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserBannedEntity } from '../domain/entities/user-banned.entity';
+import { BannedUserForBlogEntity } from '../domain/entities/banned-user-for-blog.entity';
 import { BannedUserDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class BannedUserQueryRepository {
   constructor(
-    @InjectRepository(UserBannedEntity)
-    private bannedUserTable: Repository<UserBannedEntity>,
+    @InjectRepository(BannedUserForBlogEntity)
+    private bannedUserTable: Repository<BannedUserForBlogEntity>,
   ) {}
 
   async getBannedUsersForBlog(
     blogId: string,
     dto: BannedUserDto,
-  ): Promise<PaginationViewModel<UserBannedEntity[]>> {
+  ): Promise<PaginationViewModel<BannedUserForBlogEntity[]>> {
     const builder = await this.bannedUserTable
       .createQueryBuilder('banned')
       .where('banned.blogId = :blogId', { blogId: blogId })

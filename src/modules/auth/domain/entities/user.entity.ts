@@ -92,17 +92,21 @@ export class UserEntity {
   updateUserHash(passwordHash: string) {
     this.passwordHash = passwordHash;
   }
-  banUser(userId: string, user: UserEntity, dto: BanUserDto) {
+  banUser(userId: string, user: UserEntity, dto: BanUserDto): void {
     this.banInfo.isBanned = dto.isBanned;
     this.banInfo.banDate = new Date();
     this.banInfo.banReason = dto.banReason;
     this.banInfo.userId = userId;
   }
-  static create(login: string, email: string, passwordHash: string) {
+  static create(
+    login: string,
+    email: string,
+    passwordHash: string,
+  ): UserEntity {
     const banInfo = new BanInfoEntity();
     banInfo.isBanned = false;
-    (banInfo.banDate = null), (banInfo.banReason = null);
-    banInfo.userId = null;
+    banInfo.banDate = null;
+    banInfo.banReason = null;
 
     const emailConfirmation = new EmailConfirmationEntity();
     emailConfirmation.confirmationCode = randomUUID();

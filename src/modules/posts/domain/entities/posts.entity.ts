@@ -60,13 +60,6 @@ export class PostsEntity {
   likes: LikesEntity;
   @OneToMany(() => CommentsEntity, (c) => c.postInfo, {})
   comments: CommentsEntity;
-  // @OneToOne(() => BanInfoEntity, (b) => b.posts, {
-  //   eager: true,
-  //   cascade: true,
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn()
-  // banInfo: BanInfoEntity;
 
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;
@@ -78,9 +71,6 @@ export class PostsEntity {
     newPostByBlogId: CreatePostDto,
     blog: BlogsEntity,
   ) {
-    // const banInfo = new BanInfoEntity();
-    // banInfo.isBlogBanned = false;
-    // banInfo.userId = null;
     const post = new PostsEntity();
     post.userId = user.id;
     post.isBlogBanned = false;

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { BlogsEntity } from '../domain/entities/blogs.entity';
+import { UserEntity } from '../../auth/domain/entities/user.entity';
 
 @Injectable()
 export class BlogsSqlRepository {
@@ -11,6 +12,7 @@ export class BlogsSqlRepository {
   ) {}
 
   async createBlog(
+    user: UserEntity,
     id: string,
     login: string,
     name: string,
@@ -18,6 +20,7 @@ export class BlogsSqlRepository {
     websiteUrl: string,
   ): Promise<BlogsEntity> {
     const newBlog = BlogsEntity.create(
+      user,
       id,
       login,
       name,

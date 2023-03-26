@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -11,8 +12,7 @@ import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { BlogsDto } from '../../dto/blogsDto';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
-import { BanUserForBloggerDto } from '../../dto/bloggerDto';
-import { UserBannedEntity } from './user-banned.entity';
+import { BannedUserForBlogEntity } from './banned-user-for-blog.entity';
 import { BanBlogUserDto } from '../../../users/dto/userDto';
 
 @Entity('Blogs')
@@ -43,46 +43,17 @@ export class BlogsEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
-  @OneToMany(() => PostsEntity, (p) => p.blog, {
-    // eager: true,
-    // cascade: true,
-    // onDelete: 'CASCADE',
-  })
+  @OneToMany(() => PostsEntity, (p) => p.blog, {})
   post: PostsEntity;
-  @OneToMany(() => UserBannedEntity, (u) => u.blog, {
-    // eager: true,
-    // cascade: true,
-    // onDelete: 'CASCADE',
-  })
-  userBanned: UserBannedEntity;
+  @ManyToMany(() => BannedUserForBlogEntity, (u) => u.blog, {})
+  userBanned: BannedUserForBlogEntity;
 
-  updateBlog(updateBlogType: BlogsDto) {
-    const updatedBlog = (this.name = updateBlogType.name);
-    (this.description = updateBlogType.description),
-      (this.websiteUrl = updateBlogType.websiteUrl);
-    return updatedBlog;
+  updateBlog(dto: BlogsDto) {
+    this.name = dto.name;
+    this.description = dto.description;
+    this.websiteUrl = dto.websiteUrl;
   }
 
-  createBannedUser(
-    id: string,
-    blog: BlogsEntity,
-    banUserModal: BanUserForBloggerDto,
-    user: UserEntity,
-  ) {
-    // const banInfo = new BanInfoEntity();
-    // banInfo.isBanned = banUserModal.isBanned;
-    // banInfo.banDate = new Date().toISOString();
-    // banInfo.banReason = banUserModal.banReason;
-    const bannedUser = new UserBannedEntity();
-    bannedUser.userId = user.id;
-    bannedUser.login = user.login;
-    bannedUser.blogId = banUserModal.blogId;
-    bannedUser.createdAt = new Date();
-    bannedUser.banReason = banUserModal.banReason;
-    bannedUser.isBanned = banUserModal.isBanned;
-    bannedUser.blog = blog;
-    return bannedUser;
-  }
   banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
     if (blog.banInfo.isBanned) {
       this.banInfo.isBlogBanned = dto.isBanned;
@@ -93,17 +64,15 @@ export class BlogsEntity {
       this.banInfo.banDate = new Date();
     }
   }
+
   static create(
+    user: UserEntity,
     id: string,
     login: string,
     name: string,
     description: string,
     websiteUrl: string,
   ): BlogsEntity {
-    const blogOwnerInfo = new UserEntity();
-    blogOwnerInfo.id = id;
-    blogOwnerInfo.login = login;
-
     const banInfo = new BanInfoEntity();
     banInfo.isBanned = false;
     banInfo.banDate = null;
@@ -115,7 +84,7 @@ export class BlogsEntity {
     blogForDb.websiteUrl = websiteUrl;
     blogForDb.createdAt = new Date().toISOString();
     blogForDb.isMembership = false;
-    blogForDb.blogOwnerInfo = blogOwnerInfo;
+    blogForDb.blogOwnerInfo = user;
     blogForDb.banInfo = banInfo;
     return blogForDb;
   }

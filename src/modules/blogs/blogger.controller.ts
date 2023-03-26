@@ -70,10 +70,10 @@ export class BloggerController {
   @UseGuards(JwtAuthGuard)
   @Post('/blogs')
   async createBlog(
-    @Body() createBlogType: BlogsDto,
-    @User() user: UserModel,
+    @Body() dto: BlogsDto,
+    @User() user: UserEntity,
   ): Promise<BlogsViewModel> {
-    return this.commandBus.execute(new CreateBlogCommand(createBlogType, user));
+    return this.commandBus.execute(new CreateBlogCommand(dto, user));
   }
 
   @UseGuards(JwtAuthGuard)

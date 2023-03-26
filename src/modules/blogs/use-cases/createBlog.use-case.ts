@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { BlogsDto } from "../dto/blogsDto";
-import { UserModel } from "../../users/schemas/users.schema";
-import { BlogsSqlRepository } from "../repository/blogs.sql.repository";
-import { BlogsViewModel } from "../schemas/blogs.schema";
+import { Injectable } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { BlogsDto } from '../dto/blogsDto';
+import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
+import { BlogsViewModel } from '../schemas/blogs.schema';
+import { UserEntity } from '../../auth/domain/entities/user.entity';
 
 @Injectable()
 export class CreateBlogCommand {
-  constructor(readonly createBlogType: BlogsDto, readonly user: UserModel) {}
+  constructor(readonly createBlogType: BlogsDto, readonly user: UserEntity) {}
 }
 
 @CommandHandler(CreateBlogCommand)
@@ -16,6 +16,7 @@ export class CreateBlogUseCase implements ICommandHandler {
 
   async execute(command: CreateBlogCommand): Promise<BlogsViewModel> {
     const blog = await this.blogsRepository.createBlog(
+      command.user,
       command.user.id,
       command.user.login,
       command.createBlogType.name,
