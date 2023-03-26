@@ -90,7 +90,7 @@ export class BlogsEntity {
     } else {
       this.banInfo.isBlogBanned = dto.isBanned;
       this.banInfo.userId = blog.blogOwnerInfo.id;
-      this.banInfo.banDate = new Date().toISOString();
+      this.banInfo.banDate = new Date();
     }
   }
   static create(

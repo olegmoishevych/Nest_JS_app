@@ -25,13 +25,6 @@ export class UserBannedEntity {
   createdAt: Date;
   @Column()
   blogId: string;
-  // @ManyToOne(() => BanInfoEntity, (b) => b.userBanned, {
-  //   eager: true,
-  //   cascade: true,
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinColumn()
-  // banInfo: BanInfoEntity;
   @ManyToOne(() => BlogsEntity, (b) => b.userBanned, {
     eager: true,
     cascade: true,
@@ -39,7 +32,7 @@ export class UserBannedEntity {
   })
   @JoinColumn()
   blog: BlogsEntity;
-  bannedUser(banUserModal: BanUserForBloggerDto, user: UserEntity) {
+  bannedUser(banUserModal: BanUserForBloggerDto, user: UserEntity): void {
     this.userId = user.id;
     this.login = user.login;
     this.blogId = banUserModal.blogId;

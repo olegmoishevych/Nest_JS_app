@@ -10,8 +10,11 @@ export class UserBannedSQLRepository {
     private userBannedTable: Repository<UserBannedEntity>,
   ) {}
 
-  async findBannedUserByBlogId(blogId: string): Promise<UserBannedEntity> {
-    return this.userBannedTable.findOneBy({ blogId });
+  async findBannedUserByBlogId(
+    userId: string,
+    blogId: string,
+  ): Promise<UserBannedEntity> {
+    return this.userBannedTable.findOneBy({ userId: userId, blogId: blogId });
   }
 
   async findBannedUserById(
@@ -20,16 +23,6 @@ export class UserBannedSQLRepository {
   ): Promise<UserBannedEntity> {
     return this.userBannedTable.findOneBy({ userId: userId, blogId: blogId });
   }
-
-  // async createBannedUser(
-  //   id: string,
-  //   blog: BlogsEntity,
-  //   banUserModal: BanUserForBloggerDto,
-  //   user: UserEntity,
-  // ): Promise<UserBannedEntity> {
-  //   const bannedUser = blog.createBannedUser(id, blog, banUserModal, user);
-  //   return this.userBannedTable.save(bannedUser);
-  // }
   async saveResult(bannedUser: UserBannedEntity): Promise<UserBannedEntity> {
     return this.userBannedTable.save(bannedUser);
   }

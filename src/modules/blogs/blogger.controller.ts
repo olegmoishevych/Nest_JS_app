@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from './service/blogs.service';
 import {
   BannedUserDto,
   BlogPaginationDto,
@@ -26,9 +25,7 @@ import { User } from '../auth/decorator/request.decorator';
 import { UserModel } from '../users/schemas/users.schema';
 import { BanUserForBloggerDto } from './dto/bloggerDto';
 import { BlogsUserViewModel } from './schemas/user-banned.schema';
-import { CommentsRepository } from '../comments/repository/comments.repository';
 import { CommentsForPostsViewModal } from '../comments/schema/comments.schema';
-import { BlogsRepository } from './repository/blogs.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogCommand } from './use-cases/createBlog.use-case';
 import { DeleteBlogCommand } from './use-cases/deleteBlog.use-case';

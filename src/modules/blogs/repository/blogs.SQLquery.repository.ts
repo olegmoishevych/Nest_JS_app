@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogsEntity } from '../domain/entities/blogs.entity';
 import { Repository } from 'typeorm';
-import {
-  BannedUserDto,
-  BlogPaginationDto,
-} from '../../helpers/dto/pagination.dto';
+import { BlogPaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsViewModel } from '../schemas/blogs.schema';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
@@ -90,6 +87,7 @@ export class BlogsSQLqueryRepository {
       items: blogs,
     };
   }
+
   async getBlogsForOwner(
     dto: BlogPaginationDto,
     user: UserEntity,
@@ -109,6 +107,7 @@ export class BlogsSQLqueryRepository {
         name: `%${dto.searchNameTerm}%`,
       });
     }
+
     const [blogs, total] = await builder
       .select([
         'blogs.id',
@@ -121,7 +120,6 @@ export class BlogsSQLqueryRepository {
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
-
     return {
       pagesCount: Math.ceil(total / dto.pageSize),
       page: dto.pageNumber,

@@ -100,9 +100,7 @@ export class PostsQuerySqlRepository {
       .createQueryBuilder('posts')
       .leftJoinAndSelect('posts.blog', 'blog')
       .leftJoinAndSelect('blog.banInfo', 'banInfo')
-      .addSelect('posts.userId', 'userId')
-      .addSelect('posts.isBlogBanned', 'isBlogBanned')
-      .where('banInfo.isBlogBanned = false')
+      .where('banInfo.isBanned = true')
       .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .orderBy(
         `posts.${dto.sortBy}`,
@@ -135,7 +133,7 @@ export class PostsQuerySqlRepository {
       .createQueryBuilder('posts')
       .leftJoinAndSelect('posts.blog', 'blog')
       .leftJoinAndSelect('blog.banInfo', 'banInfo')
-      .where('banInfo.isBlogBanned = false')
+      .where('banInfo.isBanned = false')
       .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .getCount();
   }

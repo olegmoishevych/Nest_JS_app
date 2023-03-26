@@ -9,6 +9,7 @@ import { UserEntity } from '../../auth/domain/entities/user.entity';
 import { PostsSQLRepository } from '../../posts/repository/postsSQL.repository';
 import { UserBannedSQLRepository } from '../../blogs/repository/user-banned.SQL.repository';
 import { CommentsSQLRepository } from '../repository/commentsSQL.repository';
+import { CommentsEntity } from '../domain/comments.entity';
 
 @Injectable()
 export class CreateCommentForPostCommand {
@@ -32,6 +33,7 @@ export class CreateCommentForPostUseCase implements ICommand {
     if (!post) throw new NotFoundException([]);
     const userInBanList = await this.userBannedRepo.findBannedUserByBlogId(
       command.user.id,
+      post.blogId,
     );
     if (userInBanList) throw new ForbiddenException([]);
     const commentForDb = await this.commentsRepo.createCommentByPostId(

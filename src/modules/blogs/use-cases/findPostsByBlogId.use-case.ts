@@ -26,7 +26,7 @@ export class FindPostsByBlogIdUseCase implements ICommand {
     command: FindPostsByBlogIdCommand,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const blog = await this.blogsRepo.findBlogById(command.blogId);
-    if (!blog) throw new NotFoundException(`Blog not found`);
+    if (!blog) throw new NotFoundException();
     const findAndSortedPosts = await this.postsQueryRepo.findPostsByBlogId(
       command.blogId,
       command.dto,

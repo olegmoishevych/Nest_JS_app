@@ -93,17 +93,10 @@ export class UserEntity {
     this.passwordHash = passwordHash;
   }
   banUser(userId: string, user: UserEntity, dto: BanUserDto) {
-    if (user.banInfo.isBanned) {
-      this.banInfo.isBanned = false;
-      this.banInfo.banDate = null;
-      this.banInfo.banReason = null;
-      this.banInfo.userId = null;
-    } else {
-      this.banInfo.isBanned = true;
-      this.banInfo.banDate = new Date().toISOString();
-      this.banInfo.banReason = dto.banReason;
-      this.banInfo.userId = userId;
-    }
+    this.banInfo.isBanned = dto.isBanned;
+    this.banInfo.banDate = new Date();
+    this.banInfo.banReason = dto.banReason;
+    this.banInfo.userId = userId;
   }
   static create(login: string, email: string, passwordHash: string) {
     const banInfo = new BanInfoEntity();
