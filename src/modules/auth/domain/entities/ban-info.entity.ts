@@ -28,6 +28,6 @@ export class BanInfoEntity {
   user: UserEntity;
   @OneToOne(() => BlogsEntity, (b) => b.banInfo, { onDelete: 'CASCADE' })
   blog: BlogsEntity;
-  @OneToMany(() => UserBannedEntity, (u) => u.banInfo, { onDelete: 'CASCADE' })
-  userBanned: UserBannedEntity;
+  // @OneToMany(() => UserBannedEntity, (u) => u.banInfo, { onDelete: 'CASCADE' })
+  // userBanned: UserBannedEntity;
 }

@@ -30,7 +30,7 @@ export class UserBannedSQLRepository {
     banUserModal: BanUserForBloggerDto,
     user: UserEntity,
   ): Promise<UserBannedEntity> {
-    const bannedUser = blog.createBannedUser(id, banUserModal, user);
+    const bannedUser = blog.createBannedUser(id, blog, banUserModal, user);
     return this.userBannedTable.save(bannedUser);
   }
   async deleteBannedUser(

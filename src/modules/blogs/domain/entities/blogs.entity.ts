@@ -65,18 +65,22 @@ export class BlogsEntity {
 
   createBannedUser(
     id: string,
+    blog: BlogsEntity,
     banUserModal: BanUserForBloggerDto,
     user: UserEntity,
   ) {
-    const banInfo = new BanInfoEntity();
-    banInfo.isBanned = banUserModal.isBanned;
-    banInfo.banDate = new Date().toISOString();
-    banInfo.banReason = banUserModal.banReason;
+    // const banInfo = new BanInfoEntity();
+    // banInfo.isBanned = banUserModal.isBanned;
+    // banInfo.banDate = new Date().toISOString();
+    // banInfo.banReason = banUserModal.banReason;
     const bannedUser = new UserBannedEntity();
-    bannedUser.id = id;
+    bannedUser.userId = user.id;
     bannedUser.login = user.login;
     bannedUser.blogId = banUserModal.blogId;
-    bannedUser.banInfo = banInfo;
+    bannedUser.createdAt = new Date();
+    bannedUser.banReason = banUserModal.banReason;
+    bannedUser.isBanned = banUserModal.isBanned;
+    bannedUser.blog = blog;
     return bannedUser;
   }
   banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
