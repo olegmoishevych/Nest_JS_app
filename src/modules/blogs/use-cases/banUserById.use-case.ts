@@ -9,11 +9,9 @@ import { UserEntity } from '../../auth/domain/entities/user.entity';
 import { UsersSqlRepository } from '../../users/repository/users.sql.repository';
 import { BlogsSqlRepository } from '../repository/blogs.sql.repository';
 import { UserBannedSQLRepository } from '../repository/user-banned.SQL.repository';
-import { UserBannedEntity } from '../domain/entities/user-banned.entity';
-import { DeleteResult } from 'typeorm';
 
 @Injectable()
-export class BanUserByIdCommand {
+export class BanUserByIdForBlogCommand {
   constructor(
     readonly id: string,
     readonly banUserModal: BanUserForBloggerDto,
@@ -21,7 +19,7 @@ export class BanUserByIdCommand {
   ) {}
 }
 
-@CommandHandler(BanUserByIdCommand)
+@CommandHandler(BanUserByIdForBlogCommand)
 export class BanUserByIdUseCase implements ICommandHandler {
   constructor(
     public usersRepo: UsersSqlRepository,
@@ -29,32 +27,26 @@ export class BanUserByIdUseCase implements ICommandHandler {
     public bannedUserRepo: UserBannedSQLRepository,
   ) {}
 
-  async execute(command: BanUserByIdCommand) {
+  async execute(command: BanUserByIdForBlogCommand) {
     const user = await this.usersRepo.findUserById(command.id);
-    if (!user) throw new NotFoundException(['User not found']);
+    if (!user) throw new NotFoundException();
     const blogWithOwner = await this.blogsRepo.findBlogById(
       command.banUserModal.blogId,
     );
-    if (!blogWithOwner) throw new NotFoundException(['Blog not found']);
+    if (!blogWithOwner) throw new NotFoundException();
     if (blogWithOwner.blogOwnerInfo.id !== command.user.id)
       throw new ForbiddenException([]);
     const bannedUser = await this.bannedUserRepo.findBannedUserById(
       command.user.id,
       blogWithOwner.id,
     );
-    if (!bannedUser && command.banUserModal.isBanned === true) {
-      return this.bannedUserRepo.createBannedUser(
-        command.id,
-        blogWithOwner,
-        command.banUserModal,
-        command.user,
-      );
-    }
-    if (bannedUser && command.banUserModal.isBanned === false) {
-      return this.bannedUserRepo.deleteBannedUser(
-        command.banUserModal.blogId,
-        command.id,
-      );
+    try {
+      bannedUser.bannedUser(command.banUserModal, command.user);
+      await this.bannedUserRepo.saveResult(bannedUser);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return null;
     }
   }
 }

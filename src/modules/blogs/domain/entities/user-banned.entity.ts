@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BlogsEntity } from './blogs.entity';
+import { BanUserForBloggerDto } from '../../dto/bloggerDto';
+import { UserEntity } from '../../../auth/domain/entities/user.entity';
 
 @Entity('Banned')
 export class UserBannedEntity {
@@ -37,4 +39,12 @@ export class UserBannedEntity {
   })
   @JoinColumn()
   blog: BlogsEntity;
+  bannedUser(banUserModal: BanUserForBloggerDto, user: UserEntity) {
+    this.userId = user.id;
+    this.login = user.login;
+    this.blogId = banUserModal.blogId;
+    this.createdAt = new Date();
+    this.banReason = banUserModal.banReason;
+    this.isBanned = banUserModal.isBanned;
+  }
 }

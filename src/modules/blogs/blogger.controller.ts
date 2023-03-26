@@ -39,7 +39,7 @@ import { CreatePostByBlogIdCommand } from './use-cases/createPostByBlogId.use-ca
 import { UserEntity } from '../auth/domain/entities/user.entity';
 import { UpdatePostByBlogsAndPostsIdCommand } from './use-cases/updatePostByBlogsAndPostsId.use-case';
 import { DeletePostByBlogsAndPostsIdCommand } from './use-cases/deletePostByBlogsAndPostsId.use-case';
-import { BanUserByIdCommand } from './use-cases/banUserById.use-case';
+import { BanUserByIdForBlogCommand } from './use-cases/banUserById.use-case';
 import { CommentsSQLqueryRepository } from '../comments/repository/commentsSQLquery.repository';
 import { BlogsSQLqueryRepository } from './repository/blogs.SQLquery.repository';
 import { GetBannedUsersCommand } from './use-cases/getBannedUsers.use-case';
@@ -149,7 +149,9 @@ export class BloggerController {
     @Body() dto: BanUserForBloggerDto,
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
-    return this.commandBus.execute(new BanUserByIdCommand(id, dto, user));
+    return this.commandBus.execute(
+      new BanUserByIdForBlogCommand(id, dto, user),
+    );
   }
 
   @UseGuards(JwtAuthGuard)

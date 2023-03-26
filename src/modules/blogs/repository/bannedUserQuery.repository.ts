@@ -19,6 +19,7 @@ export class BannedUserQueryRepository {
     const builder = await this.bannedUserTable
       .createQueryBuilder('banned')
       .where('banned.blogId = :blogId', { blogId: blogId })
+      .andWhere('banned.isBanned = true')
       .orderBy(
         `banned.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',

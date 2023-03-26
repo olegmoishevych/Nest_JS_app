@@ -25,7 +25,7 @@ export class GetBannedUsersUseCase implements ICommand {
   ) {}
   async execute(command: GetBannedUsersCommand) {
     const blog = await this.blogsRepo.findBlogById(command.id);
-    if (!blog) throw new NotFoundException(['Blog not found']);
+    if (!blog) throw new NotFoundException();
     if (blog.blogOwnerInfo.id !== command.user.id)
       throw new ForbiddenException([]);
     return this.bannedUsersQueryRepo.getBannedUsersForBlog(
