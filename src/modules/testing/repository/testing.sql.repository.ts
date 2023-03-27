@@ -28,7 +28,8 @@ export class TestingSqlRepository {
 
   async deleteAllData() {
     try {
-      await this.usersTable.delete({});
+      const res = await this.usersTable.delete({});
+      console.log(res);
       return true;
     } catch (e) {
       console.log(e);
