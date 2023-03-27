@@ -103,7 +103,7 @@ export class TestingSqlRepository {
   SELECT truncate_tables('postgres');
   SELECT truncate_tables('neondb');
           `);
-      return;
+      return true;
     } catch (e) {
       console.log(e);
     }
