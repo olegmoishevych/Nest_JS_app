@@ -7,7 +7,7 @@ import { UserEntity } from '../../auth/domain/entities/user.entity';
 @Injectable()
 export class TestingSqlRepository {
   constructor(
-    @InjectRepository(CommentsEntity)
+    @InjectRepository(UserEntity)
     private usersTable: Repository<UserEntity>,
     private dataSource: DataSource,
   ) {}
@@ -28,8 +28,14 @@ export class TestingSqlRepository {
 
   async deleteAllData() {
     try {
+      console.log('before delete', await this.usersTable.count());
       const res = await this.usersTable.delete({});
       console.log(res);
+      console.log('after delete', await this.usersTable.count());
+      console.log('before delete2', await this.usersTable.count());
+      const res2 = await this.usersTable.clear();
+      console.log(res2);
+      console.log('after delete2', await this.usersTable.count());
       return true;
     } catch (e) {
       console.log(e);
