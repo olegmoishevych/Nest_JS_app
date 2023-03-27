@@ -4,14 +4,11 @@ import { CreateUserCommand } from '../../users/use-cases/create-user.use-case';
 import { UsersService } from '../../users/service/users.service';
 import { EmailService } from '../../email/email.service';
 import { UsersSqlRepository } from '../../users/repository/users.sql.repository';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 export class RegistrationCommand {
-  constructor(readonly registrationDto: AuthDto) {}
+  constructor(readonly dto: AuthDto) {}
 }
 
 @CommandHandler(RegistrationCommand)
@@ -23,8 +20,9 @@ export class RegistrationUseCase implements ICommandHandler {
   ) {}
 
   async execute(command: CreateUserCommand): Promise<boolean> {
-    const { email, login, password } = command.dto;
-    const userByEmail = await this.usersRepository.findUserByEmail(email);
+    const userByEmail = await this.usersRepository.findUserByEmail(
+      command.dto.email,
+    );
     if (userByEmail)
       throw new BadRequestException([
         {
@@ -32,7 +30,9 @@ export class RegistrationUseCase implements ICommandHandler {
           field: 'email',
         },
       ]);
-    const userByLogin = await this.usersRepository.findUserByLogin(login);
+    const userByLogin = await this.usersRepository.findUserByLogin(
+      command.dto.login,
+    );
     if (userByLogin)
       throw new BadRequestException([
         {
@@ -40,10 +40,10 @@ export class RegistrationUseCase implements ICommandHandler {
           field: 'login',
         },
       ]);
-    const passwordHash = await bcrypt.hash(password, 5);
+    const passwordHash = await bcrypt.hash(command.dto.password, 5);
     const user = await this.usersRepository.createUser(
-      login,
-      email,
+      command.dto.login,
+      command.dto.email,
       passwordHash,
     );
     try {
@@ -54,8 +54,7 @@ export class RegistrationUseCase implements ICommandHandler {
       return true;
     } catch (e) {
       console.log(e);
-      await this.usersRepository.deleteUserById(user.id);
-      throw new InternalServerErrorException('Something went wrong');
+      return null;
     }
   }
 }
