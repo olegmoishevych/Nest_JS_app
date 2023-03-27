@@ -1,19 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
-import { UserEntity } from '../../auth/domain/entities/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CommentsEntity } from '../../comments/domain/comments.entity';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class TestingSqlRepository {
-  constructor(
-    private dataSource: DataSource,
-    @InjectRepository(CommentsEntity)
-    private usersTable: Repository<UserEntity>,
-  ) {}
+  constructor(private dataSource: DataSource) {}
 
   async deleteAllData() {
-    await this.usersTable.delete({});
+    // await this.usersTable.delete({});
     try {
       await this.dataSource.query(`
         CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
@@ -27,7 +20,8 @@ BEGIN
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
-SELECT truncate_tables('postgres');`);
+SELECT truncate_tables('postgres');
+SELECT truncate_tables('neondb');`);
       return true;
     } catch (e) {
       console.log(e);
