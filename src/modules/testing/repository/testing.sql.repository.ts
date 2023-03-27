@@ -27,40 +27,40 @@ export class TestingSqlRepository {
   // }
 
   async deleteAllData() {
-    // try {
-    //   console.log('before delete', await this.usersTable.count());
-    //   const res = await this.usersTable.delete({});
-    //   console.log(res);
-    //   console.log('after delete', await this.usersTable.count());
-    //   console.log('before delete2', await this.usersTable.count());
-    //   const res2 = await this.usersTable.clear();
-    //   console.log(res2);
-    //   console.log('after delete2', await this.usersTable.count());
-    //   return true;
-    // } catch (e) {
-    //   console.log(e);
-    //   return null;
-    // }
     try {
-      // await this.connection.db.dropDatabase();
-      await this.dataSource.query(`
-        CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
-DECLARE
-    statements CURSOR FOR
-        SELECT tablename FROM pg_tables
-        WHERE tableowner = username AND schemaname = 'public';
-BEGIN
-    FOR stmt IN statements LOOP
-        EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';
-    END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-SELECT truncate_tables('postgres');
-SELECT truncate_tables('neondb');
-        `);
-      return;
+      // console.log('before delete', await this.usersTable.count());
+      // const res = await this.usersTable.delete({});
+      // console.log(res);
+      // console.log('after delete', await this.usersTable.count());
+      // console.log('before delete2', await this.usersTable.count());
+      await this.usersTable.clear();
+      // console.log(res2);
+      // console.log('after delete2', await this.usersTable.count());
+      return true;
     } catch (e) {
       console.log(e);
+      return null;
     }
+    //     try {
+    //       // await this.connection.db.dropDatabase();
+    //       await this.dataSource.query(`
+    //         CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
+    // DECLARE
+    //     statements CURSOR FOR
+    //         SELECT tablename FROM pg_tables
+    //         WHERE tableowner = username AND schemaname = 'public';
+    // BEGIN
+    //     FOR stmt IN statements LOOP
+    //         EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';
+    //     END LOOP;
+    // END;
+    // $$ LANGUAGE plpgsql;
+    // SELECT truncate_tables('postgres');
+    // SELECT truncate_tables('neondb');
+    //         `);
+    //       return;
+    //     } catch (e) {
+    //       console.log(e);
+    //     }
   }
 }
