@@ -196,7 +196,7 @@ window.onload = function() {
       },
       "/api/blogger/users/{id}/ban": {
         "put": {
-          "operationId": "BloggerController_banUserById",
+          "operationId": "BloggerController_banUserForBlog",
           "parameters": [
             {
               "name": "id",

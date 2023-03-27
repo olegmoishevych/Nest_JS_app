@@ -31,10 +31,11 @@ export class CreateCommentForPostUseCase implements ICommand {
   async execute(command: CreateCommentForPostCommand) {
     const post = await this.postsRepo.findPostById(command.postId);
     if (!post) throw new NotFoundException([]);
-    const userInBanList = await this.userBannedRepo.findBannedUserByBlogId(
-      command.user.id,
-      post.blogId,
-    );
+    const userInBanList =
+      await this.userBannedRepo.findBannedUserByBlogAndUserIds(
+        command.user.id,
+        post.blogId,
+      );
     if (userInBanList) throw new ForbiddenException([]);
     const commentForDb = await this.commentsRepo.createCommentByPostId(
       post,

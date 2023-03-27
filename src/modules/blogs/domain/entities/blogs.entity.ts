@@ -14,6 +14,7 @@ import { BlogsDto } from '../../dto/blogsDto';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { BannedUserForBlogEntity } from './banned-user-for-blog.entity';
 import { BanBlogUserDto } from '../../../users/dto/userDto';
+import { BanUserForBloggerDto } from '../../dto/bloggerDto';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -29,10 +30,10 @@ export class BlogsEntity {
   createdAt: string;
   @Column()
   isMembership: boolean;
-  @ManyToOne(() => UserEntity, (u) => u.blog, {
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'SET NULL',
     eager: true,
     cascade: true,
-    onDelete: 'CASCADE',
   })
   @JoinColumn()
   blogOwnerInfo: UserEntity;
@@ -43,9 +44,9 @@ export class BlogsEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
-  @OneToMany(() => PostsEntity, (p) => p.blog, {})
-  post: PostsEntity;
-  @ManyToMany(() => BannedUserForBlogEntity, (u) => u.blog, {})
+  @OneToMany(() => PostsEntity, (p) => p.blog)
+  post: PostsEntity[];
+  @OneToMany(() => BannedUserForBlogEntity, (u) => u.blog, {})
   userBanned: BannedUserForBlogEntity;
 
   updateBlog(dto: BlogsDto) {
@@ -64,7 +65,6 @@ export class BlogsEntity {
       this.banInfo.banDate = new Date();
     }
   }
-
   static create(
     user: UserEntity,
     id: string,

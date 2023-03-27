@@ -2,7 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BlogsEntity } from './blogs.entity';
@@ -12,27 +12,41 @@ import { UserEntity } from '../../../auth/domain/entities/user.entity';
 @Entity('Banned')
 export class BannedUserForBlogEntity {
   @PrimaryGeneratedColumn()
-  id: string;
-  @Column({ nullable: true })
+  id: number;
+  @Column()
   userId: string;
-  @Column({ nullable: true })
+  @Column()
   banReason: string;
-  @Column({ nullable: true })
+  @Column({ default: false })
   isBanned: boolean;
   @Column()
   login: string;
-  @Column({ nullable: true })
-  createdAt: Date;
   @Column()
+  createdAt: Date;
+  @Column({ nullable: true })
   blogId: string;
-  @ManyToMany(() => BlogsEntity, (b) => b.userBanned, {
+  @ManyToOne(() => BlogsEntity, (b) => b.userBanned, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn()
   blog: BlogsEntity;
-
+  createBannedUser(
+    blog: BannedUserForBlogEntity,
+    dto: BanUserForBloggerDto,
+    user: UserEntity,
+  ) {
+    const bannedUser = new BannedUserForBlogEntity();
+    bannedUser.userId = user.id;
+    bannedUser.banReason = dto.banReason;
+    bannedUser.isBanned = dto.isBanned;
+    // bannedUser.blogId = blog.id;
+    bannedUser.login = user.login;
+    bannedUser.createdAt = new Date();
+    // bannedUser.blog = blog;
+    return bannedUser;
+  }
   bannedUser(banUserModal: BanUserForBloggerDto, user: UserEntity): void {
     this.userId = user.id;
     this.login = user.login;

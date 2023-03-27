@@ -49,25 +49,16 @@ export class UserEntity {
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
-  @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo, {
-    // eager: true,
-    // cascade: true,
-    onDelete: 'CASCADE',
-  })
-  // @JoinColumn()
-  blog: BlogsEntity;
   @OneToMany(() => PostsEntity, (p) => p.user, {
-    // eager: true,
-    // cascade: true,
     onDelete: 'CASCADE',
   })
   post: PostsEntity;
   @OneToMany(() => DevicesEntity, (d) => d.user, {
-    // eager: true,
-    // cascade: true,
     onDelete: 'CASCADE',
   })
   devices: DevicesEntity;
+  @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo)
+  blog: BlogsEntity;
 
   confirmedCode(code: string) {
     if (this.emailConfirmation.isConfirmed) return false;

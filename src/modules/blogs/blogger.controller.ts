@@ -141,13 +141,13 @@ export class BloggerController {
   @UseGuards(JwtAuthGuard)
   @Put('/users/:id/ban')
   @HttpCode(204)
-  async banUserById(
+  async banUserForBlog(
     @Param('id') id: string,
     @Body() dto: BanUserForBloggerDto,
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
     return this.commandBus.execute(
-      new BanUserByIdForBlogCommand(id, dto, user),
+      new BanUserByIdForBlogCommand(id, dto, user), // не работает
     );
   }
 

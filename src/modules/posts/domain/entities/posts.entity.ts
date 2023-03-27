@@ -72,6 +72,7 @@ export class PostsEntity {
     blog: BlogsEntity,
   ) {
     const post = new PostsEntity();
+    post.user = user;
     post.userId = user.id;
     post.isBlogBanned = false;
     post.title = newPostByBlogId.title;

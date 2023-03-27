@@ -98,9 +98,11 @@ export class PostsQuerySqlRepository {
   ): Promise<PaginationViewModel<PostsEntity[]>> {
     const builder = this.postsTable
       .createQueryBuilder('posts')
-      .leftJoinAndSelect('posts.blog', 'blog')
-      .leftJoinAndSelect('blog.banInfo', 'banInfo')
-      .where('banInfo.isBanned = true')
+      // .leftJoinAndSelect('posts.blog', 'blog')
+      // .leftJoinAndSelect('blog.banInfo', 'banInfo')
+      .leftJoinAndSelect('posts.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
       .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .orderBy(
         `posts.${dto.sortBy}`,
