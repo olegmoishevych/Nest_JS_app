@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
@@ -12,8 +11,6 @@ import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 import { LikesEntity } from './likes.entity';
 import { CreatePostDto } from '../../dto/createPostDto';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
-import { BanInfoEntity } from '../../../auth/domain/entities/ban-info.entity';
-import { BanBlogUserDto } from '../../../users/dto/userDto';
 
 @Entity('Posts')
 export class PostsEntity {
@@ -21,8 +18,6 @@ export class PostsEntity {
   id: string;
   @Column()
   userId: string;
-  @Column({ default: false })
-  isBlogBanned: boolean;
   @Column()
   title: string;
   @Column()
@@ -66,6 +61,7 @@ export class PostsEntity {
     this.shortDescription = updatePost.shortDescription;
     this.content = updatePost.content;
   }
+
   static createPost(
     user: UserEntity,
     newPostByBlogId: CreatePostDto,
@@ -74,7 +70,6 @@ export class PostsEntity {
     const post = new PostsEntity();
     post.user = user;
     post.userId = user.id;
-    post.isBlogBanned = false;
     post.title = newPostByBlogId.title;
     post.shortDescription = newPostByBlogId.shortDescription;
     post.content = newPostByBlogId.content;
@@ -86,7 +81,6 @@ export class PostsEntity {
       dislikesCount: 0,
       myStatus: 'None',
     };
-    // post.banInfo = banInfo;
     return post;
   }
 }

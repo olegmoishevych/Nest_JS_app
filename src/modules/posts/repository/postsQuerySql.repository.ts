@@ -98,8 +98,6 @@ export class PostsQuerySqlRepository {
   ): Promise<PaginationViewModel<PostsEntity[]>> {
     const builder = this.postsTable
       .createQueryBuilder('posts')
-      // .leftJoinAndSelect('posts.blog', 'blog')
-      // .leftJoinAndSelect('blog.banInfo', 'banInfo')
       .leftJoinAndSelect('posts.user', 'user')
       .leftJoinAndSelect('user.banInfo', 'banInfo')
       .where('banInfo.isBanned = false')
@@ -133,8 +131,8 @@ export class PostsQuerySqlRepository {
   async getCountCollection(blogId: string): Promise<number> {
     return this.postsTable
       .createQueryBuilder('posts')
-      .leftJoinAndSelect('posts.blog', 'blog')
-      .leftJoinAndSelect('blog.banInfo', 'banInfo')
+      .leftJoinAndSelect('posts.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
       .where('banInfo.isBanned = false')
       .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .getCount();
