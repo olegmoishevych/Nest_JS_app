@@ -25,7 +25,6 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
     return {
       type: 'postgres',
       url: this.configService.get('SQL_URL'),
-      password: 'sa',
       ssl: true,
       synchronize: true,
       autoLoadEntities: true,

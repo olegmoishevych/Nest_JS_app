@@ -42,70 +42,57 @@ export class TestingSqlRepository {
   ) {}
 
   async deleteAll(): Promise<boolean> {
-    //   try {
-    //     const entities = this.dataSource.entityMetadatas;
-    //     const tableNames = entities
-    //       .map((entity) => `"${entity.tableName}"`)
-    //       .join(', ');
-    //
-    //     await this.dataSource.query(`TRUNCATE ${tableNames} CASCADE;`);
-    //     return true;
-    //   } catch (e) {
-    //     return false;
-    //   }
-    // }
-    // async deleteAllData() {
-    //   try {
-    //     await Promise.all([
-    //       this.usersTable.delete({}),
-    //       this.usersTable.clear(),
-    //       this.passwordRecoveryTable.delete({}),
-    //       this.passwordRecoveryTable.clear(),
-    //       this.postsTable.delete({}),
-    //       this.postsTable.clear(),
-    //       this.likesTable.delete({}),
-    //       this.likesTable.clear(),
-    //       this.emailConfirmationTable.delete({}),
-    //       this.emailConfirmationTable.clear(),
-    //       this.devicesTable.delete({}),
-    //       this.devicesTable.clear(),
-    //       this.commentsTable.delete({}),
-    //       this.commentsTable.clear(),
-    //       this.commentatorInfoTable.delete({}),
-    //       this.commentatorInfoTable.clear(),
-    //       this.blogsTable.delete({}),
-    //       this.blogsTable.clear(),
-    //       this.bannedUserForBlogTable.delete({}),
-    //       this.bannedUserForBlogTable.clear(),
-    //       this.banInfoTable.delete({}),
-    //       this.banInfoTable.clear(),
-    //       await getConnection().queryRunner.clear();
-    //     ]);
-    //     return true;
-    //   } catch (e) {
-    //     console.log(e);
-    //     return null;
-    //   }
     try {
-      // await this.connection.db.dropDatabase();
-      await this.dataSource.query(`
-          CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
-  DECLARE
-      statements CURSOR FOR
-          SELECT tablename FROM pg_tables
-          WHERE tableowner = username AND schemaname = 'public';
-  BEGIN
-      FOR stmt IN statements LOOP
-          EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';
-      END LOOP;
-  END;
-  $$ LANGUAGE plpgsql;
-  SELECT truncate_tables('postgres');
-  SELECT truncate_tables('neondb');
-          `);
+      await Promise.all([
+        this.usersTable.delete({}),
+        this.usersTable.clear(),
+        this.passwordRecoveryTable.delete({}),
+        this.passwordRecoveryTable.clear(),
+        this.postsTable.delete({}),
+        this.postsTable.clear(),
+        this.likesTable.delete({}),
+        this.likesTable.clear(),
+        this.emailConfirmationTable.delete({}),
+        this.emailConfirmationTable.clear(),
+        this.devicesTable.delete({}),
+        this.devicesTable.clear(),
+        this.commentsTable.delete({}),
+        this.commentsTable.clear(),
+        this.commentatorInfoTable.delete({}),
+        this.commentatorInfoTable.clear(),
+        this.blogsTable.delete({}),
+        this.blogsTable.clear(),
+        this.bannedUserForBlogTable.delete({}),
+        this.bannedUserForBlogTable.clear(),
+        this.banInfoTable.delete({}),
+        this.banInfoTable.clear(),
+      ]);
       return true;
     } catch (e) {
       console.log(e);
+      return null;
     }
   }
+  //   try {
+  //     // await this.connection.db.dropDatabase();
+  //     await this.dataSource.query(`
+  //         CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
+  // DECLARE
+  //     statements CURSOR FOR
+  //         SELECT tablename FROM pg_tables
+  //         WHERE tableowner = username AND schemaname = 'public';
+  // BEGIN
+  //     FOR stmt IN statements LOOP
+  //         EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';
+  //     END LOOP;
+  // END;
+  // $$ LANGUAGE plpgsql;
+  // SELECT truncate_tables('postgres');
+  // SELECT truncate_tables('neondb');
+  //         `);
+  //     return true;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 }

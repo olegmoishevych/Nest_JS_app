@@ -32,9 +32,9 @@ export class UserEntity {
   @Column()
   createdAt: string;
   @OneToOne(() => EmailConfirmationEntity, (e) => e.user, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
+    // eager: true,
+    // cascade: true,
+    // onDelete: 'CASCADE',
   })
   @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
