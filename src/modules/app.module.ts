@@ -117,6 +117,7 @@ import { BannedUserQueryRepository } from './blogs/repository/bannedUserQuery.re
 import { UsersSQLQueryRepository } from './users/repository/users.SQL.query.repository';
 import { BanUserByIdForSaUseCase } from './users/use-cases/ban-user-by-id-for-sa-use.case';
 import { BanBlogByIdUseCase } from './users/use-cases/banBlogById.use-case';
+import { TypeOrmConfig } from '../config/type-orm.config';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -271,16 +272,7 @@ const throttlerGuard = {
     }),
     MongooseModule.forFeature(mongooseModels),
     TypeOrmModule.forFeature([...entities]),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: Number(process.env.POSTGRES_PORT),
-      username: 'postgres',
-      password: 'sa',
-      database: 'Bloggers',
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
+    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfig }),
   ],
   controllers,
   providers: [
