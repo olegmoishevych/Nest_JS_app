@@ -23,7 +23,16 @@ export class PostsSQLRepository {
   }
 
   async findPostById(id: string): Promise<PostsEntity> {
-    return this.postsTable.findOneBy({ id });
+    return this.postsTable
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.blog', 'blog')
+      .leftJoinAndSelect('blog.banInfo', 'blogBanInfo')
+      .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+      .where('post.id = :id', { id })
+      .andWhere('userBanInfo.isBanned = false')
+      .andWhere('blogBanInfo.isBlogBanned = false')
+      .getOne();
   }
 
   async saveResult(post: PostsEntity): Promise<PostsEntity> {

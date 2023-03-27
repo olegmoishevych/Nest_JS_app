@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -14,7 +13,6 @@ import { BlogsDto } from '../../dto/blogsDto';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { BannedUserForBlogEntity } from './banned-user-for-blog.entity';
 import { BanBlogUserDto } from '../../../users/dto/userDto';
-import { BanUserForBloggerDto } from '../../dto/bloggerDto';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -56,15 +54,11 @@ export class BlogsEntity {
   }
 
   banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
-    if (blog.banInfo.isBanned) {
-      this.banInfo.isBlogBanned = dto.isBanned;
-      this.banInfo.userId = null;
-    } else {
-      this.banInfo.isBlogBanned = dto.isBanned;
-      this.banInfo.userId = blog.blogOwnerInfo.id;
-      this.banInfo.banDate = new Date();
-    }
+    this.banInfo.isBlogBanned = dto.isBanned;
+    this.banInfo.userId = blog.blogOwnerInfo.id;
+    this.banInfo.banDate = new Date();
   }
+
   static create(
     user: UserEntity,
     id: string,

@@ -104,8 +104,11 @@ export class PostsQuerySqlRepository {
     const builder = this.postsTable
       .createQueryBuilder('posts')
       .leftJoinAndSelect('posts.user', 'user')
-      .leftJoinAndSelect('user.banInfo', 'banInfo')
-      .where('banInfo.isBanned = false')
+      .leftJoinAndSelect('posts.blog', 'blog')
+      .leftJoinAndSelect('blog.banInfo', 'blogBanInfo')
+      .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+      .where('userBanInfo.isBanned = false')
+      .where('blogBanInfo.isBlogBanned = false')
       .addSelect('posts.title', 'title')
       .orderBy(
         `posts.${dto.sortBy}`,
@@ -141,8 +144,11 @@ export class PostsQuerySqlRepository {
     const builder = this.postsTable
       .createQueryBuilder('posts')
       .leftJoinAndSelect('posts.user', 'user')
-      .leftJoinAndSelect('user.banInfo', 'banInfo')
-      .where('banInfo.isBanned = false')
+      .leftJoinAndSelect('posts.blog', 'blog')
+      .leftJoinAndSelect('blog.banInfo', 'blogBanInfo')
+      .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+      .where('userBanInfo.isBanned = false')
+      .where('blogBanInfo.isBlogBanned = false')
       .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .orderBy(
         `posts.${dto.sortBy}`,
@@ -174,8 +180,11 @@ export class PostsQuerySqlRepository {
     return this.postsTable
       .createQueryBuilder('posts')
       .leftJoinAndSelect('posts.user', 'user')
-      .leftJoinAndSelect('user.banInfo', 'banInfo')
-      .where('banInfo.isBanned = false')
+      .leftJoinAndSelect('posts.blog', 'blog')
+      .leftJoinAndSelect('blog.banInfo', 'blogBanInfo')
+      .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+      .where('userBanInfo.isBanned = false')
+      .where('blogBanInfo.isBlogBanned = false')
       .andWhere('posts.blogId = :blogId', { blogId: blogId })
       .getCount();
   }
