@@ -16,7 +16,7 @@ import { BanBlogUserDto } from '../../../users/dto/userDto';
 
 @Entity('Blogs')
 export class BlogsEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   name: string;
