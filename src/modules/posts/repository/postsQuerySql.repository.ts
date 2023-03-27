@@ -106,11 +106,22 @@ export class PostsQuerySqlRepository {
       .leftJoinAndSelect('posts.user', 'user')
       .leftJoinAndSelect('user.banInfo', 'banInfo')
       .where('banInfo.isBanned = false')
+      .addSelect('posts.title', 'title')
       .orderBy(
         `posts.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       );
     const [posts, total] = await builder
+      .select([
+        'posts.id',
+        'posts.title',
+        'posts.shortDescription',
+        'posts.content',
+        'posts.blogId',
+        'posts.blogName',
+        'posts.createdAt',
+        'posts.extendedLikesInfo',
+      ])
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
