@@ -60,10 +60,10 @@ export class UserEntity {
   devices: DevicesEntity;
   @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo)
   blog: BlogsEntity;
-  @OneToMany(() => LikesEntity, (l) => l.user, {
-    onDelete: 'CASCADE',
-  })
-  like: LikesEntity;
+  // @OneToMany(() => LikesEntity, (l) => l.user, {
+  //   onDelete: 'CASCADE',
+  // })
+  // like: LikesEntity;
 
   confirmedCode(code: string) {
     if (this.emailConfirmation.isConfirmed) return false;

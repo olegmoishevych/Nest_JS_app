@@ -46,14 +46,9 @@ export class PostsEntity {
   })
   @JoinColumn()
   blog: BlogsEntity;
-  @OneToMany(() => LikesEntity, (l) => l.post, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
+  @OneToMany(() => LikesEntity, (l) => l.post)
   likes: LikesEntity;
-  @OneToMany(() => CommentsEntity, (c) => c.postInfo, {})
+  @OneToMany(() => CommentsEntity, (c) => c.postInfo)
   comments: CommentsEntity;
 
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
@@ -81,6 +76,7 @@ export class PostsEntity {
       dislikesCount: 0,
       myStatus: 'None',
     };
+
     return post;
   }
 }

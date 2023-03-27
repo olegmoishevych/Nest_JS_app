@@ -17,7 +17,7 @@ export class FindPostByIdUseCase implements ICommand {
 
   async execute(command: FindPostByIdCommand) {
     const post = await this.postsRepo.findPostById(command.id);
-    if (!post) throw new NotFoundException(`Post not found`);
+    if (!post) throw new NotFoundException();
     const postWithLikeStatus = await this.postsQueryRepo.postWithLikeStatus(
       post,
       command.userId,
@@ -31,7 +31,7 @@ export class FindPostByIdUseCase implements ICommand {
       blogName: postWithLikeStatus.blogName,
       createdAt: postWithLikeStatus.createdAt,
       extendedLikesInfo: {
-        likesCount: postWithLikeStatus.extendedLikesInfo.likeStatus,
+        likesCount: postWithLikeStatus.extendedLikesInfo.likesCount,
         dislikesCount: postWithLikeStatus.extendedLikesInfo.dislikesCount,
         myStatus: postWithLikeStatus.extendedLikesInfo.myStatus,
         newestLikes: postWithLikeStatus.extendedLikesInfo.newestLikes,

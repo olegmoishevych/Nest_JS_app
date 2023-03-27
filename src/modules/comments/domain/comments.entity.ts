@@ -22,6 +22,12 @@ export class CommentsEntity {
   content: string;
   @Column()
   postId: string;
+  @Column()
+  createdAt: string;
+  @Column({ type: 'json', nullable: true })
+  likesInfo: object;
+  @OneToMany(() => LikesEntity, (l) => l.comments)
+  likes: LikesEntity;
   @ManyToOne(() => CommentatorInfoEntity, (c) => c.comments, {
     eager: true,
     cascade: true,
@@ -29,17 +35,6 @@ export class CommentsEntity {
   })
   @JoinColumn()
   commentatorInfo: CommentatorInfoEntity;
-  @Column()
-  createdAt: string;
-  @Column({ type: 'json', nullable: true })
-  likesInfo: object;
-  @OneToMany(() => LikesEntity, (l) => l.comments, {
-    eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  likes: LikesEntity;
   @ManyToOne(() => PostsEntity, (p) => p.comments, {
     eager: true,
     cascade: true,

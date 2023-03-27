@@ -45,7 +45,7 @@ export class BlogsEntity {
   @JoinColumn()
   banInfo: BanInfoEntity;
   @OneToMany(() => PostsEntity, (p) => p.blog)
-  post: PostsEntity[];
+  post: PostsEntity;
   @OneToMany(() => BannedUserForBlogEntity, (u) => u.blog, {})
   userBanned: BannedUserForBlogEntity;
 

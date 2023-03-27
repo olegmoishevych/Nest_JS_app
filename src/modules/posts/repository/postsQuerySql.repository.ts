@@ -25,12 +25,28 @@ export class PostsQuerySqlRepository {
     );
   }
 
-  async postWithLikeStatus(post: any, userId: string) {
+  async postWithLikeStatus(post: any, userId: string | null) {
+    // console.log('post', post.extendedLikesInfo);
     // post.extendedLikesInfo.likesCount = await this.likesTable.count({
     //   where: {
     //     parentId: post.id,
     //     likeStatus: 'Like',
     //   },
+    // });
+    // post.extendedLikesInfo.dislikesCount = await this.likesTable.count({
+    //   where: {
+    //     parentId: post.id,
+    //     likeStatus: 'Dislike',
+    //   },
+    // });
+    // post.extendedLikesInfo.newestLikes = await this.likesTable.find({
+    //   where: {
+    //     parentId: post.id,
+    //     likeStatus: 'Like',
+    //   },
+    //   select: ['addedAt', 'userId', 'login'],
+    //   order: { addedAt: 'DESC' },
+    //   take: 3,
     // });
     post.extendedLikesInfo.likesCount = await this.likesTable
       .createQueryBuilder('likes')
@@ -42,12 +58,6 @@ export class PostsQuerySqlRepository {
         likeStatus: LikeStatusEnum.Like,
       })
       .getCount();
-    // post.extendedLikesInfo.dislikesCount = await this.likesTable.count({
-    //   where: {
-    //     parentId: post.id,
-    //     likeStatus: 'Dislike',
-    //   },
-    // });
     post.extendedLikesInfo.dislikesCount = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')
@@ -58,15 +68,6 @@ export class PostsQuerySqlRepository {
         likeStatus: LikeStatusEnum.Dislike,
       })
       .getCount();
-    // post.extendedLikesInfo.newestLikes = await this.likesTable.find({
-    //   where: {
-    //     parentId: post.id,
-    //     likeStatus: 'Like',
-    //   },
-    //   select: ['addedAt', 'userId', 'login'],
-    //   order: { addedAt: 'DESC' },
-    //   take: 3,
-    // });
     post.extendedLikesInfo.newestLikes = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')
@@ -76,18 +77,12 @@ export class PostsQuerySqlRepository {
         likeStatus: LikeStatusEnum.Like,
       })
       .andWhere('banInfo.isBanned = false')
-      .select(['likes.addedAt', 'likes.userId', 'likes.login'])
+      .select(['likes.userId, likes.login, likes.addedAt'])
       .orderBy('likes.addedAt', 'DESC')
       .take(3)
-      .getMany();
+      .getRawMany();
+
     if (userId) {
-      // const myStatus = await this.likesTable.findOne({
-      //   where: {
-      //     parentId: post.id,
-      //     userId,
-      //   },
-      //   select: ['likeStatus'],
-      // });
       const myStatus = await this.likesTable
         .createQueryBuilder('likes')
         .leftJoinAndSelect('likes.user', 'user')

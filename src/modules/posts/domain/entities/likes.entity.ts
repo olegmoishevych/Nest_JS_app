@@ -26,11 +26,21 @@ export class LikesEntity {
   addedAt: string;
   @Column()
   likeStatus: string;
-  @ManyToOne(() => PostsEntity, (p) => p.likes, {})
+  @ManyToOne(() => PostsEntity, (p) => p.likes, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
   post: PostsEntity;
-  @ManyToOne(() => CommentsEntity, (c) => c.likes, {})
+  @ManyToOne(() => CommentsEntity, (c) => c.likes, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
   comments: CommentsEntity;
-  @ManyToOne(() => UserEntity, (u) => u.like, {
+  @ManyToOne(() => UserEntity, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
