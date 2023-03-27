@@ -20,10 +20,10 @@ export class CreateUserUseCase implements ICommandHandler {
       passwordHash,
     );
     return {
+      id: user.id,
       login: user.login,
       email: user.email,
       createdAt: user.createdAt,
-      id: user.id,
       banInfo: {
         isBanned: false,
         banDate: null,
