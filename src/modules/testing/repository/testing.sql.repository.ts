@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from '../../auth/domain/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CommentsEntity } from '../../comments/domain/comments.entity';
 
 @Injectable()
 export class TestingSqlRepository {
   constructor(
     private dataSource: DataSource,
-    private userTable: Repository<UserEntity>,
+    @InjectRepository(CommentsEntity)
+    private usersTable: Repository<UserEntity>,
   ) {}
 
   async deleteAllData() {
-    await this.userTable.delete({});
+    await this.usersTable.delete({});
     try {
       await this.dataSource.query(`
         CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
