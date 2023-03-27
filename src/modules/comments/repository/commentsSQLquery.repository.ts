@@ -11,6 +11,7 @@ import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsEntity } from '../../blogs/domain/entities/blogs.entity';
 import { PostsEntity } from '../../posts/domain/entities/posts.entity';
+import { LikeStatusEnum } from '../schema/likeStatus.schema';
 
 @Injectable()
 export class CommentsSQLqueryRepository {
@@ -37,57 +38,88 @@ export class CommentsSQLqueryRepository {
   }
 
   async commentWithLikeStatus(comment: any, userId: string | null) {
-    comment.likesInfo.likesCount = await this.likesTable.count({
-      where: {
-        parentId: comment.id,
-        likeStatus: 'Like',
-      },
-    });
-    comment.likesInfo.dislikesCount = await this.likesTable.count({
-      where: {
-        parentId: comment.id,
-        likeStatus: 'Dislike',
-      },
-    });
+    // comment.likesInfo.likesCount = await this.likesTable.count({
+    //   where: {
+    //     parentId: comment.id,
+    //     likeStatus: 'Like',
+    //   },
+    // });
+    comment.likesInfo.likesCount = await this.likesTable
+      .createQueryBuilder('likes')
+      .leftJoinAndSelect('likes.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
+      .andWhere('likes.parentId = :commentId', { commentId: comment.id })
+      .andWhere('likes.likeStatus = :likeStatus', {
+        likeStatus: LikeStatusEnum.Like,
+      })
+      .getCount();
+    // comment.likesInfo.dislikesCount = await this.likesTable.count({
+    //   where: {
+    //     parentId: comment.id,
+    //     likeStatus: 'Dislike',
+    //   },
+    // });
+    comment.likesInfo.dislikesCount = await this.likesTable
+      .createQueryBuilder('likes')
+      .leftJoinAndSelect('likes.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
+      .andWhere('likes.parentId = :commentId', { commentId: comment.id })
+      .andWhere('likes.likeStatus = :likeStatus', {
+        likeStatus: LikeStatusEnum.Dislike,
+      })
+      .getCount();
+
     if (userId) {
-      const myStatus = await this.likesTable.findOne({
-        where: {
-          parentId: comment.id,
-          userId,
-        },
-        select: ['likeStatus'],
-      });
+      // const myStatus = await this.likesTable.findOne({
+      //   where: {
+      //     parentId: comment.id,
+      //     userId,
+      //   },
+      //   select: ['likeStatus'],
+      // });
+      const myStatus = await this.likesTable
+        .createQueryBuilder('likes')
+        .leftJoinAndSelect('likes.user', 'user')
+        .leftJoinAndSelect('user.banInfo', 'banInfo')
+        .where('banInfo.isBanned = false')
+        .andWhere('likes.parentId = :commentId', { commentId: comment.id })
+        .andWhere('likes.userId = :userId', { userId })
+        .select(['likes.likeStatus'])
+        .getOne();
       comment.likesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
     }
     return comment;
   }
 
-  async findCommentsByPostId(postId: string, dto: PaginationDto) {
+  async findCommentsByPostId(
+    postId: string,
+    dto: PaginationDto,
+  ): Promise<PaginationViewModel<CommentsEntity[]>> {
     const builder = this.commentsTable
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.commentatorInfo', 'commentatorInfo')
-      .addSelect('comment.isUserBanned', 'isUserBanned')
-      .addSelect('comment.postId', 'postId')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .select([
+        'comment.id',
+        'comment.content',
+        'commentatorInfo.userId',
+        'commentatorInfo.userLogin',
+        'comment.createdAt',
+        'comment.likesInfo',
+      ])
+      .where('banInfo.isBanned = false')
       .orderBy(
         `comment.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       )
-      .where('comment.isUserBanned = :isUserBanned')
-      .andWhere('comment.postId = :postId', { postId: postId })
-      .setParameters({
-        isUserBanned: false,
-      });
+      .andWhere('comment.postId = :postId', { postId: postId });
     const [comments, total] = await builder
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
-
-    comments.forEach((comment) => {
-      if (comment.commentatorInfo) {
-        delete comment.commentatorInfo.id;
-      }
-    });
-
     return new PaginationViewModel<CommentsEntity[]>(
       total,
       dto.pageNumber,
@@ -96,11 +128,18 @@ export class CommentsSQLqueryRepository {
     );
   }
   async getCountCollection(postId: string): Promise<number> {
-    return this.commentsTable.count({
-      where: {
-        postId: postId,
-      },
-    });
+    // return this.commentsTable.count({
+    //   where: {
+    //     postId: postId,
+    //   },
+    // });
+    return this.commentsTable
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
+      .andWhere('comment.postId = :postId', { postId: postId })
+      .getCount();
   }
 
   async getCommentsByUserId(

@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -16,6 +17,7 @@ import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { DevicesEntity } from '../../../devices/domain/entities/devices.entity';
 import { BanUserDto } from '../../../users/dto/userDto';
 import { LikesEntity } from '../../../posts/domain/entities/likes.entity';
+import { CommentsEntity } from '../../../comments/domain/comments.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -60,10 +62,12 @@ export class UserEntity {
   devices: DevicesEntity;
   @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo)
   blog: BlogsEntity;
-  // @OneToMany(() => LikesEntity, (l) => l.user, {
-  //   onDelete: 'CASCADE',
-  // })
-  // like: LikesEntity;
+  @OneToMany(() => LikesEntity, (l) => l.user, {
+    onDelete: 'CASCADE',
+  })
+  like: LikesEntity;
+  @OneToMany(() => CommentsEntity, (c) => c.user)
+  comment: CommentsEntity;
 
   confirmedCode(code: string) {
     if (this.emailConfirmation.isConfirmed) return false;

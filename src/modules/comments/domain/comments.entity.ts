@@ -17,8 +17,6 @@ export class CommentsEntity {
   @PrimaryGeneratedColumn()
   id: string;
   @Column()
-  isUserBanned: boolean;
-  @Column()
   content: string;
   @Column()
   postId: string;
@@ -28,6 +26,13 @@ export class CommentsEntity {
   likesInfo: object;
   @OneToMany(() => LikesEntity, (l) => l.comments)
   likes: LikesEntity;
+  @ManyToOne(() => UserEntity, (u) => u.comment, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  user: UserEntity;
   @ManyToOne(() => CommentatorInfoEntity, (c) => c.comments, {
     eager: true,
     cascade: true,
@@ -42,11 +47,7 @@ export class CommentsEntity {
   })
   @JoinColumn()
   postInfo: PostsEntity;
-  banUser(user: UserEntity) {
-    user.banInfo.isBanned
-      ? (this.isUserBanned = false)
-      : (this.isUserBanned = true);
-  }
+
   updateComment(dto: CommentsDto): void {
     this.content = dto.content;
   }
@@ -66,7 +67,7 @@ export class CommentsEntity {
     postInfo.blogName = post.blogName;
 
     const commentForDB = new CommentsEntity();
-    commentForDB.isUserBanned = false;
+    commentForDB.user = user;
     commentForDB.postId = post.id;
     commentForDB.content = dto.content;
     commentForDB.commentatorInfo = commentatorInfo;
