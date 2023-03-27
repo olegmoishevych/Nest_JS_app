@@ -51,40 +51,57 @@ export class BlogsSQLqueryRepository {
       .createQueryBuilder('b')
       .leftJoinAndSelect('b.blogOwnerInfo', 'blogOwnerInfo')
       .leftJoinAndSelect('b.banInfo', 'banInfo')
-      .addSelect('blogOwnerInfo.email', 'blogOwnerInfo.email')
-      .addSelect('blogOwnerInfo.createdAt', 'blogOwnerInfo.createdAt')
-      .addSelect('blogOwnerInfo.passwordHash', 'blogOwnerInfo.passwordHash')
-      .addSelect('banInfo.id', 'banInfo.id')
-      .addSelect('banInfo.banReason', 'banInfo.banReason')
+      .select([
+        'b.id',
+        'b.name',
+        'b.description',
+        'b.websiteUrl',
+        'b.createdAt',
+        'b.isMembership',
+        'blogOwnerInfo.id',
+        'blogOwnerInfo.login',
+        'banInfo.isBlogBanned',
+        'banInfo.banDate',
+      ])
       .orderBy(
         `b.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       );
-    // .where('banInfo.isBanned = false');
-
-    // if (settings.isAdminRequesting) {
-    //   builder.orWhere('banInfo.isBanned = true').leftJoinAndSelect('b.user', 'u');
-    // }
-
-    // if (settings.blogsOfSpecifiedUserId) {
-    //   builder.where('b.userId = :userId', { userId: settings.blogsOfSpecifiedUserId });
-    // }
     if (dto.searchNameTerm) {
       builder.where('b.name ILIKE :name', {
         name: `%${dto.searchNameTerm}%`,
       });
     }
-
     const [blogs, total] = await builder
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
+
+    const transformedResults = blogs.map((b) => {
+      return {
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        websiteUrl: b.websiteUrl,
+        createdAt: b.createdAt,
+        isMembership: b.isMembership,
+        blogOwnerInfo: {
+          userId: b.blogOwnerInfo.id,
+          userLogin: b.blogOwnerInfo.login,
+        },
+        banInfo: {
+          isBanned: b.banInfo.isBlogBanned,
+          banDate: b.banInfo.banDate,
+        },
+      };
+    });
+
     return {
       pagesCount: Math.ceil(total / dto.pageSize),
       page: dto.pageNumber,
       pageSize: dto.pageSize,
       totalCount: total,
-      items: blogs,
+      items: transformedResults,
     };
   }
 
