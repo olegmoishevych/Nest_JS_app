@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PostsEntity } from '../domain/entities/posts.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { LikesEntity } from '../domain/entities/likes.entity';
 import { PostsViewModal } from '../schemas/posts.schema';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
+import { LikeStatusEnum } from '../../comments/schema/likeStatus.schema';
 
 @Injectable()
 export class PostsQuerySqlRepository {
@@ -24,39 +25,78 @@ export class PostsQuerySqlRepository {
     );
   }
 
-  async postWithLikeStatus(post: any, userId: string | null) {
-    post.extendedLikesInfo.likesCount = await this.likesTable.count({
-      where: {
-        parentId: post.id,
-        likeStatus: 'Like',
-        isUserBanned: false,
-      },
-    });
-    post.extendedLikesInfo.dislikesCount = await this.likesTable.count({
-      where: {
-        parentId: post.id,
-        likeStatus: 'Dislike',
-        isUserBanned: false,
-      },
-    });
-    post.extendedLikesInfo.newestLikes = await this.likesTable.find({
-      where: {
-        parentId: post.id,
-        likeStatus: 'Like',
-        isUserBanned: false,
-      },
-      select: ['addedAt', 'userId', 'login'],
-      order: { addedAt: 'DESC' },
-      take: 3,
-    });
+  async postWithLikeStatus(post: any, userId: string) {
+    // post.extendedLikesInfo.likesCount = await this.likesTable.count({
+    //   where: {
+    //     parentId: post.id,
+    //     likeStatus: 'Like',
+    //   },
+    // });
+    post.extendedLikesInfo.likesCount = await this.likesTable
+      .createQueryBuilder('likes')
+      .leftJoinAndSelect('likes.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
+      .andWhere('likes.parentId = :postId', { postId: post.id })
+      .andWhere('likes.likeStatus = :likeStatus', {
+        likeStatus: LikeStatusEnum.Like,
+      })
+      .getCount();
+    // post.extendedLikesInfo.dislikesCount = await this.likesTable.count({
+    //   where: {
+    //     parentId: post.id,
+    //     likeStatus: 'Dislike',
+    //   },
+    // });
+    post.extendedLikesInfo.dislikesCount = await this.likesTable
+      .createQueryBuilder('likes')
+      .leftJoinAndSelect('likes.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
+      .andWhere('likes.parentId = :postId', { postId: post.id })
+      .andWhere('likes.likeStatus = :likeStatus', {
+        likeStatus: LikeStatusEnum.Dislike,
+      })
+      .getCount();
+    // post.extendedLikesInfo.newestLikes = await this.likesTable.find({
+    //   where: {
+    //     parentId: post.id,
+    //     likeStatus: 'Like',
+    //   },
+    //   select: ['addedAt', 'userId', 'login'],
+    //   order: { addedAt: 'DESC' },
+    //   take: 3,
+    // });
+    post.extendedLikesInfo.newestLikes = await this.likesTable
+      .createQueryBuilder('likes')
+      .leftJoinAndSelect('likes.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('likes.parentId = :postId', { postId: post.id })
+      .andWhere('likes.likeStatus = :likeStatus', {
+        likeStatus: LikeStatusEnum.Like,
+      })
+      .andWhere('banInfo.isBanned = false')
+      .select(['likes.addedAt', 'likes.userId', 'likes.login'])
+      .orderBy('likes.addedAt', 'DESC')
+      .take(3)
+      .getMany();
     if (userId) {
-      const myStatus = await this.likesTable.findOne({
-        where: {
-          parentId: post.id,
-          userId,
-        },
-        select: ['likeStatus'],
-      });
+      // const myStatus = await this.likesTable.findOne({
+      //   where: {
+      //     parentId: post.id,
+      //     userId,
+      //   },
+      //   select: ['likeStatus'],
+      // });
+      const myStatus = await this.likesTable
+        .createQueryBuilder('likes')
+        .leftJoinAndSelect('likes.user', 'user')
+        .leftJoinAndSelect('user.banInfo', 'banInfo')
+        .where('banInfo.isBanned = false')
+        .andWhere('likes.parentId = :parentId', { parentId: post.id })
+        .andWhere('likes.userId = :userId', { userId })
+        .select(['likes.likeStatus'])
+        .getOne();
       post.extendedLikesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
     }
     return post;
@@ -67,18 +107,14 @@ export class PostsQuerySqlRepository {
     dto: PaginationDto,
   ): Promise<PaginationViewModel<PostsViewModal[]>> {
     const builder = this.postsTable
-      .createQueryBuilder('post')
-      .addSelect('post.isUserBanned', 'isUserBanned')
-      .addSelect('post.isBlogBanned', 'isBlogBanned')
+      .createQueryBuilder('posts')
+      .leftJoinAndSelect('posts.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'banInfo')
+      .where('banInfo.isBanned = false')
       .orderBy(
-        `post.${dto.sortBy}`,
+        `posts.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      )
-      .where('post.isUserBanned = :isUserBanned')
-      .andWhere('post.isBlogBanned = :isBlogBanned', {
-        isUserBanned: false,
-        isBlogBanned: false,
-      });
+      );
     const [posts, total] = await builder
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)

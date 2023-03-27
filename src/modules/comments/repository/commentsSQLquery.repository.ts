@@ -41,14 +41,12 @@ export class CommentsSQLqueryRepository {
       where: {
         parentId: comment.id,
         likeStatus: 'Like',
-        isUserBanned: false,
       },
     });
     comment.likesInfo.dislikesCount = await this.likesTable.count({
       where: {
         parentId: comment.id,
         likeStatus: 'Dislike',
-        isUserBanned: false,
       },
     });
     if (userId) {

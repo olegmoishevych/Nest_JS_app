@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserEntity } from '../../../auth/domain/entities/user.entity';
 import { PostsEntity } from './posts.entity';
 import { CommentsEntity } from '../../../comments/domain/comments.entity';
@@ -12,8 +18,6 @@ export class LikesEntity {
   id: string;
   @Column()
   parentId: string;
-  @Column({ default: false })
-  isUserBanned: boolean;
   @Column()
   userId: string;
   @Column()
@@ -26,24 +30,24 @@ export class LikesEntity {
   post: PostsEntity;
   @ManyToOne(() => CommentsEntity, (c) => c.likes, {})
   comments: CommentsEntity;
+  @ManyToOne(() => UserEntity, (u) => u.like, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  user: UserEntity;
 
-  banUser(user: UserEntity) {
-    if (user.banInfo.isBanned) {
-      this.isUserBanned = false;
-    } else {
-      this.isUserBanned = true;
-    }
-  }
   static createLikeForPost(
     postId: string,
     user: UserEntity,
     dto: LikeStatusDto,
   ): LikesEntity {
     const likeForDb = new LikesEntity();
+    likeForDb.user = user;
     likeForDb.parentId = postId;
     likeForDb.userId = user.id;
     likeForDb.login = user.login;
-    likeForDb.isUserBanned = false;
     likeForDb.likeStatus = dto.likeStatus;
     likeForDb.addedAt = new Date().toISOString();
     return likeForDb;
@@ -54,8 +58,8 @@ export class LikesEntity {
     dto: LikeStatusDto,
   ): LikesEntity {
     const likeForComment = new LikesEntity();
+    likeForComment.user = user;
     likeForComment.parentId = commentId;
-    likeForComment.isUserBanned = false;
     likeForComment.userId = user.id;
     likeForComment.login = user.login;
     likeForComment.likeStatus = dto.likeStatus;
