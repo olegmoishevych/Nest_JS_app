@@ -14,7 +14,7 @@ export type LikeStatuses = 'Like' | 'Dislike' | 'None';
 
 @Entity('Likes')
 export class LikesEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   parentId: string;

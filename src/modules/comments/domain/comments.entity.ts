@@ -14,7 +14,7 @@ import { UserEntity } from '../../auth/domain/entities/user.entity';
 
 @Entity('Comments')
 export class CommentsEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   content: string;

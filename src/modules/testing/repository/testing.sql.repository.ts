@@ -88,7 +88,7 @@ export class TestingSqlRepository {
   END;
   $$ LANGUAGE plpgsql;
   SELECT truncate_tables('postgres');
-  SELECT truncate_tables('neondb');
+  SELECT truncate_tables('neondb'); 
   SELECT truncate_tables('olegmoishevych');
           `);
       return true;
