@@ -21,7 +21,6 @@ export class DevicesEntity {
   deviceId: string;
   @ManyToOne(() => UserEntity, (u) => u.devices, {
     eager: true,
-    cascade: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn()

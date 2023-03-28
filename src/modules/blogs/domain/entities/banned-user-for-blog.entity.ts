@@ -3,6 +3,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BlogsEntity } from './blogs.entity';
@@ -25,10 +26,8 @@ export class BannedUserForBlogEntity {
   createdAt: Date;
   @Column({ nullable: true })
   blogId: string;
-  @ManyToOne(() => BlogsEntity, (b) => b.userBanned, {
-    eager: true,
+  @OneToMany(() => BlogsEntity, (b) => b.userBanned, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   @JoinColumn()
   blog: BlogsEntity;

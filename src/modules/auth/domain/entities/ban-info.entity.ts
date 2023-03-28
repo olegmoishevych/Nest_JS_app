@@ -16,8 +16,14 @@ export class BanInfoEntity {
   banDate: Date;
   @Column({ nullable: true })
   banReason: string | null;
-  @OneToOne(() => UserEntity, (user) => user.banInfo, { onDelete: 'CASCADE' })
+  @OneToOne(() => UserEntity, (user) => user.banInfo, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
-  @OneToOne(() => BlogsEntity, (b) => b.banInfo, { onDelete: 'CASCADE' })
+  @OneToOne(() => BlogsEntity, (b) => b.banInfo, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   blog: BlogsEntity;
 }

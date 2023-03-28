@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -32,41 +31,37 @@ export class UserEntity {
   @Column()
   createdAt: string;
   @OneToOne(() => EmailConfirmationEntity, (e) => e.user, {
-    // eager: true,
-    // cascade: true,
-    // onDelete: 'CASCADE',
+    cascade: true,
   })
   @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
   @OneToOne(() => PasswordRecoveryEntity, (p) => p.user, {
-    eager: true,
     cascade: true,
-    onDelete: 'CASCADE',
   })
   @JoinColumn()
   passwordRecovery: PasswordRecoveryEntity;
   @OneToOne(() => BanInfoEntity, (b) => b.user, {
-    eager: true,
     cascade: true,
-    onDelete: 'CASCADE',
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
   @OneToMany(() => PostsEntity, (p) => p.user, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   post: PostsEntity;
   @OneToMany(() => DevicesEntity, (d) => d.user, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   devices: DevicesEntity;
-  @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo)
+  @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo, { cascade: true })
   blog: BlogsEntity;
   @OneToMany(() => LikesEntity, (l) => l.user, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   like: LikesEntity;
-  @OneToMany(() => CommentsEntity, (c) => c.user)
+  @OneToMany(() => CommentsEntity, (c) => c.user, {
+    cascade: true,
+  })
   comment: CommentsEntity;
 
   confirmedCode(code: string) {
@@ -92,12 +87,14 @@ export class UserEntity {
   updateUserHash(passwordHash: string) {
     this.passwordHash = passwordHash;
   }
+
   banUser(userId: string, user: UserEntity, dto: BanUserDto): void {
     this.banInfo.isBanned = dto.isBanned;
     this.banInfo.banDate = new Date();
     this.banInfo.banReason = dto.banReason;
     this.banInfo.userId = userId;
   }
+
   static create(
     login: string,
     email: string,

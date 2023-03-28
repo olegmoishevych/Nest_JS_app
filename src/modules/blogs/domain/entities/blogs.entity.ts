@@ -29,22 +29,22 @@ export class BlogsEntity {
   @Column()
   isMembership: boolean;
   @ManyToOne(() => UserEntity, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     eager: true,
-    cascade: true,
   })
   @JoinColumn()
   blogOwnerInfo: UserEntity;
   @OneToOne(() => BanInfoEntity, (b) => b.blog, {
-    eager: true,
     cascade: true,
-    onDelete: 'CASCADE',
   })
   @JoinColumn()
   banInfo: BanInfoEntity;
-  @OneToMany(() => PostsEntity, (p) => p.blog)
-  post: PostsEntity;
-  @OneToMany(() => BannedUserForBlogEntity, (u) => u.blog, {})
+  @OneToMany(() => PostsEntity, (p) => p.blog, { cascade: true })
+  post: PostsEntity[];
+  @ManyToOne(() => BannedUserForBlogEntity, (u) => u.blog, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   userBanned: BannedUserForBlogEntity;
 
   updateBlog(dto: BlogsDto) {

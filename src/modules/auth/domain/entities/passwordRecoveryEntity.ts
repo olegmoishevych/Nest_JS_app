@@ -18,6 +18,7 @@ export class PasswordRecoveryEntity {
   recoveryCode: string;
   @OneToOne(() => UserEntity, (user) => user.passwordRecovery, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   user: UserEntity;
 }

@@ -10,7 +10,7 @@ export class CommentatorInfoEntity {
   @Column()
   userLogin: string;
   @OneToMany(() => CommentsEntity, (c) => c.commentatorInfo, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   comments: CommentsEntity;
 }
