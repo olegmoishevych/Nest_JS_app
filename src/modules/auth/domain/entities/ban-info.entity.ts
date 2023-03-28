@@ -1,4 +1,10 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserEntity } from './user.entity';
 import { BlogsEntity } from '../../../blogs/domain/entities/blogs.entity';
 
@@ -17,13 +23,14 @@ export class BanInfoEntity {
   @Column({ nullable: true })
   banReason: string | null;
   @OneToOne(() => UserEntity, (user) => user.banInfo, {
-    eager: true,
-    onDelete: 'CASCADE',
+    // onDelete: 'CASCADE',
   })
+  @JoinColumn()
   user: UserEntity;
   @OneToOne(() => BlogsEntity, (b) => b.banInfo, {
-    eager: true,
-    onDelete: 'CASCADE',
+    // eager: true,
+    // onDelete: 'CASCADE',
   })
+  @JoinColumn()
   blog: BlogsEntity;
 }

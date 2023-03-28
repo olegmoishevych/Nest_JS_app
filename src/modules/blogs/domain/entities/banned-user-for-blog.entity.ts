@@ -26,9 +26,7 @@ export class BannedUserForBlogEntity {
   createdAt: Date;
   @Column({ nullable: true })
   blogId: string;
-  @OneToMany(() => BlogsEntity, (b) => b.userBanned, {
-    cascade: true,
-  })
+  @OneToMany(() => BlogsEntity, (b) => b.userBanned)
   @JoinColumn()
   blog: BlogsEntity;
   createBannedUser(
@@ -40,10 +38,8 @@ export class BannedUserForBlogEntity {
     bannedUser.userId = user.id;
     bannedUser.banReason = dto.banReason;
     bannedUser.isBanned = dto.isBanned;
-    // bannedUser.blogId = blog.id;
     bannedUser.login = user.login;
     bannedUser.createdAt = new Date();
-    // bannedUser.blog = blog;
     return bannedUser;
   }
   bannedUser(banUserModal: BanUserForBloggerDto, user: UserEntity): void {

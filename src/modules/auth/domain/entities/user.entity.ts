@@ -32,37 +32,51 @@ export class UserEntity {
   createdAt: string;
   @OneToOne(() => EmailConfirmationEntity, (e) => e.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true, // // user (owner)
   })
-  @JoinColumn()
   emailConfirmation: EmailConfirmationEntity;
   @OneToOne(() => PasswordRecoveryEntity, (p) => p.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
   })
-  @JoinColumn()
-  passwordRecovery: PasswordRecoveryEntity;
+  passwordRecovery: PasswordRecoveryEntity; // // user (owner)
   @OneToOne(() => BanInfoEntity, (b) => b.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
   })
-  @JoinColumn()
-  banInfo: BanInfoEntity;
+  banInfo: BanInfoEntity; // // user (owner)
   @OneToMany(() => PostsEntity, (p) => p.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
   })
-  post: PostsEntity;
+  post: PostsEntity; // // user (owner)
   @OneToMany(() => DevicesEntity, (d) => d.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
   })
-  devices: DevicesEntity;
-  @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo, { cascade: true })
-  blog: BlogsEntity;
+  devices: DevicesEntity; // // user (owner)
+  @OneToMany(() => BlogsEntity, (b) => b.blogOwnerInfo, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  blog: BlogsEntity; // // user (owner)
   @OneToMany(() => LikesEntity, (l) => l.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
   })
-  like: LikesEntity;
+  like: LikesEntity; // // user (owner)
   @OneToMany(() => CommentsEntity, (c) => c.user, {
     cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
   })
-  comment: CommentsEntity;
+  comment: CommentsEntity; // user (owner)
 
   confirmedCode(code: string) {
     if (this.emailConfirmation.isConfirmed) return false;

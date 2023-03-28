@@ -1,16 +1,21 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CommentsEntity } from './comments.entity';
 
 @Entity('CommentatorInfo')
 export class CommentatorInfoEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   userId: string;
   @Column()
   userLogin: string;
-  @OneToMany(() => CommentsEntity, (c) => c.commentatorInfo, {
-    cascade: true,
-  })
+  @OneToMany(() => CommentsEntity, (c) => c.commentatorInfo)
+  @JoinColumn()
   comments: CommentsEntity;
 }

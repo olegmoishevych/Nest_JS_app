@@ -32,22 +32,24 @@ export class PostsEntity {
   createdAt: string;
   @Column({ type: 'json', nullable: true })
   extendedLikesInfo: object;
-  @ManyToOne(() => UserEntity, (u) => u.post, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => UserEntity, (u) => u.post)
   @JoinColumn()
-  user: UserEntity;
-  @ManyToOne(() => BlogsEntity, (b) => b.post, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
+  user: UserEntity; // user (owner)
+  @ManyToOne(() => BlogsEntity, (b) => b.post)
   @JoinColumn()
-  blog: BlogsEntity;
-  @OneToMany(() => LikesEntity, (l) => l.post, { cascade: true })
-  likes: LikesEntity[];
-  @OneToMany(() => CommentsEntity, (c) => c.postInfo, { cascade: true })
-  comments: CommentsEntity[];
+  blog: BlogsEntity; // blog (owner)
+  @OneToMany(() => LikesEntity, (l) => l.post, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  likes: LikesEntity; // posts (owner)
+  @OneToMany(() => CommentsEntity, (c) => c.postInfo, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  comments: CommentsEntity; // posts (owner)
 
   updatePostByBlogsAndPostsId(updatePost: CreatePostDto) {
     this.title = updatePost.title;

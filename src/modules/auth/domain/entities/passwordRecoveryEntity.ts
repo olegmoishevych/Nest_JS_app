@@ -17,8 +17,9 @@ export class PasswordRecoveryEntity {
   @Column()
   recoveryCode: string;
   @OneToOne(() => UserEntity, (user) => user.passwordRecovery, {
-    onDelete: 'CASCADE',
-    eager: true,
+    // onDelete: 'CASCADE',
+    // eager: true,
   })
+  @JoinColumn()
   user: UserEntity;
 }

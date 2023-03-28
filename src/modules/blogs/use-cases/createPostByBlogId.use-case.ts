@@ -27,6 +27,7 @@ export class CreatePostByBlogIdUseCase implements ICommandHandler {
 
   async execute(command: CreatePostByBlogIdCommand) {
     const blog = await this.blogsRepository.findBlogById(command.blogId);
+    console.log('blog', blog);
     if (!blog)
       throw new NotFoundException([
         {

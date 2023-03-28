@@ -24,26 +24,24 @@ export class CommentsEntity {
   createdAt: string;
   @Column({ type: 'json', nullable: true })
   likesInfo: object;
-  @OneToMany(() => LikesEntity, (l) => l.comments, { cascade: true })
-  likes: LikesEntity[];
-  @ManyToOne(() => UserEntity, (u) => u.comment, {
-    eager: true,
+  @OneToMany(() => LikesEntity, (l) => l.comments, {
+    cascade: true,
     onDelete: 'CASCADE',
+    eager: true,
   })
+  likes: LikesEntity; // comment (owner)
+  @ManyToOne(() => UserEntity, (u) => u.comment)
   @JoinColumn()
-  user: UserEntity;
+  user: UserEntity; // user (owner)
   @ManyToOne(() => CommentatorInfoEntity, (c) => c.comments, {
     eager: true,
     onDelete: 'CASCADE',
+    cascade: true,
   })
-  @JoinColumn()
   commentatorInfo: CommentatorInfoEntity;
-  @ManyToOne(() => PostsEntity, (p) => p.comments, {
-    eager: true,
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => PostsEntity, (p) => p.comments)
   @JoinColumn()
-  postInfo: PostsEntity;
+  postInfo: PostsEntity; // post (owner)
 
   updateComment(dto: CommentsDto): void {
     this.content = dto.content;

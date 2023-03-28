@@ -28,24 +28,27 @@ export class BlogsEntity {
   createdAt: string;
   @Column()
   isMembership: boolean;
-  @ManyToOne(() => UserEntity, {
-    onDelete: 'CASCADE',
-    eager: true,
-  })
+  @ManyToOne(() => UserEntity, (u) => u.blog, { eager: true })
   @JoinColumn()
-  blogOwnerInfo: UserEntity;
+  blogOwnerInfo: UserEntity; // user (owner)
   @OneToOne(() => BanInfoEntity, (b) => b.blog, {
     cascade: true,
-  })
-  @JoinColumn()
-  banInfo: BanInfoEntity;
-  @OneToMany(() => PostsEntity, (p) => p.blog, { cascade: true })
-  post: PostsEntity[];
-  @ManyToOne(() => BannedUserForBlogEntity, (u) => u.blog, {
-    eager: true,
     onDelete: 'CASCADE',
+    eager: true,
   })
-  userBanned: BannedUserForBlogEntity;
+  banInfo: BanInfoEntity; // blog (owner)
+  @OneToMany(() => PostsEntity, (p) => p.blog, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  post: PostsEntity; // blog (owner)
+  @ManyToOne(() => BannedUserForBlogEntity, (u) => u.blog, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    eager: true,
+  })
+  userBanned: BannedUserForBlogEntity; // blog (owner)
 
   updateBlog(dto: BlogsDto) {
     this.name = dto.name;
