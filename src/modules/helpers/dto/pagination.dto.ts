@@ -18,17 +18,17 @@ export class PaginationDto {
   @Transform((v) => {
     return toInt(v.value, 1, 1);
   })
-  pageNumber: number | null = 1;
+  pageNumber = 1;
   @IsOptional()
   @IsInt()
   @Transform((v) => {
     return toInt(v.value, 1, 10);
   })
-  pageSize: number | null = 10;
+  pageSize = 10;
   @IsOptional()
-  sortBy: string | null = 'createdAt';
+  sortBy = 'createdAt';
   @IsOptional()
-  sortDirection: string | null = 'desc';
+  sortDirection = 'desc';
   public getSkipSize() {
     return (this.pageNumber - 1) * this.pageSize;
   }
@@ -40,7 +40,7 @@ export class BannedUserDto extends PaginationDto {
 
 export class BlogPaginationDto extends PaginationDto {
   @IsOptional()
-  searchNameTerm: string | null = '';
+  searchNameTerm = '';
 }
 
 export class UserPaginationDto extends PaginationDto {

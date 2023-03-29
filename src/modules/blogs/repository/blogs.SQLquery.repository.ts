@@ -19,14 +19,14 @@ export class BlogsSQLqueryRepository {
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     const builder = this.blogsTable
       .createQueryBuilder('blogs')
-      // .orderBy(
-      //   `blogs.${query.sortBy}`,
-      //   query.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      // );
       .orderBy(
-        `LOWER(blogs.${query.sortBy})`,
+        `blogs.${query.sortBy}`,
         query.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       );
+    // .orderBy(
+    //   `LOWER(blogs.${query.sortBy})`,
+    //   query.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+    // );
     if (query.searchNameTerm) {
       builder.where('blogs.name ILIKE :name', {
         name: `%${query.searchNameTerm}%`,
