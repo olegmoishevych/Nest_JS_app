@@ -21,6 +21,7 @@ export class BlogsSQLqueryRepository {
       .createQueryBuilder('blogs')
       .leftJoinAndSelect('blogs.banInfo', 'banInfo')
       .where('banInfo.isBanned = false')
+      .andWhere('banInfo.isBlogBanned = false')
       .orderBy(
         `blogs.${query.sortBy}`,
         query.sortDirection.toUpperCase() as 'ASC' | 'DESC',

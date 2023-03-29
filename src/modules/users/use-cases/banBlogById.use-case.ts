@@ -18,7 +18,7 @@ export class BanBlogByIdUseCase implements ICommand {
   ) {}
 
   async execute(command: BanBlogByIdCommand): Promise<boolean> {
-    const blog = await this.blogsRepo.findBlogById(command.id);
+    const blog = await this.blogsRepo.findBlogByIdForSa(command.id);
     if (!blog) throw new NotFoundException([]);
     try {
       blog.banBlogById(blog, command.dto);
