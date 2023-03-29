@@ -35,6 +35,7 @@ export class BlogsSqlRepository {
     return this.blogsTable
       .createQueryBuilder('blog')
       .leftJoinAndSelect('blog.banInfo', 'blogBanInfo')
+      .leftJoinAndSelect('blog.blogOwnerInfo', 'user')
       .where('blog.id = :id', { id })
       .andWhere('blogBanInfo.isBlogBanned = false')
       .getOne();

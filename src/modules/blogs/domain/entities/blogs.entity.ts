@@ -60,13 +60,12 @@ export class BlogsEntity {
   }
 
   banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
+    // this.banInfo.userId = blog.blogOwnerInfo.id;
     if (dto.isBanned) {
       this.banInfo.isBlogBanned = dto.isBanned;
-      // this.banInfo.userId = blog.blogOwnerInfo.id;
       this.banInfo.banDate = new Date();
     } else {
       this.banInfo.isBlogBanned = dto.isBanned;
-      // this.banInfo.userId = blog.blogOwnerInfo.id;
       this.banInfo.banDate = null;
     }
   }
