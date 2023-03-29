@@ -19,13 +19,14 @@ export class BlogsSQLqueryRepository {
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     const builder = this.blogsTable
       .createQueryBuilder('blogs')
-      // .leftJoinAndSelect('b.banInfo', 'banInfo')
-      // .addSelect('b.banInfo', 'b.banInfo')
+      // .orderBy(
+      //   `blogs.${query.sortBy}`,
+      //   query.sortDirection.toUpperCase() as 'ASC' | 'DESC',
+      // );
       .orderBy(
-        `blogs.${query.sortBy}`,
+        `LOWER(blogs.${query.sortBy})`,
         query.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       );
-    // .where('banInfo.isBanned = false');
     if (query.searchNameTerm) {
       builder.where('blogs.name ILIKE :name', {
         name: `%${query.searchNameTerm}%`,

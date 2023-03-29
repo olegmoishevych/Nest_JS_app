@@ -23,13 +23,12 @@ export class BanInfoEntity {
   @Column({ nullable: true })
   banReason: string | null;
   @OneToOne(() => UserEntity, (user) => user.banInfo, {
-    // onDelete: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   user: UserEntity;
   @OneToOne(() => BlogsEntity, (b) => b.banInfo, {
-    // eager: true,
-    // onDelete: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   blog: BlogsEntity;

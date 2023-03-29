@@ -28,7 +28,10 @@ export class BlogsEntity {
   createdAt: string;
   @Column()
   isMembership: boolean;
-  @ManyToOne(() => UserEntity, (u) => u.blog, { eager: true })
+  @ManyToOne(() => UserEntity, (u) => u.blog, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   blogOwnerInfo: UserEntity; // user (owner)
   @OneToOne(() => BanInfoEntity, (b) => b.blog, {

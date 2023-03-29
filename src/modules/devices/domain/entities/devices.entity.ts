@@ -19,7 +19,7 @@ export class DevicesEntity {
   lastActiveDate: string;
   @Column()
   deviceId: string;
-  @ManyToOne(() => UserEntity, (u) => u.devices)
+  @ManyToOne(() => UserEntity, (u) => u.devices, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;
   @Column()

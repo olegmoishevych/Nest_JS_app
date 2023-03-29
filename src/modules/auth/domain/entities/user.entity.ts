@@ -102,10 +102,15 @@ export class UserEntity {
   }
 
   banUser(userId: string, user: UserEntity, dto: BanUserDto): void {
-    this.banInfo.isBanned = dto.isBanned;
-    this.banInfo.banDate = new Date();
-    this.banInfo.banReason = dto.banReason;
-    this.banInfo.userId = userId;
+    if (dto.isBanned) {
+      this.banInfo.isBanned = dto.isBanned;
+      this.banInfo.banDate = new Date();
+      this.banInfo.banReason = dto.banReason;
+    } else {
+      this.banInfo.isBanned = dto.isBanned;
+      this.banInfo.banDate = null;
+      this.banInfo.banReason = null;
+    }
   }
 
   static create(
