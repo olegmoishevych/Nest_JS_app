@@ -31,6 +31,14 @@ export class BlogsSQLqueryRepository {
       });
     }
     const [blogs, total] = await builder
+      .select([
+        'blogs.id',
+        'blogs.name',
+        'blogs.description',
+        'blogs.websiteUrl',
+        'blogs.createdAt',
+        'blogs.isMembership',
+      ])
       .take(query.pageSize)
       .skip((query.pageNumber - 1) * query.pageSize)
       .getManyAndCount();
