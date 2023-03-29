@@ -91,12 +91,10 @@ export class BloggerController {
   @HttpCode(204)
   async updateBlogById(
     @Param('id') id: string,
-    @Body() updateBlogType: BlogsDto,
+    @Body() dto: BlogsDto,
     @User() user: UserModel,
   ): Promise<BlogsEntity> {
-    return this.commandBus.execute(
-      new UpdateBlogByIdCommand(id, user.id, updateBlogType),
-    );
+    return this.commandBus.execute(new UpdateBlogByIdCommand(id, user.id, dto));
   }
 
   @UseGuards(JwtAuthGuard)

@@ -13,7 +13,7 @@ export class UpdateBlogByIdCommand {
   constructor(
     readonly id: string,
     readonly userId: string,
-    readonly updateBlogType: BlogsDto,
+    readonly dto: BlogsDto,
   ) {}
 }
 
@@ -36,7 +36,7 @@ export class UpdateBlogByIdUseCase implements ICommandHandler {
           field: 'user',
         },
       ]);
-    blog.updateBlog(command.updateBlogType);
+    blog.updateBlog(command.dto);
     return this.blogsRepository.saveBlog(blog);
   }
 }
