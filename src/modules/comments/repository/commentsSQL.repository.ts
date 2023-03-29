@@ -21,7 +21,14 @@ export class CommentsSQLRepository {
     return this.commentsTable.save(newComment);
   }
   async findCommentById(id: string): Promise<CommentsEntity> {
-    return this.commentsTable.findOneBy({ id });
+    // return this.commentsTable.findOneBy({ id });
+    return this.commentsTable
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+      .where('comment.id = :id', { id })
+      .andWhere('userBanInfo.isBanned = false')
+      .getOne();
   }
   async deleteCommentById(commentId: string): Promise<DeleteResult> {
     return this.commentsTable.delete({ id: commentId });

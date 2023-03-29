@@ -21,7 +21,7 @@ import { CommentsEntity } from '../../../comments/domain/comments.entity';
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column()
+  @Column({ collation: 'C' })
   login: string;
   @Column()
   passwordHash: string;
