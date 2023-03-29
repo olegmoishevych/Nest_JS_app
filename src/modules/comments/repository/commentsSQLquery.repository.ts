@@ -38,12 +38,6 @@ export class CommentsSQLqueryRepository {
   }
 
   async commentWithLikeStatus(comment: any, userId: string | null) {
-    // comment.likesInfo.likesCount = await this.likesTable.count({
-    //   where: {
-    //     parentId: comment.id,
-    //     likeStatus: 'Like',
-    //   },
-    // });
     comment.likesInfo.likesCount = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')
@@ -54,12 +48,6 @@ export class CommentsSQLqueryRepository {
         likeStatus: LikeStatusEnum.Like,
       })
       .getCount();
-    // comment.likesInfo.dislikesCount = await this.likesTable.count({
-    //   where: {
-    //     parentId: comment.id,
-    //     likeStatus: 'Dislike',
-    //   },
-    // });
     comment.likesInfo.dislikesCount = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')
@@ -72,13 +60,6 @@ export class CommentsSQLqueryRepository {
       .getCount();
 
     if (userId) {
-      // const myStatus = await this.likesTable.findOne({
-      //   where: {
-      //     parentId: comment.id,
-      //     userId,
-      //   },
-      //   select: ['likeStatus'],
-      // });
       const myStatus = await this.likesTable
         .createQueryBuilder('likes')
         .leftJoinAndSelect('likes.user', 'user')

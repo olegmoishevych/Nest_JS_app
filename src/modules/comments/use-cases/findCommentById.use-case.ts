@@ -27,8 +27,8 @@ export class FindCommentByIdUseCase implements ICommand {
       id: commentWithLikes.id,
       content: commentWithLikes.content,
       commentatorInfo: {
-        userId: commentWithLikes.commentatorInfo.userId,
-        userLogin: commentWithLikes.commentatorInfo.userLogin,
+        userId: commentWithLikes.user.id,
+        userLogin: commentWithLikes.user.login,
       },
       createdAt: commentWithLikes.createdAt,
       likesInfo: {

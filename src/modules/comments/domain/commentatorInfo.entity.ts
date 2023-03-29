@@ -15,7 +15,10 @@ export class CommentatorInfoEntity {
   userId: string;
   @Column()
   userLogin: string;
-  @OneToMany(() => CommentsEntity, (c) => c.commentatorInfo)
+  @OneToMany(() => CommentsEntity, (c) => c.commentatorInfo, {
+    // cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   comments: CommentsEntity;
 }
