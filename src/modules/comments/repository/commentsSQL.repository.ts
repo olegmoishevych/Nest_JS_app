@@ -21,7 +21,6 @@ export class CommentsSQLRepository {
     return this.commentsTable.save(newComment);
   }
   async findCommentById(id: string): Promise<CommentsEntity> {
-    // return this.commentsTable.findOneBy({ id });
     return this.commentsTable
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.user', 'user')

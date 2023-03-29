@@ -109,11 +109,6 @@ export class CommentsSQLqueryRepository {
     );
   }
   async getCountCollection(postId: string): Promise<number> {
-    // return this.commentsTable.count({
-    //   where: {
-    //     postId: postId,
-    //   },
-    // });
     return this.commentsTable
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.user', 'user')
@@ -123,7 +118,7 @@ export class CommentsSQLqueryRepository {
       .getCount();
   }
 
-  async getCommentsByUserId(
+  async getCommentsForPostsByUserId(
     dto: PaginationDto,
     userId: string,
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
@@ -140,6 +135,17 @@ export class CommentsSQLqueryRepository {
       .where('post.blogId = :blogId', { blogId: blog.blog_id })
       .select('post.id')
       .getRawOne();
+
+    // const com = await this.commentsTable //
+    //   .createQueryBuilder('comment')
+    //   .leftJoinAndSelect('comment.user', 'user')
+    //   .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+    //   .where('comment.id = :postId', { postId: postByBlogId.post_id })
+    //   .andWhere('userBanInfo.isBanned = false')
+    //   .getOne();
+    // const commentWithLikes = await this.commentWithLikeStatus(com, userId);
+    // console.log('commentWithLikes', commentWithLikes); //
+
     const builder = this.commentsTable
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.commentatorInfo', 'commentatorInfo')

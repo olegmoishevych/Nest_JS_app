@@ -55,7 +55,7 @@ export class BloggerController {
     @Query() dto: PaginationDto,
     @User() user: UserEntity,
   ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
-    return this.commentsQueryRepo.getCommentsByUserId(dto, user.id);
+    return this.commentsQueryRepo.getCommentsForPostsByUserId(dto, user.id);
   }
 
   @UseGuards(JwtAuthGuard)
