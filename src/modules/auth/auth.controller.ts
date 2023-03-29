@@ -72,8 +72,8 @@ export class AuthController {
       new LoginCommand(ip, title, user),
     );
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true, // create true before test
-      secure: true, // create true before test
+      httpOnly: true,
+      secure: true,
     });
     return { accessToken: accessToken };
   }
