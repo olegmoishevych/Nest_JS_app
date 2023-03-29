@@ -56,7 +56,6 @@ export class AuthController {
   ): Promise<boolean> {
     return this.commandBus.execute(new EmailResendingCommand(email));
   }
-  // console.log()
   @UseGuards(LocalAuthGuard)
   @Throttle(5, 10)
   @HttpCode(200)
