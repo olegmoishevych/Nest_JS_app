@@ -37,13 +37,15 @@ export class BanUserByIdUseCase implements ICommandHandler {
     const bannedUser = await this.bannedUserRepo.findBannedUserByBlogId(
       blogWithOwner.id,
     );
-    // if (!bannedUser) {
-    //   return this.bannedUserRepo.createBannedUser(
-    //     blogWithOwner, command.dto, command.user
-    //   );
-    // }
-    // blogWithOwner.bannedUser(command.dto, user);
-    // await this.bannedUserRepo.saveResult(blogWithOwner);
-    // // return true;
+    if (!bannedUser && command.dto.isBanned) {
+      return this.bannedUserRepo.createBannedUser(
+        blogWithOwner,
+        command.dto,
+        user,
+      );
+    }
+    if (bannedUser && command.dto.isBanned === false) {
+      return this.bannedUserRepo.deleteBannedUser(command.dto.blogId);
+    }
   }
 }

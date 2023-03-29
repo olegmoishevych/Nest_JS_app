@@ -147,7 +147,7 @@ export class BloggerController {
     @User() user: UserEntity,
   ): Promise<BlogsUserViewModel> {
     return this.commandBus.execute(
-      new BanUserByIdForBlogCommand(id, dto, user), // не работает
+      new BanUserByIdForBlogCommand(id, dto, user),
     );
   }
 

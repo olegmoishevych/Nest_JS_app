@@ -13,6 +13,7 @@ import { BlogsDto } from '../../dto/blogsDto';
 import { PostsEntity } from '../../../posts/domain/entities/posts.entity';
 import { BannedUserForBlogEntity } from './banned-user-for-blog.entity';
 import { BanBlogUserDto } from '../../../users/dto/userDto';
+import { BanUserForBloggerDto } from '../../dto/bloggerDto';
 
 @Entity('Blogs')
 export class BlogsEntity {
@@ -59,8 +60,22 @@ export class BlogsEntity {
     this.websiteUrl = dto.websiteUrl;
   }
 
+  createBannedUser(
+    blog: BlogsEntity,
+    dto: BanUserForBloggerDto,
+    user: UserEntity,
+  ) {
+    const bannedUser = new BannedUserForBlogEntity();
+    bannedUser.userId = user.id;
+    bannedUser.login = user.login;
+    bannedUser.blogId = blog.id;
+    bannedUser.banReason = dto.banReason;
+    bannedUser.isBanned = dto.isBanned;
+    bannedUser.createdAt = new Date();
+    return bannedUser;
+  }
+
   banBlogById(blog: BlogsEntity, dto: BanBlogUserDto): void {
-    // this.banInfo.userId = blog.blogOwnerInfo.id;
     if (dto.isBanned) {
       this.banInfo.isBlogBanned = dto.isBanned;
       this.banInfo.banDate = new Date();
