@@ -12,6 +12,8 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 import { BlogsEntity } from '../../blogs/domain/entities/blogs.entity';
 import { PostsEntity } from '../../posts/domain/entities/posts.entity';
 import { LikeStatusEnum } from '../schema/likeStatus.schema';
+import { BlogsSqlRepository } from '../../blogs/repository/blogs.sql.repository';
+import { PostsSQLRepository } from '../../posts/repository/postsSQL.repository';
 
 @Injectable()
 export class CommentsSQLqueryRepository {
@@ -24,6 +26,8 @@ export class CommentsSQLqueryRepository {
     private blogsTable: Repository<BlogsEntity>,
     @InjectRepository(PostsEntity)
     private postsTable: Repository<PostsEntity>,
+    private blogsSqlRepo: BlogsSqlRepository,
+    private postsSqlRepo: PostsSQLRepository,
   ) {}
 
   async commentsWithLikeStatus(
@@ -119,12 +123,14 @@ export class CommentsSQLqueryRepository {
   }
 
   async getCommentsForPostsByUserId(dto: PaginationDto, userId: string) {
+    const blog = await this.blogsSqlRepo.findBlogByUserId(userId);
+    const post = await this.postsSqlRepo.findPostByBlogId(blog.id);
     const builder = this.commentsTable
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.commentatorInfo', 'commentatorInfo')
       .leftJoinAndSelect('comment.postInfo', 'postInfo')
-      .where('comment.userId = :userId', {
-        userId: userId,
+      .where('comment.postId = :postId', {
+        postId: post.id,
       })
       .orderBy(
         `comment.${dto.sortBy}`,
