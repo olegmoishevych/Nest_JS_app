@@ -9,13 +9,10 @@ import { PaginationViewModel } from '../../helpers/pagination/pagination-view-mo
 export class BannedUserQueryRepository {
   constructor(
     @InjectRepository(BannedUserForBlogEntity)
-    private bannedUserTable: Repository<BannedUserForBlogEntity>,
+    private readonly bannedUserTable: Repository<BannedUserForBlogEntity>,
   ) {}
 
-  async getBannedUsersForBlog(
-    blogId: string,
-    dto: BannedUserDto,
-  ): Promise<PaginationViewModel<BannedUserForBlogEntity[]>> {
+  async getBannedUsersForBlog(blogId: string, dto: BannedUserDto) {
     const builder = await this.bannedUserTable
       .createQueryBuilder('banned')
       .where('banned.blogId = :blogId', { blogId: blogId })
@@ -44,11 +41,18 @@ export class BannedUserQueryRepository {
         },
       };
     });
-    return new PaginationViewModel<any>(
-      total,
-      dto.pageNumber,
-      dto.pageSize,
-      mappedUsers,
-    );
+    // return new PaginationViewModel<any>(
+    //   total,
+    //   dto.pageNumber,
+    //   dto.pageSize,
+    //   mappedUsers,
+    // );
+    return {
+      pagesCount: Math.ceil(total / dto.pageSize),
+      page: dto.pageNumber,
+      pageSize: dto.pageSize,
+      totalCount: total,
+      items: mappedUsers,
+    };
   }
 }
