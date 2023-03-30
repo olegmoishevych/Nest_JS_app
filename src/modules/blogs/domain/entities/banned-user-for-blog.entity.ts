@@ -9,7 +9,7 @@ import { BlogsEntity } from './blogs.entity';
 
 @Entity('Banned')
 export class BannedUserForBlogEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
   @Column()
   userId: string;

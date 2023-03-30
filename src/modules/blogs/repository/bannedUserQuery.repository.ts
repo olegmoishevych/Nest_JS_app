@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BannedUserForBlogEntity } from '../domain/entities/banned-user-for-blog.entity';
 import { BannedUserDto } from '../../helpers/dto/pagination.dto';
-import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 
 @Injectable()
 export class BannedUserQueryRepository {
@@ -16,7 +15,6 @@ export class BannedUserQueryRepository {
     const builder = await this.bannedUserTable
       .createQueryBuilder('banned')
       .where('banned.blogId = :blogId', { blogId: blogId })
-      .andWhere('banned.isBanned = true')
       .orderBy(
         `banned.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
@@ -41,12 +39,6 @@ export class BannedUserQueryRepository {
         },
       };
     });
-    // return new PaginationViewModel<any>(
-    //   total,
-    //   dto.pageNumber,
-    //   dto.pageSize,
-    //   mappedUsers,
-    // );
     return {
       pagesCount: Math.ceil(total / dto.pageSize),
       page: dto.pageNumber,
