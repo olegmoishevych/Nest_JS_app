@@ -30,22 +30,21 @@ export class BanUserByIdUseCase implements ICommandHandler {
   async execute(command: BanUserByIdForBlogCommand) {
     const user = await this.usersRepo.findUserById(command.id);
     if (!user) throw new NotFoundException();
-    const blogWithOwner = await this.blogsRepo.findBlogById(command.dto.blogId);
-    if (!blogWithOwner) throw new NotFoundException();
-    if (blogWithOwner.blogOwnerInfo.id !== command.user.id)
+    const blog = await this.blogsRepo.findBlogById(command.dto.blogId);
+    if (!blog) throw new NotFoundException();
+    if (blog.blogOwnerInfo.id !== command.user.id)
       throw new ForbiddenException([]);
     const bannedUser = await this.bannedUserRepo.findBannedUserByBlogId(
-      blogWithOwner.id,
+      blog.id,
     );
     if (!bannedUser && command.dto.isBanned) {
-      return this.bannedUserRepo.createBannedUser(
-        blogWithOwner,
-        command.dto,
-        user,
-      );
+      return this.bannedUserRepo.createBannedUser(blog, command.dto, user);
     }
     if (bannedUser && command.dto.isBanned === false) {
-      return this.bannedUserRepo.deleteBannedUser(command.dto.blogId);
+      return this.bannedUserRepo.deleteBannedUser(
+        command.dto.blogId,
+        command.id,
+      );
     }
   }
 }

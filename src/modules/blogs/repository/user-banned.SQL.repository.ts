@@ -31,11 +31,14 @@ export class UserBannedSQLRepository {
     dto: BanUserForBloggerDto,
     user: UserEntity,
   ): Promise<BannedUserForBlogEntity> {
-    const bannedUser = blog.createBannedUser(blog, dto, user);
+    const bannedUser = blog.createBannedUser(dto, user);
     return this.userBannedTable.save(bannedUser);
   }
 
-  async deleteBannedUser(blogId: string): Promise<DeleteResult> {
-    return this.userBannedTable.delete({ blogId });
+  async deleteBannedUser(
+    blogId: string,
+    userId: string,
+  ): Promise<DeleteResult> {
+    return this.userBannedTable.delete({ blogId, userId });
   }
 }

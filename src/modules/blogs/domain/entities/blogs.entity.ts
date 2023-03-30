@@ -60,15 +60,11 @@ export class BlogsEntity {
     this.websiteUrl = dto.websiteUrl;
   }
 
-  createBannedUser(
-    blog: BlogsEntity,
-    dto: BanUserForBloggerDto,
-    user: UserEntity,
-  ) {
+  createBannedUser(dto: BanUserForBloggerDto, user: UserEntity) {
     const bannedUser = new BannedUserForBlogEntity();
     bannedUser.userId = user.id;
     bannedUser.login = user.login;
-    bannedUser.blogId = blog.id;
+    bannedUser.blogId = dto.blogId;
     bannedUser.banReason = dto.banReason;
     bannedUser.isBanned = dto.isBanned;
     bannedUser.createdAt = new Date();

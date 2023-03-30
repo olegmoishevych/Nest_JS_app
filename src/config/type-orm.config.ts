@@ -32,6 +32,7 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
   }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
+    console.log(this.envType);
     switch (this.envType) {
       case 'development':
         return this.getDevelopmentSettings();

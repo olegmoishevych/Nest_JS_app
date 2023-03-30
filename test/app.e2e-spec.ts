@@ -5,8 +5,13 @@ import { AppModule } from '../src/modules/app.module';
 import { createApp } from '../src/commons/createApp';
 import { endpoints } from './routing';
 import { UserDto } from '../src/modules/users/dto/userDto';
+import { BlogsDto } from '../src/modules/blogs/dto/blogsDto';
+import { response } from 'express';
+import { exploreApiConsumesMetadata } from '@nestjs/swagger/dist/explorers/api-consumes.explorer';
+import { BanUserForBloggerDto } from '../src/modules/blogs/dto/bloggerDto';
 
 describe('AppController (e2e)', () => {
+  jest.setTimeout(3 * 60 * 1000);
   let app: INestApplication;
   let server: any;
 
@@ -30,10 +35,112 @@ describe('AppController (e2e)', () => {
     await app.close();
   });
 
-  it.skip('/ (GET)', () => {
-    return request(server).get('/api').expect(200).expect('Hello World!');
+  beforeEach(async () => {
+    const response = await request(server).delete('/api/testing/all-data');
+    expect(response.status).toBe(204);
+
+    const getUsersResponse = await request(server)
+      .get('/api/sa/users')
+      .auth(SA.login, SA.password, { type: 'basic' });
+    expect(getUsersResponse.status).toBe(200);
+    expect(getUsersResponse.body.items).toHaveLength(0);
   });
-  describe('POST => /sa/users => Add new user to the system', () => {
+
+  describe('ban user for current blog', () => {
+    const countOfUsers = 2;
+    const banUserForBlogUrl = (userId: string) =>
+      `/api/blogger/users/${userId}/ban`;
+    it('should create and login two users, create blog for test', async () => {
+      const users = [];
+      for (let i = 0; i < countOfUsers; i++) {
+        const userInputData: UserDto = {
+          login: `login${i}`,
+          email: `email${i}@gmail.com`,
+          password: `password${i}`,
+        };
+        const response = await request(server)
+          .post('/api/sa/users')
+          .auth(SA.login, SA.password, { type: 'basic' })
+          .send(userInputData);
+
+        const user = response.body;
+
+        users.push({ ...userInputData, ...user });
+      }
+      const usersWithBearerTokens = [];
+      for (const user of users) {
+        const response = await request(server).post('/api/auth/login').send({
+          loginOrEmail: user.login,
+          password: user.password,
+        });
+        const { accessToken } = response.body;
+        usersWithBearerTokens.push({ ...user, accessToken });
+      }
+      expect(usersWithBearerTokens).toHaveLength(countOfUsers);
+      expect(usersWithBearerTokens[0]).toEqual({
+        id: expect.any(String),
+        login: expect.any(String),
+        email: expect.any(String),
+        password: expect.any(String),
+        createdAt: expect.any(String),
+        banInfo: { isBanned: false, banDate: null, banReason: null },
+        accessToken: expect.any(String),
+      });
+      const blogInputData: BlogsDto = {
+        name: 'name',
+        description: 'description',
+        websiteUrl: 'websiteUrl.com',
+      };
+
+      const createBlogResponse = await request(server)
+        .post('/api/blogger/blogs')
+        .auth(usersWithBearerTokens[0].accessToken, {
+          type: 'bearer',
+        })
+        .send(blogInputData);
+
+      expect(createBlogResponse.status).toBe(201);
+
+      const blog = createBlogResponse.body;
+
+      expect.setState({
+        user0: usersWithBearerTokens[0],
+        user1: usersWithBearerTokens[1],
+        blog,
+      });
+    });
+
+    it('should  return 401 status code', async () => {
+      const response1 = await request(server)
+        .put(banUserForBlogUrl('123'))
+        .send({});
+      expect(response1.status).toBe(401);
+
+      const response2 = await request(server)
+        .put(banUserForBlogUrl('123'))
+        .auth('any token', { type: 'bearer' })
+        .send({});
+      expect(response2.status).toBe(401);
+    });
+
+    it('should ban user for current blog', async () => {
+      const { user0, user1, blog } = expect.getState();
+
+      const banUserForBlogInputData: BanUserForBloggerDto = {
+        blogId: blog.id,
+        isBanned: true,
+        banReason: 'плохой мальчик, очень плохо себя вёл',
+      };
+      console.log(user0);
+      const response = await request(server)
+        .put(banUserForBlogUrl(user1.id))
+        .auth(user0.accessToken, { type: 'bearer' })
+        .send(banUserForBlogInputData);
+      expect(response.status).toBe(204);
+    });
+  });
+
+  describe.skip('POST => /sa/users => Add new user to the system', () => {
     it('should wipe all data before test', async () => {
       const deleteAllResponse = await request(server).delete(
         endpoints.testingController.allData,
