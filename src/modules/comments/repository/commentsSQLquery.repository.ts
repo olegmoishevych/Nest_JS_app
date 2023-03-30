@@ -115,69 +115,56 @@ export class CommentsSQLqueryRepository {
       .leftJoinAndSelect('user.banInfo', 'banInfo')
       .where('banInfo.isBanned = false')
       .andWhere('comment.postId = :postId', { postId: postId })
-      .getCount();
+      .getRawOne();
   }
 
-  async getCommentsForPostsByUserId(
-    dto: PaginationDto,
-    userId: string,
-  ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
-    const blog = await this.blogsTable
-      .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.blogOwnerInfo', 'blogOwnerInfo')
-      .addSelect('blog.isUserBanned', 'isUserBanned')
-      .where('blogOwnerInfo.id = :id', { id: userId })
-      .select('blog.id')
-      .getRawOne();
-    const postByBlogId = await this.postsTable
-      .createQueryBuilder('post')
-      .addSelect('post.isUserBanned', 'isUserBanned')
-      .where('post.blogId = :blogId', { blogId: blog.blog_id })
-      .select('post.id')
-      .getRawOne();
-
-    // const com = await this.commentsTable //
-    //   .createQueryBuilder('comment')
-    //   .leftJoinAndSelect('comment.user', 'user')
-    //   .leftJoinAndSelect('user.banInfo', 'userBanInfo')
-    //   .where('comment.id = :postId', { postId: postByBlogId.post_id })
-    //   .andWhere('userBanInfo.isBanned = false')
-    //   .getOne();
-    // const commentWithLikes = await this.commentWithLikeStatus(com, userId);
-    // console.log('commentWithLikes', commentWithLikes); //
-
+  async getCommentsForPostsByUserId(dto: PaginationDto, userId: string) {
     const builder = this.commentsTable
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.commentatorInfo', 'commentatorInfo')
       .leftJoinAndSelect('comment.postInfo', 'postInfo')
-      .addSelect('comment.isUserBanned', 'isUserBanned')
-      .where('comment.postId = :postId', {
-        postId: postByBlogId.post_id,
+      .where('comment.userId = :userId', {
+        userId: userId,
       })
       .orderBy(
         `comment.${dto.sortBy}`,
         dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
       );
     const [comments, total] = await builder
-      .select([
-        'comment.id',
-        'comment.content',
-        'commentatorInfo.userId',
-        'commentatorInfo.userLogin',
-        'comment.createdAt',
-        'postInfo.id',
-        'postInfo.title',
-        'postInfo.blogId',
-        'postInfo.blogName',
-      ])
       .take(dto.pageSize)
       .skip((dto.pageNumber - 1) * dto.pageSize)
       .getManyAndCount();
-    return new PaginationViewModel<CommentsForPostsViewModal[]>(
+    const commentsWithLikes = await this.commentsWithLikeStatus(
+      comments,
+      userId,
+    );
+    const mappedComments = commentsWithLikes.map((c: any) => {
+      return {
+        id: c.id,
+        content: c.content,
+        commentatorInfo: {
+          userId: c.commentatorInfo.userId,
+          userLogin: c.commentatorInfo.userLogin,
+        },
+        createdAt: c.createdAt,
+        postInfo: {
+          id: c.postInfo.id,
+          title: c.postInfo.title,
+          blogId: c.postInfo.blogId,
+          blogName: c.postInfo.blogName,
+        },
+        likesInfo: {
+          likesCount: c.likesInfo.likesCount,
+          dislikesCount: c.likesInfo.dislikesCount,
+          myStatus: c.likesInfo.myStatus,
+        },
+      };
+    });
+    return new PaginationViewModel<any>(
       total,
       dto.pageNumber,
       dto.pageSize,
-      comments,
+      mappedComments,
     );
   }
 }

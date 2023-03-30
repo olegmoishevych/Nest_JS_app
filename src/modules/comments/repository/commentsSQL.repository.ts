@@ -29,6 +29,17 @@ export class CommentsSQLRepository {
       .andWhere('userBanInfo.isBanned = false')
       .getOne();
   }
+
+  // async findCommentByUserId(userId: string): Promise<CommentsEntity> {
+  //   return this.commentsTable
+  //     .createQueryBuilder('comment')
+  //     .leftJoinAndSelect('comment.user', 'user')
+  //     .leftJoinAndSelect('user.banInfo', 'userBanInfo')
+  //     .where('comment. = :userId', { userId: userId })
+  //     .andWhere('userBanInfo.isBanned = false')
+  //     .getOne();
+  // }
+
   async deleteCommentById(commentId: string): Promise<DeleteResult> {
     return this.commentsTable.delete({ id: commentId });
   }
