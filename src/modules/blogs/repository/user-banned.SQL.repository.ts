@@ -22,16 +22,18 @@ export class UserBannedSQLRepository {
 
   async findBannedUserByBlogId(
     blogId: string,
+    userId: string,
   ): Promise<BannedUserForBlogEntity> {
-    return this.userBannedTable.findOneBy({ blogId });
+    return this.userBannedTable.findOneBy({ blogId, userId });
   }
 
   async createBannedUser(
     blog: BlogsEntity,
     dto: BanUserForBloggerDto,
     user: UserEntity,
+    userId: string,
   ): Promise<BannedUserForBlogEntity> {
-    const bannedUser = blog.createBannedUser(dto, user);
+    const bannedUser = blog.createBannedUser(dto, user, userId);
     return this.userBannedTable.save(bannedUser);
   }
 

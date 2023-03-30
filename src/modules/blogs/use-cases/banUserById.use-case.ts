@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Scope,
 } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BanUserForBloggerDto } from '../dto/bloggerDto';
@@ -36,9 +37,15 @@ export class BanUserByIdUseCase implements ICommandHandler {
       throw new ForbiddenException([]);
     const bannedUser = await this.bannedUserRepo.findBannedUserByBlogId(
       blog.id,
+      command.id,
     );
     if (!bannedUser && command.dto.isBanned) {
-      return this.bannedUserRepo.createBannedUser(blog, command.dto, user);
+      return this.bannedUserRepo.createBannedUser(
+        blog,
+        command.dto,
+        user,
+        command.id,
+      );
     }
     if (bannedUser && command.dto.isBanned === false) {
       return this.bannedUserRepo.deleteBannedUser(
