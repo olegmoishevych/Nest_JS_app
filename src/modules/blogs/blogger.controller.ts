@@ -54,7 +54,8 @@ export class BloggerController {
   async getCommentsForAllPosts(
     @Query() dto: PaginationDto,
     @User() user: UserEntity,
-  ): Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
+  ) {
+    // : Promise<PaginationViewModel<CommentsForPostsViewModal[]>> {
     return this.commentsQueryRepo.getCommentsForPostsByUserId(dto, user.id);
   }
 

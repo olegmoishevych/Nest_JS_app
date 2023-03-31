@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsEntity } from '../domain/comments.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
   CommentsForPostsViewModal,
   CommentsViewModal,
@@ -42,6 +42,7 @@ export class CommentsSQLqueryRepository {
   }
 
   async commentWithLikeStatus(comment: any, userId: string | null) {
+    // console.log('comment', comment.likesInfo.likesCount);
     comment.likesInfo.likesCount = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')
@@ -112,6 +113,7 @@ export class CommentsSQLqueryRepository {
       comments,
     );
   }
+
   async getCountCollection(postId: string): Promise<number> {
     return this.commentsTable
       .createQueryBuilder('comment')
@@ -123,54 +125,131 @@ export class CommentsSQLqueryRepository {
   }
 
   async getCommentsForPostsByUserId(dto: PaginationDto, userId: string) {
-    const blog = await this.blogsSqlRepo.findBlogByUserId(userId);
-    const post = await this.postsSqlRepo.findPostByBlogId(blog.id);
-    const builder = this.commentsTable
-      .createQueryBuilder('comment')
-      .leftJoinAndSelect('comment.commentatorInfo', 'commentatorInfo')
-      .leftJoinAndSelect('comment.postInfo', 'postInfo')
-      .where('comment.postId = :postId', {
-        postId: post.id,
-      })
-      .orderBy(
-        `comment.${dto.sortBy}`,
-        dto.sortDirection.toUpperCase() as 'ASC' | 'DESC',
-      );
-    const [comments, total] = await builder
-      .take(dto.pageSize)
-      .skip((dto.pageNumber - 1) * dto.pageSize)
-      .getManyAndCount();
+    const where: FindOptionsWhere<CommentsEntity> = {
+      postInfo: {
+        blog: { blogOwnerInfo: { id: userId, banInfo: { isBanned: false } } },
+      },
+    };
+    const [foundComments, totalCount] = await this.commentsTable.findAndCount({
+      where,
+      relations: {
+        postInfo: true,
+      },
+      order: { [dto.sortBy]: dto.sortDirection.toUpperCase() },
+      skip: (dto.pageNumber - 1) * dto.pageSize,
+      take: dto.pageSize,
+    });
+    // const comments = await this.commentsTable.find({
+    //   relations: {
+    //     postInfo: true,
+    //   },
+    //   where: {
+    //     postInfo: {
+    //       blog: {
+    //         blogOwnerInfo: {
+    //           id: userId,
+    //           banInfo: {
+    //             isBanned: false,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+    // const commentsCount = await this.commentsTable.count({
+    //   relations: {
+    //     postInfo: true,
+    //   },
+    //   where: {
+    //     postInfo: {
+    //       blog: {
+    //         blogOwnerInfo: {
+    //           id: userId,
+    //           banInfo: {
+    //             isBanned: false,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
     const commentsWithLikes = await this.commentsWithLikeStatus(
-      comments,
+      foundComments,
       userId,
     );
-    const mappedComments = commentsWithLikes.map((c: any) => {
+    const commentsWithPagination = commentsWithLikes.map((c: any) => {
       return {
-        id: c.id,
-        content: c.content,
+        id: c.id, //1
+        content: c.content, //2
         commentatorInfo: {
+          //3
           userId: c.commentatorInfo.userId,
           userLogin: c.commentatorInfo.userLogin,
         },
-        createdAt: c.createdAt,
+        createdAt: c.createdAt, //4
+        likesInfo: {
+          //5
+          likesCount: c.likesInfo.likesCount,
+          dislikesCount: c.likesInfo.dislikesCount,
+          myStatus: c.likesInfo.myStatus,
+        },
         postInfo: {
+          //6
           id: c.postInfo.id,
           title: c.postInfo.title,
           blogId: c.postInfo.blogId,
           blogName: c.postInfo.blogName,
         },
-        likesInfo: {
-          likesCount: c.likesInfo.likesCount,
-          dislikesCount: c.likesInfo.dislikesCount,
-          myStatus: c.likesInfo.myStatus,
-        },
       };
     });
+
     return new PaginationViewModel<any>(
-      total,
+      totalCount,
       dto.pageNumber,
       dto.pageSize,
-      mappedComments,
+      commentsWithPagination,
     );
   }
+
+  // todo  for LIKES
+  async commentWithLikes(comment: any, userId: string | null) {
+    comment.likesInfo.likesCount = await this.likesTable.count({
+      where: {
+        parentId: comment.id,
+        likeStatus: LikeStatusEnum.Like,
+        user: {
+          banInfo: {
+            isBanned: false,
+          },
+        },
+      },
+    });
+    comment.likesInfo.dislikesCount = await this.likesTable.count({
+      where: {
+        parentId: comment.id,
+        likeStatus: LikeStatusEnum.Dislike,
+        user: {
+          banInfo: {
+            isBanned: false,
+          },
+        },
+      },
+    });
+    if (userId) {
+      const myStatus = await this.likesTable.findOne({
+        where: {
+          parentId: comment.id,
+          likeStatus: LikeStatusEnum.Like,
+          user: {
+            banInfo: {
+              isBanned: false,
+            },
+          },
+        },
+      });
+      comment.likesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
+    }
+    return comment;
+  }
+  // todo  for LIKES
 }
