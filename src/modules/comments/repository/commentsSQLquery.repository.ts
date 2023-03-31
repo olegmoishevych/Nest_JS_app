@@ -124,7 +124,10 @@ export class CommentsSQLqueryRepository {
       .getRawOne();
   }
 
-  async getCommentsForPostsByUserId(dto: PaginationDto, userId: string) {
+  async getCommentsForPostsByUserId(
+    dto: PaginationDto,
+    userId: string,
+  ): Promise<PaginationViewModel<CommentsEntity[]>> {
     const where: FindOptionsWhere<CommentsEntity> = {
       postInfo: {
         blog: { blogOwnerInfo: { id: userId, banInfo: { isBanned: false } } },
@@ -139,62 +142,25 @@ export class CommentsSQLqueryRepository {
       skip: (dto.pageNumber - 1) * dto.pageSize,
       take: dto.pageSize,
     });
-    // const comments = await this.commentsTable.find({
-    //   relations: {
-    //     postInfo: true,
-    //   },
-    //   where: {
-    //     postInfo: {
-    //       blog: {
-    //         blogOwnerInfo: {
-    //           id: userId,
-    //           banInfo: {
-    //             isBanned: false,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
-    // const commentsCount = await this.commentsTable.count({
-    //   relations: {
-    //     postInfo: true,
-    //   },
-    //   where: {
-    //     postInfo: {
-    //       blog: {
-    //         blogOwnerInfo: {
-    //           id: userId,
-    //           banInfo: {
-    //             isBanned: false,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
     const commentsWithLikes = await this.commentsWithLikeStatus(
       foundComments,
       userId,
     );
     const commentsWithPagination = commentsWithLikes.map((c: any) => {
       return {
-        id: c.id, //1
-        content: c.content, //2
+        id: c.id,
+        content: c.content,
         commentatorInfo: {
-          //3
           userId: c.commentatorInfo.userId,
           userLogin: c.commentatorInfo.userLogin,
         },
-        createdAt: c.createdAt, //4
+        createdAt: c.createdAt,
         likesInfo: {
-          //5
           likesCount: c.likesInfo.likesCount,
           dislikesCount: c.likesInfo.dislikesCount,
           myStatus: c.likesInfo.myStatus,
         },
         postInfo: {
-          //6
           id: c.postInfo.id,
           title: c.postInfo.title,
           blogId: c.postInfo.blogId,
@@ -212,44 +178,44 @@ export class CommentsSQLqueryRepository {
   }
 
   // todo  for LIKES
-  async commentWithLikes(comment: any, userId: string | null) {
-    comment.likesInfo.likesCount = await this.likesTable.count({
-      where: {
-        parentId: comment.id,
-        likeStatus: LikeStatusEnum.Like,
-        user: {
-          banInfo: {
-            isBanned: false,
-          },
-        },
-      },
-    });
-    comment.likesInfo.dislikesCount = await this.likesTable.count({
-      where: {
-        parentId: comment.id,
-        likeStatus: LikeStatusEnum.Dislike,
-        user: {
-          banInfo: {
-            isBanned: false,
-          },
-        },
-      },
-    });
-    if (userId) {
-      const myStatus = await this.likesTable.findOne({
-        where: {
-          parentId: comment.id,
-          likeStatus: LikeStatusEnum.Like,
-          user: {
-            banInfo: {
-              isBanned: false,
-            },
-          },
-        },
-      });
-      comment.likesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
-    }
-    return comment;
-  }
+  // async commentWithLikes(comment: any, userId: string | null) {
+  //   comment.likesInfo.likesCount = await this.likesTable.count({
+  //     where: {
+  //       parentId: comment.id,
+  //       likeStatus: LikeStatusEnum.Like,
+  //       user: {
+  //         banInfo: {
+  //           isBanned: false,
+  //         },
+  //       },
+  //     },
+  //   });
+  //   comment.likesInfo.dislikesCount = await this.likesTable.count({
+  //     where: {
+  //       parentId: comment.id,
+  //       likeStatus: LikeStatusEnum.Dislike,
+  //       user: {
+  //         banInfo: {
+  //           isBanned: false,
+  //         },
+  //       },
+  //     },
+  //   });
+  //   if (userId) {
+  //     const myStatus = await this.likesTable.findOne({
+  //       where: {
+  //         parentId: comment.id,
+  //         likeStatus: LikeStatusEnum.Like,
+  //         user: {
+  //           banInfo: {
+  //             isBanned: false,
+  //           },
+  //         },
+  //       },
+  //     });
+  //     comment.likesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
+  //   }
+  //   return comment;
+  // }
   // todo  for LIKES
 }
