@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler } from '@nestjs/cqrs';
 import { UserEntity } from '../domain/entities/user.entity';
 import { ObjectId } from 'mongodb';
@@ -27,6 +27,7 @@ export class LoginUseCase {
     command: LoginCommand,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const { user, title, ip } = command;
+    if (user.banInfo.isBanned) throw new UnauthorizedException([]);
     const deviceId = new ObjectId().toString();
     const jwtTokens = await this.authService.createJwtPair(
       user.id,
