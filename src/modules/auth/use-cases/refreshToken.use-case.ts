@@ -18,7 +18,9 @@ export class RefreshTokenCommand {
 }
 
 @CommandHandler(RefreshTokenCommand)
-export class RefreshTokenUseCase implements ICommandHandler {
+export class RefreshTokenUseCase
+  implements ICommandHandler<RefreshTokenCommand>
+{
   constructor(
     public authService: AuthService,
     public devicesRepository: DevicesSQLRepository,
@@ -45,7 +47,7 @@ export class RefreshTokenUseCase implements ICommandHandler {
       tokenVerify.deviceId,
     );
     const lastActiveDate = this.authService.getLastActiveDateFromRefreshToken(
-      command.refreshToken,
+      tokensPair.refreshToken,
     );
     if (!lastActiveDate) throw new UnauthorizedException([]);
     const deviceSession = await this.devicesRepository.findDeviceByDeviceId(

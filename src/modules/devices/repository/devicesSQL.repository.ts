@@ -19,11 +19,11 @@ export class DevicesSQLRepository {
     userId: string,
   ): Promise<DevicesEntity> {
     const userSessionForDb = new DevicesEntity();
+    userSessionForDb.deviceId = deviceId;
+    userSessionForDb.userId = userId;
     userSessionForDb.ip = ip;
     userSessionForDb.title = title;
     userSessionForDb.lastActiveDate = lastActiveDate;
-    userSessionForDb.deviceId = deviceId;
-    userSessionForDb.userId = userId;
     return this.devicesTable.save(userSessionForDb);
   }
 

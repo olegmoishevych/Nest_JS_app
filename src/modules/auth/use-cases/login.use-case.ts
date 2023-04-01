@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserEntity } from '../domain/entities/user.entity';
 import { AuthService } from '../service/auth.service';
@@ -27,7 +27,6 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     command: LoginCommand,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const { user, title, ip } = command;
-    if (user.banInfo.isBanned) throw new UnauthorizedException([]);
     const deviceId = randomUUID();
     const jwtTokens = await this.authService.createJwtPair(user.id, deviceId);
     const lastActiveDate = this.authService.getLastActiveDateFromRefreshToken(

@@ -11,7 +11,7 @@ export class LogoutCommand {
 }
 
 @CommandHandler(LogoutCommand)
-export class LogoutUseCase implements ICommandHandler {
+export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
   constructor(
     public authService: AuthService,
     public devicesRepository: DevicesSQLRepository,
@@ -36,7 +36,6 @@ export class LogoutUseCase implements ICommandHandler {
         actualToken.deviceId,
         new Date(actualToken.iat * 1000).toISOString(),
       );
-    console.log('isDeviceActive', isDeviceActive);
     if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     return this.devicesRepository.deleteSessionByDeviceId(actualToken.deviceId);
