@@ -19,6 +19,14 @@ export class ConfirmationUseCase implements ICommandHandler {
       throw new BadRequestException([
         { message: 'User by code not found', field: 'code' },
       ]);
+    if (userByCode.emailConfirmation.isConfirmed) {
+      throw new BadRequestException([
+        {
+          message: 'Code is confirmed',
+          field: 'code',
+        },
+      ]);
+    }
     try {
       userByCode.confirmedCode(command.code);
       await this.usersRepository.saveResult(userByCode);

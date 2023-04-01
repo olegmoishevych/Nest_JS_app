@@ -23,7 +23,6 @@ export class RegistrationUseCase implements ICommandHandler {
     const userByEmail = await this.usersRepository.findUserByEmail(
       command.dto.email,
     );
-    console.log('userByEmail', userByEmail);
     if (userByEmail)
       throw new BadRequestException([
         {

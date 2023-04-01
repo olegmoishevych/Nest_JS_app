@@ -279,7 +279,7 @@ const throttlerGuard = {
     ...useCases,
     ...services,
     ...repositories,
-    // throttlerGuard,
+    throttlerGuard,
     JwtStrategy,
     LocalStrategy,
     BasicStrategy,
