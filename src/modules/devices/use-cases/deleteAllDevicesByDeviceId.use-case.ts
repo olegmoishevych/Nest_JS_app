@@ -28,7 +28,7 @@ export class DeleteAllDevicesByDeviceIdUseCase implements ICommand {
     const device = await this.devicesRepo.findDeviceByDeviceId(
       command.deviceId,
     );
-    if (!device) throw new NotFoundException(['User not found']);
+    if (!device) throw new NotFoundException(['Device not found']);
     if (user.userId !== device.userId)
       throw new ForbiddenException(['Its not your device']);
     return this.devicesRepo.deleteUserSessionByUserAndDeviceId(

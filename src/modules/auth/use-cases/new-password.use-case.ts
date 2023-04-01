@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NewPasswordDto } from '../dto/auth.dto';
 import { UsersSqlRepository } from '../../users/repository/users.sql.repository';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +11,7 @@ export class NewPasswordCommand {
 }
 
 @CommandHandler(NewPasswordCommand)
-export class NewPasswordUseCase {
+export class NewPasswordUseCase implements ICommandHandler {
   constructor(public usersRepository: UsersSqlRepository) {}
   async execute(command: NewPasswordCommand): Promise<UserEntity> {
     const user = await this.usersRepository.findUserByRecoveryCode(

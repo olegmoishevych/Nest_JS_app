@@ -49,7 +49,13 @@ export class DevicesSQLRepository {
     userId: string,
     deviceId: string,
   ): Promise<DeleteResult> {
-    return this.devicesTable.delete({ userId, deviceId });
+    return this.devicesTable.delete({
+      userId: userId,
+      deviceId: deviceId,
+    });
+  }
+  async deleteSessionByDeviceId(deviceId: string): Promise<DeleteResult> {
+    return this.devicesTable.delete({ deviceId });
   }
   async findDeviceByUserIdDeviceIdAndLastActiveDate(
     userId: string,

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthService } from '../service/auth.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { DevicesSQLRepository } from '../../devices/repository/devicesSQL.repository';
@@ -11,7 +11,7 @@ export class LogoutCommand {
 }
 
 @CommandHandler(LogoutCommand)
-export class LogoutUseCase {
+export class LogoutUseCase implements ICommandHandler {
   constructor(
     public authService: AuthService,
     public devicesRepository: DevicesSQLRepository,
@@ -38,9 +38,10 @@ export class LogoutUseCase {
       );
     if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
-      actualToken.deviceId,
-      actualToken.userId,
-    );
+    // return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
+    //   actualToken.deviceId,
+    //   actualToken.userId,
+    // );
+    return this.devicesRepository.deleteSessionByDeviceId(actualToken.deviceId);
   }
 }

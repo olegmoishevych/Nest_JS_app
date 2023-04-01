@@ -9,7 +9,7 @@ import { UserEntity } from '../../../auth/domain/entities/user.entity';
 
 @Entity('Devices')
 export class DevicesEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   ip: string;
@@ -31,11 +31,11 @@ export class DevicesEntity {
     deviceId: string,
     userId: string,
   ) {
-    (this.ip = ip),
-      (this.title = title),
-      (this.lastActiveDate = lastActiveDate),
-      (this.deviceId = deviceId),
-      (this.userId = userId);
+    this.ip = ip;
+    this.title = title;
+    this.lastActiveDate = lastActiveDate;
+    this.deviceId = deviceId;
+    this.userId = userId;
   }
   static createUserSession(
     ip: string,
@@ -45,11 +45,11 @@ export class DevicesEntity {
     userId: string,
   ) {
     const userSessionForDb = new DevicesEntity();
-    (userSessionForDb.ip = ip),
-      (userSessionForDb.title = title),
-      (userSessionForDb.lastActiveDate = lastActiveDate),
-      (userSessionForDb.deviceId = deviceId),
-      (userSessionForDb.userId = userId);
+    userSessionForDb.ip = ip;
+    userSessionForDb.title = title;
+    userSessionForDb.lastActiveDate = lastActiveDate;
+    userSessionForDb.deviceId = deviceId;
+    userSessionForDb.userId = userId;
     return userSessionForDb;
   }
 }

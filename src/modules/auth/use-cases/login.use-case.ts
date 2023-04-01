@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserEntity } from '../domain/entities/user.entity';
 import { ObjectId } from 'mongodb';
 import { AuthService } from '../service/auth.service';
@@ -16,7 +16,7 @@ export class LoginCommand {
 }
 
 @CommandHandler(LoginCommand)
-export class LoginUseCase {
+export class LoginUseCase implements ICommandHandler {
   constructor(
     private authService: AuthService,
     private deviceService: DevicesService,

@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthService } from '../service/auth.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { IpDto } from '../dto/api.dto';
@@ -18,7 +18,7 @@ export class RefreshTokenCommand {
 }
 
 @CommandHandler(RefreshTokenCommand)
-export class RefreshTokenUseCase {
+export class RefreshTokenUseCase implements ICommandHandler {
   constructor(
     public authService: AuthService,
     public devicesRepository: DevicesSQLRepository,

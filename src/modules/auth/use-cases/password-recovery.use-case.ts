@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersSqlRepository } from '../../users/repository/users.sql.repository';
 import { EmailService } from '../../email/email.service';
 
@@ -9,7 +9,7 @@ export class PasswordRecoveryCommand {
 }
 
 @CommandHandler(PasswordRecoveryCommand)
-export class PasswordRecoveryUseCase {
+export class PasswordRecoveryUseCase implements ICommandHandler {
   constructor(
     public usersRepository: UsersSqlRepository,
     public emailService: EmailService,
