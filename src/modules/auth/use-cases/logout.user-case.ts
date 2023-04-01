@@ -38,10 +38,6 @@ export class LogoutUseCase implements ICommandHandler {
       );
     if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    // return this.devicesRepository.deleteUserSessionByUserAndDeviceId(
-    //   actualToken.deviceId,
-    //   actualToken.userId,
-    // );
     return this.devicesRepository.deleteSessionByDeviceId(actualToken.deviceId);
   }
 }

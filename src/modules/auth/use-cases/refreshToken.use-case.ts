@@ -49,15 +49,15 @@ export class RefreshTokenUseCase implements ICommandHandler {
       command.refreshToken,
     );
     if (!lastActiveDate) throw new UnauthorizedException([]);
-    const newSession = new DevicesEntity();
-    newSession.updateUserSessionById(
-      command.ipDto.ip,
-      command.ipDto.title,
-      lastActiveDate,
+    const deviceSession = await this.devicesRepository.findDeviceByDeviceId(
       tokenVerify.deviceId,
-      tokenVerify.userId,
     );
-    await this.devicesRepository.saveResult(newSession);
+    deviceSession.ip = command.ipDto.ip;
+    deviceSession.title = command.ipDto.title;
+    deviceSession.lastActiveDate = lastActiveDate;
+    deviceSession.deviceId = tokenVerify.deviceId;
+    deviceSession.userId = tokenVerify.userId;
+    await this.devicesRepository.saveResult(deviceSession);
     return tokensPair;
   }
 }
