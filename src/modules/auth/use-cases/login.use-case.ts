@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserEntity } from '../domain/entities/user.entity';
-import { ObjectId } from 'mongodb';
 import { AuthService } from '../service/auth.service';
 import { DevicesService } from '../../devices/service/devices.service';
 import { DevicesSQLRepository } from '../../devices/repository/devicesSQL.repository';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class LoginCommand {
@@ -16,7 +16,7 @@ export class LoginCommand {
 }
 
 @CommandHandler(LoginCommand)
-export class LoginUseCase implements ICommandHandler {
+export class LoginUseCase implements ICommandHandler<LoginCommand> {
   constructor(
     private authService: AuthService,
     private deviceService: DevicesService,
@@ -28,12 +28,8 @@ export class LoginUseCase implements ICommandHandler {
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const { user, title, ip } = command;
     if (user.banInfo.isBanned) throw new UnauthorizedException([]);
-    const deviceId = new ObjectId().toString();
-    const jwtTokens = await this.authService.createJwtPair(
-      user.id,
-      title,
-      deviceId,
-    );
+    const deviceId = randomUUID();
+    const jwtTokens = await this.authService.createJwtPair(user.id, deviceId);
     const lastActiveDate = this.authService.getLastActiveDateFromRefreshToken(
       jwtTokens.refreshToken,
     );

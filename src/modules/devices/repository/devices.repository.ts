@@ -15,9 +15,9 @@ export class DevicesRepository {
     private readonly devicesModel: Model<DevicesDocument>,
   ) {}
 
-  async createUserSession(newSession: Devices): Promise<DevicesModal> {
-    return this.devicesModel.create({ ...newSession });
-  }
+  // async createUserSession(newSession: Devices): Promise<DevicesModal> {
+  //   return this.devicesModel.create({ ...newSession });
+  // }
 
   async deleteSessionByUserId(
     deviceId: string,
@@ -46,7 +46,7 @@ export class DevicesRepository {
     userId: string,
     deviceId: string,
     lastActiveDate: string,
-  ): Promise<DevicesModal | null> {
+  ): Promise<DevicesModal> {
     return this.devicesModel.findOne({ userId, deviceId, lastActiveDate });
   }
 

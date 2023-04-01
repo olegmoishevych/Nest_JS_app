@@ -18,13 +18,12 @@ export class DevicesSQLRepository {
     deviceId: string,
     userId: string,
   ): Promise<DevicesEntity> {
-    const userSessionForDb = DevicesEntity.createUserSession(
-      ip,
-      title,
-      lastActiveDate,
-      deviceId,
-      userId,
-    );
+    const userSessionForDb = new DevicesEntity();
+    userSessionForDb.ip = ip;
+    userSessionForDb.title = title;
+    userSessionForDb.lastActiveDate = lastActiveDate;
+    userSessionForDb.deviceId = deviceId;
+    userSessionForDb.userId = userId;
     return this.devicesTable.save(userSessionForDb);
   }
 
@@ -62,7 +61,15 @@ export class DevicesSQLRepository {
     deviceId: string,
     lastActiveDate: string,
   ): Promise<DevicesEntity> {
-    return this.devicesTable.findOneBy({ userId, deviceId, lastActiveDate });
+    console.log('lastActiveDate', lastActiveDate);
+    // return this.devicesTable.findOneBy({ userId, deviceId, lastActiveDate });
+    return this.devicesTable.findOne({
+      where: {
+        userId: userId,
+        deviceId: deviceId,
+        lastActiveDate: lastActiveDate,
+      },
+    });
   }
   async saveResult(newSession: DevicesEntity): Promise<DevicesEntity> {
     return this.devicesTable.save(newSession);

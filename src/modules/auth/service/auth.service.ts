@@ -26,6 +26,7 @@ import * as bcrypt from 'bcrypt';
 import { DevicesService } from '../../devices/service/devices.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { DevicesModal } from '../../devices/schemas/devices.schemas';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -38,54 +39,54 @@ export class AuthService {
     public deviceRepository: DevicesRepository,
   ) {}
 
-  async userRegistrationConfirmation(code: string): Promise<UserModel> {
-    const user = await this.usersRepository.findUserByCode(code);
-    if (!user)
-      throw new BadRequestException([
-        { message: 'User by code not found', field: 'code' },
-      ]);
-    if (user.emailConfirmation.isConfirmed)
-      throw new BadRequestException([
-        {
-          message: 'Code is confirmed',
-          field: 'code',
-        },
-      ]);
-    return this.usersRepository.updateConfirmationCode(user);
-  }
+  // async userRegistrationConfirmation(code: string): Promise<UserModel> {
+  //   const user = await this.usersRepository.findUserByCode(code);
+  //   if (!user)
+  //     throw new BadRequestException([
+  //       { message: 'User by code not found', field: 'code' },
+  //     ]);
+  //   if (user.emailConfirmation.isConfirmed)
+  //     throw new BadRequestException([
+  //       {
+  //         message: 'Code is confirmed',
+  //         field: 'code',
+  //       },
+  //     ]);
+  //   return this.usersRepository.updateConfirmationCode(user);
+  // }
+  //
+  // async userRegistrationEmailResending(email: string): Promise<boolean> {
+  //   const findUserByEmail = await this.usersRepository.findUserByEmail(email);
+  //   if (!findUserByEmail || findUserByEmail.emailConfirmation.isConfirmed)
+  //     throw new BadRequestException([
+  //       {
+  //         message: 'Email',
+  //         field: 'email',
+  //       },
+  //     ]);
+  //   return this.usersService.updateUserByEmailResending(email, findUserByEmail);
+  // }
 
-  async userRegistrationEmailResending(email: string): Promise<boolean> {
-    const findUserByEmail = await this.usersRepository.findUserByEmail(email);
-    if (!findUserByEmail || findUserByEmail.emailConfirmation.isConfirmed)
-      throw new BadRequestException([
-        {
-          message: 'Email',
-          field: 'email',
-        },
-      ]);
-    return this.usersService.updateUserByEmailResending(email, findUserByEmail);
-  }
-
-  async login(
-    ip: string,
-    title: string,
-    user: UsersModel_For_DB,
-  ): Promise<JwtPairType> {
-    if (user.banInfo.isBanned) throw new UnauthorizedException([]);
-    const deviceId = new ObjectId().toString();
-    const createJwt = await this.createJwtPair(user.id, title, deviceId);
-    const lastActiveDate = this.getLastActiveDateFromRefreshToken(
-      createJwt.refreshToken,
-    );
-    await this.deviceService.createUserSession(
-      ip,
-      title,
-      lastActiveDate,
-      deviceId,
-      user.id,
-    );
-    return createJwt;
-  }
+  // async login(
+  //   ip: string,
+  //   title: string,
+  //   user: UsersModel_For_DB,
+  // ): Promise<JwtPairType> {
+  //   if (user.banInfo.isBanned) throw new UnauthorizedException([]);
+  //   const deviceId = new ObjectId().toString();
+  //   const createJwt = await this.createJwtPair(user.id, title, deviceId);
+  //   const lastActiveDate = this.getLastActiveDateFromRefreshToken(
+  //     createJwt.refreshToken,
+  //   );
+  //   await this.deviceService.createUserSession(
+  //     ip,
+  //     title,
+  //     lastActiveDate,
+  //     deviceId,
+  //     user.id,
+  //   );
+  //   return createJwt;
+  // }
 
   async logout(refreshToken: string): Promise<boolean> {
     if (!refreshToken)
@@ -127,7 +128,6 @@ export class AuthService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const createJwtTokenPair = await this.createJwtPair(
       tokenVerify.userId,
-      ip.title,
       tokenVerify.deviceId,
     );
     const lastActiveDate = this.getLastActiveDateFromRefreshToken(
@@ -159,24 +159,29 @@ export class AuthService {
     }
   }
 
-  async createJwtPair(
-    userId: string,
-    title: string,
-    deviceId: string,
-  ): Promise<JwtPairType> {
+  async createJwtPair(userId: string, deviceId: string): Promise<JwtPairType> {
     const payload = { userId: userId, deviceId: deviceId };
     const jwtPair: JwtPairType = {
       accessToken: this.jwtService.sign(payload, {
-        expiresIn: '10s',
+        expiresIn: '100s',
         secret: JWT.jwt_secret,
       }),
       refreshToken: this.jwtService.sign(payload, {
-        expiresIn: '20s',
+        expiresIn: '200s',
         secret: JWT.jwt_secret,
       }),
     };
     return jwtPair;
   }
+
+  // async generateTokens(userId: string, deviceId?: string) {
+  //   const accessToken = this.jwtService.sign({ userId });
+  //   const refreshToken = this.jwtService.sign(
+  //     { userId, deviceId: deviceId || randomUUID() },
+  //     { expiresIn: '20s' },
+  //   );
+  //   return { accessToken, refreshToken };
+  // }
 
   async passwordRecovery(email: string): Promise<RecoveryCodeModal> {
     const user = await this.usersRepository.findUserByEmail(email);

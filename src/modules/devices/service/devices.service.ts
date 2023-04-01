@@ -14,22 +14,22 @@ import { DeleteResult } from 'mongodb';
 export class DevicesService {
   constructor(public devicesRepository: DevicesRepository) {}
 
-  async createUserSession(
-    ip: string,
-    title: string,
-    lastActiveDate: string,
-    deviceId: string,
-    userId: string,
-  ): Promise<DevicesModal> {
-    const newSession = new DevicesModal(
-      ip,
-      title,
-      lastActiveDate,
-      deviceId,
-      userId,
-    );
-    return this.devicesRepository.createUserSession(newSession);
-  }
+  // async createUserSession(
+  //   ip: string,
+  //   title: string,
+  //   lastActiveDate: Date,
+  //   deviceId: string,
+  //   userId: string,
+  // ): Promise<DevicesModal> {
+  //   const newSession = new DevicesModal(
+  //     ip,
+  //     title,
+  //     lastActiveDate,
+  //     deviceId,
+  //     userId,
+  //   );
+  //   return this.devicesRepository.createUserSession(newSession);
+  // }
 
   async deleteSessionByUserId(
     userId: string,

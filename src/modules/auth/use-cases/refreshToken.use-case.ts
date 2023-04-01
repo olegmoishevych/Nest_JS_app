@@ -42,7 +42,6 @@ export class RefreshTokenUseCase implements ICommandHandler {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     const tokensPair = await this.authService.createJwtPair(
       tokenVerify.userId,
-      command.ipDto.title,
       tokenVerify.deviceId,
     );
     const lastActiveDate = this.authService.getLastActiveDateFromRefreshToken(
@@ -55,8 +54,6 @@ export class RefreshTokenUseCase implements ICommandHandler {
     deviceSession.ip = command.ipDto.ip;
     deviceSession.title = command.ipDto.title;
     deviceSession.lastActiveDate = lastActiveDate;
-    deviceSession.deviceId = tokenVerify.deviceId;
-    deviceSession.userId = tokenVerify.userId;
     await this.devicesRepository.saveResult(deviceSession);
     return tokensPair;
   }

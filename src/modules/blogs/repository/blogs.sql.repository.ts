@@ -40,16 +40,6 @@ export class BlogsSqlRepository {
       .getOne();
   }
 
-  async findBlogByUserId(userId: string): Promise<BlogsEntity> {
-    return this.blogsTable
-      .createQueryBuilder('blog')
-      .leftJoinAndSelect('blog.banInfo', 'blogBanInfo')
-      .leftJoinAndSelect('blog.blogOwnerInfo', 'user')
-      .where('user.id = :id', { id: userId })
-      .andWhere('blogBanInfo.isBlogBanned = false')
-      .getOne();
-  }
-
   async findBlogByIdForSa(id: string): Promise<BlogsEntity> {
     return this.blogsTable.findOneBy({ id });
   }

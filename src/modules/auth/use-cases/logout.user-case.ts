@@ -34,8 +34,9 @@ export class LogoutUseCase implements ICommandHandler {
       await this.devicesRepository.findDeviceByUserIdDeviceIdAndLastActiveDate(
         actualToken.userId,
         actualToken.deviceId,
-        lastActiveDate,
+        new Date(actualToken.iat * 1000).toISOString(),
       );
+    console.log('isDeviceActive', isDeviceActive);
     if (!isDeviceActive)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     return this.devicesRepository.deleteSessionByDeviceId(actualToken.deviceId);
