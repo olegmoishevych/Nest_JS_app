@@ -34,7 +34,6 @@ import { BanBlogByIdCommand } from './use-cases/banBlogById.use-case';
 @Controller('sa')
 export class UsersController {
   constructor(
-    public usersService: UsersService,
     public queryRepo: BlogsSQLqueryRepository,
     public usersRepository: UsersSqlRepository,
     public usersQueryRepo: UsersSQLQueryRepository,
