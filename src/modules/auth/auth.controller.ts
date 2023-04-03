@@ -77,7 +77,6 @@ export class AuthController {
     });
     return { accessToken: accessToken };
   }
-
   @Post('/logout')
   @HttpCode(204)
   async userLogout(@Cookies() cookies): Promise<boolean> {
