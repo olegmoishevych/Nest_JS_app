@@ -61,7 +61,7 @@ export class DevicesSQLRepository {
     deviceId: string,
     lastActiveDate: string,
   ): Promise<DevicesEntity> {
-    console.log('lastActiveDate', lastActiveDate);
+    // console.log('lastActiveDate', lastActiveDate);
     // return this.devicesTable.findOneBy({ userId, deviceId, lastActiveDate });
     return this.devicesTable.findOne({
       where: {

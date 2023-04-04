@@ -1,15 +1,12 @@
 import {
-  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
 import { NewPasswordDto } from '../dto/auth.dto';
-import { UserModel, UsersModel_For_DB } from '../../users/schemas/users.schema';
-import { UsersService } from '../../users/service/users.service';
+import { UserModel } from '../../users/schemas/users.schema';
 import { UsersRepository } from '../../users/repository/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { JWT, JwtPairType } from '../constants';
@@ -21,18 +18,14 @@ import {
 import { IpDto } from '../dto/api.dto';
 import { RecoveryCodeModal } from '../schemas/recoveryCode.schemas';
 import { v4 as uuidv4 } from 'uuid';
-import { EmailService } from '../../email/email.service';
 import * as bcrypt from 'bcrypt';
 import { DevicesService } from '../../devices/service/devices.service';
 import { DevicesRepository } from '../../devices/repository/devices.repository';
 import { DevicesModal } from '../../devices/schemas/devices.schemas';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    public usersService: UsersService,
-    public emailService: EmailService,
     public jwtService: JwtService,
     public usersRepository: UsersRepository,
     public deviceService: DevicesService,
