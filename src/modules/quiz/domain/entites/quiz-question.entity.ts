@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { QuizQuestionsDto } from '../../../users/dto/quizQuestionsDto';
+import { PublishQuestionDto } from '../../dto/publishDto';
 
 @Entity('QuizQuestions')
 export class QuizQuestionEntity {
@@ -35,7 +36,7 @@ export class QuizQuestionEntity {
     this.body = dto.body;
     this.correctAnswers = dto.correctAnswers;
   }
-  updatePublished(publish: boolean): void {
-    this.published = publish;
+  updatePublished(dto: PublishQuestionDto): void {
+    this.published = dto.published;
   }
 }

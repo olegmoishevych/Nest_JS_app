@@ -452,7 +452,7 @@ window.onload = function() {
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/PublishQuestionDto"
                 }
               }
             }
@@ -933,6 +933,10 @@ window.onload = function() {
           "properties": {}
         },
         "QuizQuestionsDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "PublishQuestionDto": {
           "type": "object",
           "properties": {}
         },

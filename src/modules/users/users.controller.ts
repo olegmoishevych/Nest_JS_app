@@ -36,6 +36,7 @@ import { QuizQuestionEntity } from '../quiz/domain/entites/quiz-question.entity'
 import { DeleteQuestionByIdCommand } from '../quiz/use-cases/delete-question-by-id-use.case';
 import { UpdateQuestionByIdCommand } from '../quiz/use-cases/updateQuestionById.use-case';
 import { UpdatePublishCommand } from '../quiz/use-cases/updatePublish.use-case';
+import { PublishQuestionDto } from '../quiz/dto/publishDto';
 
 @Controller('sa')
 export class UsersController {
@@ -125,8 +126,8 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateQuestionPublishById(
     @Param('id') id: string,
-    @Body() publish: boolean,
+    @Body() dto: PublishQuestionDto,
   ): Promise<QuizQuestionEntity> {
-    return this.commandBus.execute(new UpdatePublishCommand(id, publish));
+    return this.commandBus.execute(new UpdatePublishCommand(id, dto));
   }
 }
