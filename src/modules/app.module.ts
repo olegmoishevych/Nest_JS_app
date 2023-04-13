@@ -119,6 +119,8 @@ import { BanUserByIdForSaUseCase } from './users/use-cases/ban-user-by-id-for-sa
 import { BanBlogByIdUseCase } from './users/use-cases/banBlogById.use-case';
 import { TypeOrmConfig } from '../config/type-orm.config';
 import { CreateQuizQuestionUseCase } from './users/use-cases/create-quiz-question.use-case';
+import { QuizQuestionRepository } from './quiz/repository/quiz-question.repository';
+import { QuizQuestionEntity } from './quiz/domain/entites/quiz-question.entity';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -143,6 +145,7 @@ const controllers = [
 ];
 
 const useCases = [
+  CreateQuizQuestionUseCase,
   RegistrationUseCase,
   CreateUserUseCase,
   ConfirmationUseCase,
@@ -178,7 +181,6 @@ const useCases = [
   GetBannedUsersUseCase,
   BanUserByIdForSaUseCase,
   BanBlogByIdUseCase,
-  CreateQuizQuestionUseCase,
 ];
 
 const services = [
@@ -217,6 +219,7 @@ const repositories = [
   CommentsSQLqueryRepository,
   BannedUserQueryRepository,
   UsersSQLQueryRepository,
+  QuizQuestionRepository,
 ];
 
 const entities = [
@@ -232,6 +235,7 @@ const entities = [
   DevicesEntity,
   CommentsEntity,
   CommentatorInfoEntity,
+  QuizQuestionEntity,
 ];
 
 const throttlerGuard = {

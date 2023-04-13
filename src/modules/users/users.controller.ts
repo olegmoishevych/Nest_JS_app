@@ -30,6 +30,9 @@ import { BlogsSQLqueryRepository } from '../blogs/repository/blogs.SQLquery.repo
 import { UsersSQLQueryRepository } from './repository/users.SQL.query.repository';
 import { BanUserByIdForSaCommand } from './use-cases/ban-user-by-id-for-sa-use.case';
 import { BanBlogByIdCommand } from './use-cases/banBlogById.use-case';
+import { CreateQuizQuestionCommand } from './use-cases/create-quiz-question.use-case';
+import { QuizQuestionsDto } from './dto/quizQuestionsDto';
+import { QuizQuestionEntity } from '../quiz/domain/entites/quiz-question.entity';
 
 @Controller('sa')
 export class UsersController {
@@ -90,5 +93,13 @@ export class UsersController {
   }
   @UseGuards(BasicAuthGuard)
   @Post('quiz/questions')
-  async createQuizQuestions() {}
+  async createQuizQuestions(
+    @Body() dto: QuizQuestionsDto,
+  ): Promise<QuizQuestionEntity> {
+    return this.commandBus.execute(new CreateQuizQuestionCommand(dto));
+  }
+
+  @UseGuards(BasicAuthGuard)
+  @Delete('quiz/questions/:id')
+  async deleteQuestionById() {}
 }

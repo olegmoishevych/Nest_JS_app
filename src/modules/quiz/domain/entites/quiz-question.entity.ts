@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { QuizQuestionsDto } from '../../dto/quizQuestionsDto';
+import { QuizQuestionsDto } from '../../../users/dto/quizQuestionsDto';
 
 @Entity('QuizQuestions')
 export class QuizQuestionEntity {
