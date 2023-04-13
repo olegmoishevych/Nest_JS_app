@@ -121,6 +121,7 @@ import { TypeOrmConfig } from '../config/type-orm.config';
 import { CreateQuizQuestionUseCase } from './users/use-cases/create-quiz-question.use-case';
 import { QuizQuestionRepository } from './quiz/repository/quiz-question.repository';
 import { QuizQuestionEntity } from './quiz/domain/entites/quiz-question.entity';
+import { DeleteQuestionByIdUseCase } from './quiz/use-cases/delete-question-by-id-use.case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -145,6 +146,7 @@ const controllers = [
 ];
 
 const useCases = [
+  DeleteQuestionByIdUseCase,
   CreateQuizQuestionUseCase,
   RegistrationUseCase,
   CreateUserUseCase,

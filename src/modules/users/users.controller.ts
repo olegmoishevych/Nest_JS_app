@@ -4,13 +4,13 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './service/users.service';
 import { BanBlogUserDto, BanUserDto } from './dto/userDto';
 import { UserModel, UsersModel_For_DB } from './schemas/users.schema';
 import {
@@ -33,6 +33,7 @@ import { BanBlogByIdCommand } from './use-cases/banBlogById.use-case';
 import { CreateQuizQuestionCommand } from './use-cases/create-quiz-question.use-case';
 import { QuizQuestionsDto } from './dto/quizQuestionsDto';
 import { QuizQuestionEntity } from '../quiz/domain/entites/quiz-question.entity';
+import { DeleteQuestionByIdCommand } from '../quiz/use-cases/delete-question-by-id-use.case';
 
 @Controller('sa')
 export class UsersController {
@@ -91,6 +92,7 @@ export class UsersController {
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.queryRepo.getBlogsForSA(dto);
   }
+
   @UseGuards(BasicAuthGuard)
   @Post('quiz/questions')
   async createQuizQuestions(
@@ -101,5 +103,8 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Delete('quiz/questions/:id')
-  async deleteQuestionById() {}
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteQuestionById(@Param('id') id: string): Promise<DeleteResult> {
+    return this.commandBus.execute(new DeleteQuestionByIdCommand(id));
+  }
 }
