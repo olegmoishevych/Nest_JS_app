@@ -35,4 +35,7 @@ export class QuizQuestionEntity {
     this.body = dto.body;
     this.correctAnswers = dto.correctAnswers;
   }
+  updatePublished(publish: boolean): void {
+    this.published = publish;
+  }
 }
