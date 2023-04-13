@@ -62,7 +62,7 @@ export class QuizQuestionRepository {
       page: pageNumber,
       pageSize,
       totalCount,
-      items: items,
+      items: [...items],
     };
   }
 }

@@ -20,7 +20,7 @@ export class QuizQuestionEntity {
   published: boolean;
   @Column()
   createdAt: Date;
-  @Column()
+  @Column({ nullable: true })
   updatedAt: Date;
 
   static create(dto: QuizQuestionsDto): QuizQuestionEntity {
@@ -29,7 +29,7 @@ export class QuizQuestionEntity {
     question.correctAnswers = dto.correctAnswers;
     question.published = false;
     question.createdAt = new Date();
-    question.updatedAt = new Date();
+    question.updatedAt = null;
     return question;
   }
   update(dto: QuizQuestionsDto): void {
