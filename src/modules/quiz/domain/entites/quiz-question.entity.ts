@@ -31,4 +31,8 @@ export class QuizQuestionEntity {
     question.updatedAt = new Date();
     return question;
   }
+  update(dto: QuizQuestionsDto): void {
+    this.body = dto.body;
+    this.correctAnswers = dto.correctAnswers;
+  }
 }

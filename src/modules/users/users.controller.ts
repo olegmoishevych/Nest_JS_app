@@ -34,6 +34,7 @@ import { CreateQuizQuestionCommand } from './use-cases/create-quiz-question.use-
 import { QuizQuestionsDto } from './dto/quizQuestionsDto';
 import { QuizQuestionEntity } from '../quiz/domain/entites/quiz-question.entity';
 import { DeleteQuestionByIdCommand } from '../quiz/use-cases/delete-question-by-id-use.case';
+import { UpdateQuestionByIdCommand } from '../quiz/use-cases/updateQuestionById.use-case';
 
 @Controller('sa')
 export class UsersController {
@@ -106,5 +107,15 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteQuestionById(@Param('id') id: string): Promise<DeleteResult> {
     return this.commandBus.execute(new DeleteQuestionByIdCommand(id));
+  }
+
+  @UseGuards(BasicAuthGuard)
+  @Put('quiz/questions/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateQuestionById(
+    @Param('id') id: string,
+    @Body() dto: QuizQuestionsDto,
+  ): Promise<QuizQuestionEntity> {
+    return this.commandBus.execute(new UpdateQuestionByIdCommand(dto, id));
   }
 }

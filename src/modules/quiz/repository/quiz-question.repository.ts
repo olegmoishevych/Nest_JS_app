@@ -22,4 +22,7 @@ export class QuizQuestionRepository {
   async findQuestionById(id: string): Promise<QuizQuestionEntity> {
     return this.quizTable.findOneBy({ id });
   }
+  async save(question: QuizQuestionEntity): Promise<QuizQuestionEntity> {
+    return this.quizTable.save(question);
+  }
 }
