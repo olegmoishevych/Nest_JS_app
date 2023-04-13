@@ -88,4 +88,7 @@ export class UsersController {
   ): Promise<PaginationViewModel<BlogsViewModel[]>> {
     return this.queryRepo.getBlogsForSA(dto);
   }
+  @UseGuards(BasicAuthGuard)
+  @Post('quiz/questions')
+  async createQuizQuestions() {}
 }
