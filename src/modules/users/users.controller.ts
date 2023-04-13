@@ -101,9 +101,7 @@ export class UsersController {
 
   @UseGuards(BasicAuthGuard)
   @Post('quiz/questions')
-  async createQuizQuestions(
-    @Body() dto: QuizQuestionsDto,
-  ): Promise<QuizQuestionEntity> {
+  async createQuizQuestions(@Body() dto: QuizQuestionsDto) {
     return this.commandBus.execute(new CreateQuizQuestionCommand(dto));
   }
 

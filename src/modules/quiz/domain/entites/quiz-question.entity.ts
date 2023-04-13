@@ -23,10 +23,13 @@ export class QuizQuestionEntity {
   @Column({ nullable: true })
   updatedAt: Date;
 
-  static create(dto: QuizQuestionsDto): QuizQuestionEntity {
+  static create(
+    dto: QuizQuestionsDto,
+    correctAnswers: string[],
+  ): QuizQuestionEntity {
     const question = new QuizQuestionEntity();
     question.body = dto.body;
-    question.correctAnswers = dto.correctAnswers;
+    question.correctAnswers = correctAnswers;
     question.published = false;
     question.createdAt = new Date();
     question.updatedAt = null;
@@ -35,8 +38,10 @@ export class QuizQuestionEntity {
   update(dto: QuizQuestionsDto): void {
     this.body = dto.body;
     this.correctAnswers = dto.correctAnswers;
+    this.updatedAt = new Date();
   }
   updatePublished(dto: PublishQuestionDto): void {
     this.published = dto.published;
+    this.updatedAt = new Date();
   }
 }

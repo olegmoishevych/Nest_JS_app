@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommand } from '@nestjs/cqrs';
 import { QuizQuestionsDto } from '../dto/quizQuestionsDto';
 import { QuizQuestionRepository } from '../../quiz/repository/quiz-question.repository';
-import { QuizQuestionEntity } from '../../quiz/domain/entites/quiz-question.entity';
 
 @Injectable()
 export class CreateQuizQuestionCommand {
@@ -10,12 +9,18 @@ export class CreateQuizQuestionCommand {
 }
 
 @CommandHandler(CreateQuizQuestionCommand)
-export class CreateQuizQuestionUseCase {
+export class CreateQuizQuestionUseCase implements ICommand {
   constructor(public readonly quizRepo: QuizQuestionRepository) {}
 
-  async execute({
-    dto,
-  }: CreateQuizQuestionCommand): Promise<QuizQuestionEntity> {
-    return this.quizRepo.create(dto);
+  async execute({ dto }: CreateQuizQuestionCommand) {
+    const question = await this.quizRepo.create(dto);
+    return {
+      id: question.id,
+      body: question.body,
+      correctAnswers: question.correctAnswers,
+      published: question.published,
+      createdAt: question.createdAt,
+      updatedAt: question.updatedAt ? question.updatedAt : null,
+    };
   }
 }

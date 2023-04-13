@@ -14,7 +14,7 @@ export class QuizQuestionRepository {
   ) {}
 
   async create(dto: QuizQuestionsDto): Promise<QuizQuestionEntity> {
-    const question = QuizQuestionEntity.create(dto);
+    const question = QuizQuestionEntity.create(dto, dto.correctAnswers);
     return this.quizTable.save(question);
   }
 
