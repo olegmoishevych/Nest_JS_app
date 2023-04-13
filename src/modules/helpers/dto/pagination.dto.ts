@@ -33,6 +33,20 @@ export class PaginationDto {
     return (this.pageNumber - 1) * this.pageSize;
   }
 }
+
+export enum PublishedStatusFilterEnum {
+  All = 'all',
+  Published = 'published',
+  NotPublished = 'notPublished',
+}
+
+export class QuizQuestionsPaginationDto extends PaginationDto {
+  @IsOptional()
+  bodySearchTerm: string | null = null;
+  @IsOptional()
+  publishedStatus: PublishedStatusFilterEnum = PublishedStatusFilterEnum.All;
+}
+
 export class BannedUserDto extends PaginationDto {
   @IsOptional()
   searchLoginTerm: string | null = null;

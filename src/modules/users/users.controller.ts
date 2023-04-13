@@ -15,6 +15,7 @@ import { BanBlogUserDto, BanUserDto } from './dto/userDto';
 import { UserModel, UsersModel_For_DB } from './schemas/users.schema';
 import {
   BlogPaginationDto,
+  QuizQuestionsPaginationDto,
   UserPaginationDtoWithBanStatusDto,
 } from '../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../helpers/pagination/pagination-view-model';
@@ -37,6 +38,7 @@ import { DeleteQuestionByIdCommand } from '../quiz/use-cases/delete-question-by-
 import { UpdateQuestionByIdCommand } from '../quiz/use-cases/updateQuestionById.use-case';
 import { UpdatePublishCommand } from '../quiz/use-cases/updatePublish.use-case';
 import { PublishQuestionDto } from '../quiz/dto/publishDto';
+import { QuizQuestionRepository } from '../quiz/repository/quiz-question.repository';
 
 @Controller('sa')
 export class UsersController {
@@ -44,6 +46,7 @@ export class UsersController {
     public queryRepo: BlogsSQLqueryRepository,
     public usersRepository: UsersSqlRepository,
     public usersQueryRepo: UsersSQLQueryRepository,
+    public quizRepo: QuizQuestionRepository,
     private commandBus: CommandBus,
   ) {}
 
@@ -129,5 +132,13 @@ export class UsersController {
     @Body() dto: PublishQuestionDto,
   ): Promise<QuizQuestionEntity> {
     return this.commandBus.execute(new UpdatePublishCommand(id, dto));
+  }
+
+  @UseGuards(BasicAuthGuard)
+  @Get('quiz/questions')
+  async findAllQuestions(
+    @Query() dto: QuizQuestionsPaginationDto,
+  ): Promise<PaginationViewModel<QuizQuestionEntity[]>> {
+    return this.quizRepo.findAllQuestions(dto);
   }
 }

@@ -26,28 +26,6 @@ export class PostsQuerySqlRepository {
   }
 
   async postWithLikeStatus(post: any, userId: string | null) {
-    // console.log('post', post.extendedLikesInfo);
-    // post.extendedLikesInfo.likesCount = await this.likesTable.count({
-    //   where: {
-    //     parentId: post.id,
-    //     likeStatus: 'Like',
-    //   },
-    // });
-    // post.extendedLikesInfo.dislikesCount = await this.likesTable.count({
-    //   where: {
-    //     parentId: post.id,
-    //     likeStatus: 'Dislike',
-    //   },
-    // });
-    // post.extendedLikesInfo.newestLikes = await this.likesTable.find({
-    //   where: {
-    //     parentId: post.id,
-    //     likeStatus: 'Like',
-    //   },
-    //   select: ['addedAt', 'userId', 'login'],
-    //   order: { addedAt: 'DESC' },
-    //   take: 3,
-    // });
     post.extendedLikesInfo.likesCount = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')

@@ -384,6 +384,15 @@ window.onload = function() {
               "description": ""
             }
           }
+        },
+        "get": {
+          "operationId": "UsersController_findAllQuestions",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
         }
       },
       "/api/sa/quiz/questions/{id}": {

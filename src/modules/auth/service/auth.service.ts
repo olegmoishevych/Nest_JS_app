@@ -32,55 +32,6 @@ export class AuthService {
     public deviceRepository: DevicesRepository,
   ) {}
 
-  // async userRegistrationConfirmation(code: string): Promise<UserModel> {
-  //   const user = await this.usersRepository.findUserByCode(code);
-  //   if (!user)
-  //     throw new BadRequestException([
-  //       { message: 'User by code not found', field: 'code' },
-  //     ]);
-  //   if (user.emailConfirmation.isConfirmed)
-  //     throw new BadRequestException([
-  //       {
-  //         message: 'Code is confirmed',
-  //         field: 'code',
-  //       },
-  //     ]);
-  //   return this.usersRepository.updateConfirmationCode(user);
-  // }
-  //
-  // async userRegistrationEmailResending(email: string): Promise<boolean> {
-  //   const findUserByEmail = await this.usersRepository.findUserByEmail(email);
-  //   if (!findUserByEmail || findUserByEmail.emailConfirmation.isConfirmed)
-  //     throw new BadRequestException([
-  //       {
-  //         message: 'Email',
-  //         field: 'email',
-  //       },
-  //     ]);
-  //   return this.usersService.updateUserByEmailResending(email, findUserByEmail);
-  // }
-
-  // async login(
-  //   ip: string,
-  //   title: string,
-  //   user: UsersModel_For_DB,
-  // ): Promise<JwtPairType> {
-  //   if (user.banInfo.isBanned) throw new UnauthorizedException([]);
-  //   const deviceId = new ObjectId().toString();
-  //   const createJwt = await this.createJwtPair(user.id, title, deviceId);
-  //   const lastActiveDate = this.getLastActiveDateFromRefreshToken(
-  //     createJwt.refreshToken,
-  //   );
-  //   await this.deviceService.createUserSession(
-  //     ip,
-  //     title,
-  //     lastActiveDate,
-  //     deviceId,
-  //     user.id,
-  //   );
-  //   return createJwt;
-  // }
-
   async logout(refreshToken: string): Promise<boolean> {
     if (!refreshToken)
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);

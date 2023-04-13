@@ -2,18 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsEntity } from '../domain/comments.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import {
-  CommentsForPostsViewModal,
-  CommentsViewModal,
-} from '../schema/comments.schema';
+import { CommentsViewModal } from '../schema/comments.schema';
 import { LikesEntity } from '../../posts/domain/entities/likes.entity';
 import { PaginationDto } from '../../helpers/dto/pagination.dto';
 import { PaginationViewModel } from '../../helpers/pagination/pagination-view-model';
 import { BlogsEntity } from '../../blogs/domain/entities/blogs.entity';
 import { PostsEntity } from '../../posts/domain/entities/posts.entity';
 import { LikeStatusEnum } from '../schema/likeStatus.schema';
-import { BlogsSqlRepository } from '../../blogs/repository/blogs.sql.repository';
-import { PostsSQLRepository } from '../../posts/repository/postsSQL.repository';
 
 @Injectable()
 export class CommentsSQLqueryRepository {
@@ -26,8 +21,6 @@ export class CommentsSQLqueryRepository {
     private blogsTable: Repository<BlogsEntity>,
     @InjectRepository(PostsEntity)
     private postsTable: Repository<PostsEntity>,
-    private blogsSqlRepo: BlogsSqlRepository,
-    private postsSqlRepo: PostsSQLRepository,
   ) {}
 
   async commentsWithLikeStatus(
@@ -42,7 +35,6 @@ export class CommentsSQLqueryRepository {
   }
 
   async commentWithLikeStatus(comment: any, userId: string | null) {
-    // console.log('comment', comment.likesInfo.likesCount);
     comment.likesInfo.likesCount = await this.likesTable
       .createQueryBuilder('likes')
       .leftJoinAndSelect('likes.user', 'user')
@@ -176,46 +168,4 @@ export class CommentsSQLqueryRepository {
       commentsWithPagination,
     );
   }
-
-  // todo  for LIKES
-  // async commentWithLikes(comment: any, userId: string | null) {
-  //   comment.likesInfo.likesCount = await this.likesTable.count({
-  //     where: {
-  //       parentId: comment.id,
-  //       likeStatus: LikeStatusEnum.Like,
-  //       user: {
-  //         banInfo: {
-  //           isBanned: false,
-  //         },
-  //       },
-  //     },
-  //   });
-  //   comment.likesInfo.dislikesCount = await this.likesTable.count({
-  //     where: {
-  //       parentId: comment.id,
-  //       likeStatus: LikeStatusEnum.Dislike,
-  //       user: {
-  //         banInfo: {
-  //           isBanned: false,
-  //         },
-  //       },
-  //     },
-  //   });
-  //   if (userId) {
-  //     const myStatus = await this.likesTable.findOne({
-  //       where: {
-  //         parentId: comment.id,
-  //         likeStatus: LikeStatusEnum.Like,
-  //         user: {
-  //           banInfo: {
-  //             isBanned: false,
-  //           },
-  //         },
-  //       },
-  //     });
-  //     comment.likesInfo.myStatus = myStatus ? myStatus.likeStatus : 'None';
-  //   }
-  //   return comment;
-  // }
-  // todo  for LIKES
 }
