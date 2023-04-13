@@ -365,6 +365,17 @@ window.onload = function() {
           }
         }
       },
+      "/api/sa/quiz/questions": {
+        "post": {
+          "operationId": "UsersController_createQuizQuestions",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/testing/all-data": {
         "delete": {
           "operationId": "TestingController_deleteAllData",
