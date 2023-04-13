@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { QuizQuestionsDto } from '../../dto/quizQuestionsDto';
 
 @Entity('QuizQuestions')
 export class QuizQuestionEntity {
@@ -13,11 +14,21 @@ export class QuizQuestionEntity {
       from: (value: string) => JSON.parse(value),
     },
   })
-  correctAnswers: [string];
+  correctAnswers: string[];
   @Column({ default: false })
   published: boolean;
   @Column()
   createdAt: Date;
   @Column()
   updatedAt: Date;
+
+  static create(dto: QuizQuestionsDto): QuizQuestionEntity {
+    const question = new QuizQuestionEntity();
+    question.body = dto.body;
+    question.correctAnswers = dto.correctAnswers;
+    question.published = false;
+    question.createdAt = new Date();
+    question.updatedAt = new Date();
+    return question;
+  }
 }

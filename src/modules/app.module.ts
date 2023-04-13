@@ -118,6 +118,7 @@ import { UsersSQLQueryRepository } from './users/repository/users.SQL.query.repo
 import { BanUserByIdForSaUseCase } from './users/use-cases/ban-user-by-id-for-sa-use.case';
 import { BanBlogByIdUseCase } from './users/use-cases/banBlogById.use-case';
 import { TypeOrmConfig } from '../config/type-orm.config';
+import { CreateQuizQuestionUseCase } from './users/use-cases/create-quiz-question.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -177,6 +178,7 @@ const useCases = [
   GetBannedUsersUseCase,
   BanUserByIdForSaUseCase,
   BanBlogByIdUseCase,
+  CreateQuizQuestionUseCase,
 ];
 
 const services = [
