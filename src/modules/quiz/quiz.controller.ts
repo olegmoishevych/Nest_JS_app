@@ -1,4 +1,13 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { User } from '../auth/decorator/request.decorator';
 import { UserEntity } from '../auth/domain/entities/user.entity';
@@ -8,12 +17,14 @@ import { ViewModelMapper } from './types/viewModelMapper';
 import { AnswerDto } from './dto/answerDto';
 import { HandleAnswerCommand } from './use-cases/handle-answer.use-case';
 import { AnswerViewModel, GamePairViewModel } from './types/game.types';
+import { GamesRepository } from './repository/games.repository';
 
 @Controller('pair-game-quiz')
 export class QuizController {
   constructor(
     public command: CommandBus,
     public viewModelMapper: ViewModelMapper,
+    public gamesRepo: GamesRepository,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -35,5 +46,27 @@ export class QuizController {
       new HandleAnswerCommand(dto, user.id),
     );
     return this.viewModelMapper.getAnswerViewModel(answer);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('pairs/my-current')
+  async findCurrentGame(@User() user: UserEntity): Promise<GamePairViewModel> {
+    const game = await this.gamesRepo.findActiveOrPendingGameByUserId(user.id);
+    if (!game)
+      throw new NotFoundException('You dont have any active or pending games');
+    return this.viewModelMapper.getGameViewModel(game);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('pairs/:id')
+  async findGameById(
+    @Param('id') id: string,
+    @User() user: UserEntity,
+  ): Promise<GamePairViewModel> {
+    const game = await this.gamesRepo.findGameById(id);
+    if (!game) throw new NotFoundException('Game not found');
+    if (!game.isPlayerParticipant(user.id))
+      throw new ForbiddenException('You are not participant in this game');
+    return this.viewModelMapper.getGameViewModel(game);
   }
 }
