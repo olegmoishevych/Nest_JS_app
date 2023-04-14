@@ -34,11 +34,11 @@ import { BanBlogByIdCommand } from './use-cases/banBlogById.use-case';
 import { CreateQuizQuestionCommand } from './use-cases/create-quiz-question.use-case';
 import { QuizQuestionsDto } from './dto/quizQuestionsDto';
 import { QuizQuestionEntity } from '../quiz/domain/entites/quiz-question.entity';
-import { DeleteQuestionByIdCommand } from '../quiz/use-cases/delete-question-by-id-use.case';
-import { UpdateQuestionByIdCommand } from '../quiz/use-cases/updateQuestionById.use-case';
-import { UpdatePublishCommand } from '../quiz/use-cases/updatePublish.use-case';
 import { PublishQuestionDto } from '../quiz/dto/publishDto';
 import { QuizQuestionRepository } from '../quiz/repository/quiz-question.repository';
+import { UpdatePublishCommand } from '../quiz/use-cases/updatePublish.use-case';
+import { UpdateQuestionByIdCommand } from '../quiz/use-cases/updateQuestionById.use-case';
+import { DeleteQuestionByIdCommand } from '../quiz/use-cases/delete-question-by-id-use.case';
 
 @Controller('sa')
 export class UsersController {

@@ -124,15 +124,6 @@ import { QuizQuestionEntity } from './quiz/domain/entites/quiz-question.entity';
 import { DeleteQuestionByIdUseCase } from './quiz/use-cases/delete-question-by-id-use.case';
 import { UpdateQuestionByIdUseCase } from './quiz/use-cases/updateQuestionById.use-case';
 import { UpdatePublishUseCase } from './quiz/use-cases/updatePublish.use-case';
-import { QuizController } from './quiz/quiz.controller';
-import { PairConnectionUseCase } from './quiz/use-cases/pair-connection.use-case';
-import { GamesRepository } from './quiz/repository/games.repository';
-import { GameEntity } from './quiz/domain/entites/game.entity';
-import { PlayerEntity } from './quiz/domain/entites/player.entity';
-import { PlayerStatisticsEntity } from './quiz/domain/entites/player-statistics.entity';
-import { PlayerStatisticsRepository } from './quiz/repository/player-statistics.repository';
-import { ViewModelMapper } from './quiz/types/viewModelMapper';
-import { HandleAnswerUseCase } from './quiz/use-cases/handle-answer.use-case';
 import { ScheduleModule } from '@nestjs/schedule';
 
 const mongooseModels = [
@@ -147,7 +138,6 @@ const mongooseModels = [
 ];
 
 const controllers = [
-  QuizController,
   BloggerController,
   UsersController,
   TestingController,
@@ -159,8 +149,6 @@ const controllers = [
 ];
 
 const useCases = [
-  HandleAnswerUseCase,
-  PairConnectionUseCase,
   UpdatePublishUseCase,
   UpdateQuestionByIdUseCase,
   DeleteQuestionByIdUseCase,
@@ -214,8 +202,6 @@ const services = [
 ];
 
 const repositories = [
-  PlayerStatisticsRepository,
-  GamesRepository,
   BlogsRepository,
   UsersRepository,
   TestingRepository,
@@ -244,9 +230,6 @@ const repositories = [
 ];
 
 const entities = [
-  PlayerStatisticsEntity,
-  PlayerEntity,
-  GameEntity,
   UserEntity,
   BanInfoEntity,
   EmailConfirmationEntity,
@@ -309,7 +292,6 @@ const throttlerGuard = {
   providers: [
     ...useCases,
     ...services,
-    ViewModelMapper,
     ...repositories,
     // throttlerGuard,
     JwtStrategy,
