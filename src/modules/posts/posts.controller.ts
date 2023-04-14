@@ -42,20 +42,6 @@ export class PostsController {
     return this.postsQueryRepo.findPosts(userId, dto);
   }
 
-  // @UseGuards(BasicAuthGuard)
-  // @Put('/:id')
-  // @HttpCode(204)
-  // async updatePostById(
-  //   @Param('id') id: string,
-  //   @Body() updatePost: CreatePostDtoWithBlogId,
-  //   @User() user: UserEntity,
-  // ): Promise<boolean> {
-  //   return this.command.execute(
-  //     new UpdatePostByIdCommand(id, updatePost, user),
-  //   );
-  // return this.postsService.updatePostById(id, updatePost, user.id);
-  // }
-
   @Get('/:id')
   async findPostById(@Token() userId: string | null, @Param('id') id: string) {
     return this.command.execute(new FindPostByIdCommand(userId, id));
