@@ -126,6 +126,11 @@ import { UpdateQuestionByIdUseCase } from './quiz/use-cases/updateQuestionById.u
 import { UpdatePublishUseCase } from './quiz/use-cases/updatePublish.use-case';
 import { QuizController } from './quiz/quiz.controller';
 import { PairConnectionUseCase } from './quiz/use-cases/pair-connection.use-case';
+import { GamesRepository } from './quiz/repository/games.repository';
+import { GameEntity } from './quiz/domain/entites/game.entity';
+import { PlayerEntity } from './quiz/domain/entites/player.entity';
+import { PlayerStatisticsEntity } from './quiz/domain/entites/player-statistics.entity';
+import { PlayerStatisticsRepository } from './quiz/repository/player-statistics.repository';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -205,6 +210,8 @@ const services = [
 ];
 
 const repositories = [
+  PlayerStatisticsRepository,
+  GamesRepository,
   BlogsRepository,
   UsersRepository,
   TestingRepository,
@@ -233,6 +240,9 @@ const repositories = [
 ];
 
 const entities = [
+  PlayerStatisticsEntity,
+  PlayerEntity,
+  GameEntity,
   UserEntity,
   BanInfoEntity,
   EmailConfirmationEntity,
