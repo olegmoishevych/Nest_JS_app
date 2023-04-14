@@ -7,7 +7,7 @@ import { Answer, PlayerEntity } from './player.entity';
 
 @Entity({ orderBy: { pairCreatedDate: 'DESC' }, name: 'Games' })
 export class GameEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @OneToMany(() => PlayerEntity, (p) => p.game, {

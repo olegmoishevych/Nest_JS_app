@@ -18,6 +18,7 @@ import { AnswerDto } from './dto/answerDto';
 import { HandleAnswerCommand } from './use-cases/handle-answer.use-case';
 import { AnswerViewModel, GamePairViewModel } from './types/game.types';
 import { GamesRepository } from './repository/games.repository';
+import { ParseNumberPipe } from './types/parse-number';
 
 @Controller('pair-game-quiz')
 export class QuizController {
@@ -60,7 +61,7 @@ export class QuizController {
   @UseGuards(JwtAuthGuard)
   @Get('pairs/:id')
   async findGameById(
-    @Param('id') id: string,
+    @Param('id', ParseNumberPipe) id: string,
     @User() user: UserEntity,
   ): Promise<GamePairViewModel> {
     const game = await this.gamesRepo.findGameById(id);
