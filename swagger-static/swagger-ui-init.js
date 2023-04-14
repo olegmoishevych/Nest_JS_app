@@ -11,6 +11,17 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
+      "/api/pair-game-quiz/pair/connection": {
+        "post": {
+          "operationId": "QuizController_pairConnection",
+          "parameters": [],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/blogger/blogs/comments": {
         "get": {
           "operationId": "BloggerController_getCommentsForAllPosts",

@@ -124,6 +124,8 @@ import { QuizQuestionEntity } from './quiz/domain/entites/quiz-question.entity';
 import { DeleteQuestionByIdUseCase } from './quiz/use-cases/delete-question-by-id-use.case';
 import { UpdateQuestionByIdUseCase } from './quiz/use-cases/updateQuestionById.use-case';
 import { UpdatePublishUseCase } from './quiz/use-cases/updatePublish.use-case';
+import { QuizController } from './quiz/quiz.controller';
+import { PairConnectionUseCase } from './quiz/use-cases/pair-connection.use-case';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -137,6 +139,7 @@ const mongooseModels = [
 ];
 
 const controllers = [
+  QuizController,
   BloggerController,
   UsersController,
   TestingController,
@@ -148,6 +151,7 @@ const controllers = [
 ];
 
 const useCases = [
+  PairConnectionUseCase,
   UpdatePublishUseCase,
   UpdateQuestionByIdUseCase,
   DeleteQuestionByIdUseCase,
