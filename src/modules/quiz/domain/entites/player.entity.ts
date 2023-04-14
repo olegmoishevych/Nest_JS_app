@@ -16,7 +16,7 @@ export class PlayerEntity {
   })
   user: UserEntity;
   @Column()
-  userId: number;
+  userId: string;
   @ManyToOne(() => GameEntity, { onDelete: 'CASCADE' })
   game: GameEntity;
   @Column()
@@ -67,7 +67,7 @@ export class PlayerEntity {
 }
 
 export type Answer = {
-  questionId: number;
+  questionId: string;
   answerStatus: AnswerStatuses;
   addedAt: Date;
 };

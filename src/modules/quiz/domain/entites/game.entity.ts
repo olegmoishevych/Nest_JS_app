@@ -7,8 +7,8 @@ import { Answer, PlayerEntity } from './player.entity';
 
 @Entity({ orderBy: { pairCreatedDate: 'DESC' }, name: 'Games' })
 export class GameEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @OneToMany(() => PlayerEntity, (p) => p.game, {
     eager: true,
@@ -18,7 +18,7 @@ export class GameEntity {
   players: PlayerEntity[];
 
   @Column({ nullable: true })
-  winnerId: number | null;
+  winnerId: string;
 
   @Column()
   status: GameStatuses;
@@ -139,15 +139,15 @@ export class GameEntity {
     this.players.push(player);
   }
 
-  findPlayerById(userId: number): PlayerEntity {
+  findPlayerById(userId: string): PlayerEntity {
     return this.players.find((p) => p.userId === userId);
   }
 
-  isPlayerParticipant(playerId: number): boolean {
+  isPlayerParticipant(playerId: string): boolean {
     return this.players.some((p) => p.userId === playerId);
   }
 
-  isPlayerAnsweredAllQuestions(playerId: number): boolean {
+  isPlayerAnsweredAllQuestions(playerId: string): boolean {
     const player = this.findPlayerById(playerId);
     return player.answers.length === 5;
   }
@@ -162,7 +162,7 @@ export class GameEntity {
     );
   }
 
-  handleAnswer(playerId: number, possibleAnswer: string): Answer {
+  handleAnswer(playerId: string, possibleAnswer: string): Answer {
     const player = this.findPlayerById(playerId);
     const currentQuestionIndex = player.answers.length;
     const currentPlayerQuestion = this.questions[currentQuestionIndex];
@@ -193,7 +193,7 @@ export class GameEntity {
 }
 
 export type QuestionInGame = {
-  id: number;
+  id: string;
   body: string;
   correctAnswers: string[];
 };

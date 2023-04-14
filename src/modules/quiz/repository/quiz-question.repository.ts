@@ -18,6 +18,16 @@ export class QuizQuestionRepository {
     return this.quizTable.save(question);
   }
 
+  async getRandomQuestionsForStartGame(): Promise<QuizQuestionEntity[]> {
+    return this.quizTable
+      .createQueryBuilder('q')
+      .select()
+      .where('q.published = true')
+      .orderBy('RANDOM()')
+      .take(5)
+      .getMany();
+  }
+
   async deleteQuestionById(id: string): Promise<DeleteResult> {
     return this.quizTable.delete({ id });
   }

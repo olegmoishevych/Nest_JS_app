@@ -131,6 +131,9 @@ import { GameEntity } from './quiz/domain/entites/game.entity';
 import { PlayerEntity } from './quiz/domain/entites/player.entity';
 import { PlayerStatisticsEntity } from './quiz/domain/entites/player-statistics.entity';
 import { PlayerStatisticsRepository } from './quiz/repository/player-statistics.repository';
+import { ViewModelMapper } from './quiz/types/viewModelMapper';
+import { HandleAnswerUseCase } from './quiz/use-cases/handle-answer.use-case';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const mongooseModels = [
   { name: Blogs.name, schema: BlogsSchema },
@@ -156,6 +159,7 @@ const controllers = [
 ];
 
 const useCases = [
+  HandleAnswerUseCase,
   PairConnectionUseCase,
   UpdatePublishUseCase,
   UpdateQuestionByIdUseCase,
@@ -267,6 +271,7 @@ const throttlerGuard = {
   imports: [
     CqrsModule,
     PassportModule,
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
       ttl: 1,
       limit: 10,
@@ -304,6 +309,7 @@ const throttlerGuard = {
   providers: [
     ...useCases,
     ...services,
+    ViewModelMapper,
     ...repositories,
     // throttlerGuard,
     JwtStrategy,

@@ -22,6 +22,27 @@ window.onload = function() {
           }
         }
       },
+      "/api/pair-game-quiz/pairs/my-current/answers": {
+        "post": {
+          "operationId": "QuizController_currentAnswer",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
       "/api/blogger/blogs/comments": {
         "get": {
           "operationId": "BloggerController_getCommentsForAllPosts",
@@ -928,6 +949,10 @@ window.onload = function() {
     "servers": [],
     "components": {
       "schemas": {
+        "AnswerDto": {
+          "type": "object",
+          "properties": {}
+        },
         "BlogsDto": {
           "type": "object",
           "properties": {}
