@@ -11,69 +11,6 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/api/pair-game-quiz/pair/connection": {
-        "post": {
-          "operationId": "QuizController_pairConnection",
-          "parameters": [],
-          "responses": {
-            "201": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/api/pair-game-quiz/pairs/my-current/answers": {
-        "post": {
-          "operationId": "QuizController_currentAnswer",
-          "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AnswerDto"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/api/pair-game-quiz/pairs/my-current": {
-        "get": {
-          "operationId": "QuizController_findCurrentGame",
-          "parameters": [],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
-        }
-      },
-      "/api/pair-game-quiz/pairs/{id}": {
-        "get": {
-          "operationId": "QuizController_findGameById",
-          "parameters": [
-            {
-              "name": "id",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          }
-        }
-      },
       "/api/blogger/blogs/comments": {
         "get": {
           "operationId": "BloggerController_getCommentsForAllPosts",
@@ -980,10 +917,6 @@ window.onload = function() {
     "servers": [],
     "components": {
       "schemas": {
-        "AnswerDto": {
-          "type": "object",
-          "properties": {}
-        },
         "BlogsDto": {
           "type": "object",
           "properties": {}
