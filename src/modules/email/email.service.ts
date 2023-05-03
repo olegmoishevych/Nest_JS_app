@@ -15,6 +15,7 @@ export class EmailService {
       </p>`;
     return this.emailRepository.sentEmail(email, 'email confirmation', text);
   }
+
   async sendPasswordRecoveryCode(
     email: string,
     recoveryCode: string,
