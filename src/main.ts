@@ -14,7 +14,7 @@ export async function bootstrap() {
   const PORT = parseInt(configService.get<string>('PORT'), 10) || 3000;
 
   await app.listen(PORT, () => {
-    console.log(`Server started on ${PORT} port`);
+    console.log(`Server started on ${PORT}`);
   });
 
   if (process.env.NODE_ENV === 'development') {
