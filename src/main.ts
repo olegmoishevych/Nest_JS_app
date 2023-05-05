@@ -6,7 +6,6 @@ import { get } from 'http';
 import { createApp } from './commons/createApp';
 
 const serverUrl = 'http://localhost:3000';
-
 export async function bootstrap() {
   const rawApp = await NestFactory.create(AppModule);
   const app = createApp(rawApp);
